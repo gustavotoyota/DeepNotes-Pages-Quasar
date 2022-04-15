@@ -1,88 +1,64 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-
-export class Deferred<T> {
+export class Deferred<T extends object> {
   placeholder: T;
-  value: T;
+  value: T = null as any;
 
   constructor() {
-    this.placeholder = new Proxy(
-      {},
-      {
-        apply(target, thisArg, args) {
-          return Reflect.apply(target.value, thisArg, args);
-        },
-        construct(target, args) {
-          return Reflect.construct(target.value, args);
-        },
-        defineProperty(target, propertyKey, attributes) {
-          return Reflect.defineProperty(target.value, propertyKey, attributes);
-        },
-        deleteProperty(target, propertyKey) {
-          return Reflect.deleteProperty(target.value, propertyKey);
-        },
-        get(target, propertyKey, receiver) {
-          return Reflect.get(target.value, propertyKey, receiver);
-        },
-        getOwnPropertyDescriptor(target, propertyKey) {
-          return Reflect.getOwnPropertyDescriptor(target.value, propertyKey);
-        },
-        getPrototypeOf(target) {
-          return Reflect.getPrototypeOf(target.value);
-        },
-        has(target, propertyKey) {
-          return Reflect.has(target.value, propertyKey);
-        },
-        isExtensible(target) {
-          return Reflect.isExtensible(target.value);
-        },
-        ownKeys(target) {
-          return Reflect.ownKeys(target.value);
-        },
-        preventExtensions(target) {
-          return Reflect.preventExtensions(target.value);
-        },
-        set(target, propertyKey, value, receiver) {
-          return Reflect.set(target.value, propertyKey, value, receiver);
-        },
-        setPrototypeOf(target, prototype) {
-          return Reflect.setPrototypeOf(target.value, prototype);
-        },
-      }
-    ) as T;
-    this.value = null as T;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.placeholder = new Proxy(this, {
+      apply(target, thisArg, args) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return Reflect.apply(target.value, thisArg, args);
+      },
+      construct(target, args) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return Reflect.construct(target.value, args);
+      },
+      defineProperty(target, propertyKey, attributes) {
+        return Reflect.defineProperty(target.value, propertyKey, attributes);
+      },
+      deleteProperty(target, propertyKey) {
+        return Reflect.deleteProperty(target.value, propertyKey);
+      },
+      get(target, propertyKey, receiver) {
+        return Reflect.get(target.value, propertyKey, receiver);
+      },
+      getOwnPropertyDescriptor(target, propertyKey) {
+        return Reflect.getOwnPropertyDescriptor(target.value, propertyKey);
+      },
+      getPrototypeOf(target) {
+        return Reflect.getPrototypeOf(target.value);
+      },
+      has(target, propertyKey) {
+        return Reflect.has(target.value, propertyKey);
+      },
+      isExtensible(target) {
+        return Reflect.isExtensible(target.value);
+      },
+      ownKeys(target) {
+        return Reflect.ownKeys(target.value);
+      },
+      preventExtensions(target) {
+        return Reflect.preventExtensions(target.value);
+      },
+      set(target, propertyKey, value, receiver) {
+        return Reflect.set(target.value, propertyKey, value, receiver);
+      },
+      setPrototypeOf(target, prototype) {
+        return Reflect.setPrototypeOf(target.value, prototype);
+      },
+    });
   }
 }
 
-export function createDeferred<T>(): Deferred<T> {
+export function createDeferred<T extends object>(): Deferred<T> {
   return new Deferred<T>();
 }
 
-export function createDeferrer<T = Record<string, any>>(): {
-  [K in keyof T]: IDeferredObject<T[K]>;
-} {
-  return new Proxy(
-    {},
-    {
-      get(target, propertyKey) {
-        if (propertyKey in target) {
-          return target[propertyKey];
-        }
-
-        const deferred = createDeferred();
-
-        target[propertyKey] = deferred;
-
-        return deferred;
-      },
-    }
-  );
-}
-
-export function createDeferrerEnv<T>(target: T, func: (this: T) => void): void {
-  const envTarget = {};
-
-  const deferrerEnv = new Proxy(envTarget, {
+export function createDeferrer<T = Record<string, any>>(target: any = {}): T {
+  return new Proxy(target, {
     get(target, propertyKey) {
       if (propertyKey in target) {
         const value = target[propertyKey];
@@ -110,8 +86,4 @@ export function createDeferrerEnv<T>(target: T, func: (this: T) => void): void {
       return true;
     },
   });
-
-  func.bind(deferrerEnv)();
-
-  Object.assign(target, envTarget);
 }

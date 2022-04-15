@@ -39,11 +39,11 @@ export class Container<Regs extends Registrations> {
       this.factory[`make${capitalize(key)}`] = (...args: any) => {
         if (key in deferrer) return deferrer[key];
 
-        const deferred = deferrer[key];
+        deferrer[key];
 
         const result = registrations[key](this.factory)(...args);
 
-        deferred.value = result;
+        deferrer[key] = result;
 
         delete deferrer[key];
 

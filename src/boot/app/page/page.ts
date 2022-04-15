@@ -1,7 +1,7 @@
 import { AxiosInstance } from 'axios';
-import { createDeferrerEnv } from 'src/boot/static/defer';
+import { createDeferrer } from 'src/boot/static/defer';
 import { reactive } from 'vue';
-import { Factory } from '../composition-root';
+import { Dependencies, Factory } from '../composition-root';
 import { PageCamera } from './camera/camera';
 import { PageElems } from './elems/elems';
 import { PageActiveElem } from './selection/active-elem';
@@ -37,17 +37,17 @@ export class Page {
       name: '',
     });
 
-    createDeferrerEnv(this, function () {
-      this.elems = factory.makeElems();
+    this.elems = factory.makeElems();
 
-      this.activeElem = factory.makeActiveElem();
-      this.selection = factory.makeSelection(this.elems);
+    this.activeElem = factory.makeActiveElem();
+    this.selection = factory.makeSelection(this.elems);
 
-      this.camera = factory.makeCamera(params.axios);
+    this.camera = factory.makeCamera(params.axios);
 
-      this.pos = factory.makePos(this.rects, this.camera);
-      this.rects = factory.makeRects(this.pos);
-      this.sizes = factory.makeSizes(this.camera);
-    });
+    const def = createDeferrer<Dependencies>();
+    this.pos = factory.makePos(def.rects, this.camera);
+    this.rects = def.rects = factory.makeRects(this.pos);
+
+    this.sizes = factory.makeSizes(this.camera);
   }
 }
