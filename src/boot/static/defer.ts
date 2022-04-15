@@ -7,14 +7,10 @@ export class Deferred<T extends object> {
     // @ts-ignore
     this.placeholder = new Proxy(this, {
       apply(target, thisArg, args) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return Reflect.apply(target.value, thisArg, args);
+        return Reflect.apply(target.value as () => any, thisArg, args);
       },
       construct(target, args) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return Reflect.construct(target.value, args);
+        return Reflect.construct(target.value as () => any, args);
       },
       defineProperty(target, propertyKey, attributes) {
         return Reflect.defineProperty(target.value, propertyKey, attributes);
@@ -53,14 +49,10 @@ export class Deferred<T extends object> {
   }
 }
 
-export function createDeferred<T extends object>(): Deferred<T> {
-  return new Deferred<T>();
-}
-
 export function createDeferrer<T = Record<string, any>>(target: any = {}): T {
   return new Proxy(target, {
     get(target, propertyKey) {
-      if (propertyKey in target) {
+      if (propertyKey in target && target[propertyKey] !== undefined) {
         const value = target[propertyKey];
 
         if (value instanceof Deferred) {
@@ -70,20 +62,25 @@ export function createDeferrer<T = Record<string, any>>(target: any = {}): T {
         }
       }
 
-      const deferred = createDeferred();
+      const deferred = new Deferred();
 
       target[propertyKey] = deferred;
 
       return deferred.placeholder;
     },
     set(target, propertyKey, value) {
-      if (propertyKey in target && target[propertyKey] instanceof Deferred) {
+      if (propertyKey in target && target[propertyKey] instanceof Deferred)
         target[propertyKey].value = value;
-      }
 
       target[propertyKey] = value;
 
       return true;
     },
   });
+}
+
+export class Deferrer {
+  constructor() {
+    return createDeferrer<this>(this);
+  }
 }

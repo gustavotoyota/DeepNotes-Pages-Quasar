@@ -1,21 +1,18 @@
 import { Vec2 } from 'src/boot/static/vec2';
-import { PagePos } from '../space/pos';
-import { PageCamera } from './camera';
+import { Page } from '../page';
 
-export class AppPanning {
-  camera: PageCamera;
-  pos: PagePos;
+export class PagePanning {
+  page: Page;
 
   currentPos: Vec2 = new Vec2();
 
-  constructor(camera: PageCamera, pos: PagePos) {
-    this.camera = camera;
-    this.pos = pos;
+  constructor(page: Page) {
+    this.page = page;
   }
 
   start(event: PointerEvent) {
-    if (this.camera.react.lockPos) return;
+    if (this.page.camera.react.lockPos) return;
 
-    this.currentPos = this.pos.clientFromEvent(event);
+    this.currentPos = this.page.pos.clientFromEvent(event);
   }
 }

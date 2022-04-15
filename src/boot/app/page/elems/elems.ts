@@ -1,5 +1,4 @@
 import { reactive } from 'vue';
-import { Factory } from '../../composition-root';
 import { PageArrows } from '../arrows/arrows';
 import { PageNotes } from '../notes/notes';
 import { PageActiveElem } from '../selection/active-elem';
@@ -54,8 +53,8 @@ export class PageElems {
   notes: PageNotes;
   arrows: PageArrows;
 
-  constructor(factory: Factory) {
-    this.notes = factory.makeNotes();
-    this.arrows = factory.makeArrows();
+  constructor(notes: PageNotes, arrows: PageArrows) {
+    this.notes = notes;
+    this.arrows = arrows;
   }
 }

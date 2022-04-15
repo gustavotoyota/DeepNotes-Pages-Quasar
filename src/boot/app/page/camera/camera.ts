@@ -1,6 +1,6 @@
-import { AxiosInstance } from 'axios';
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { computed, reactive } from 'vue';
+import { Page } from '../page';
 
 export interface ICameraReact {
   pos: IVec2;
@@ -13,12 +13,12 @@ export interface ICameraReact {
 }
 
 export class PageCamera {
-  axios: AxiosInstance;
+  page: Page;
 
   react: ICameraReact;
 
-  constructor(axios: AxiosInstance) {
-    this.axios = axios;
+  constructor(page: Page) {
+    this.page = page;
 
     this.react = reactive({
       pos: new Vec2(),

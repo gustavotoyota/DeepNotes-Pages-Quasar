@@ -10,9 +10,4 @@ export class App {
 
 export default boot(({ app }) => {
   app.config.globalProperties.$app = factory.makeApp();
-
-  app.config.globalProperties.$page = factory.makePage({
-    id: 'page',
-    axios: app.config.globalProperties.$axios,
-  });
 });
