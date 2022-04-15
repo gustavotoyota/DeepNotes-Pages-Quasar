@@ -1,11 +1,15 @@
 import { Vec2 } from 'src/boot/static/vec2';
-import { PageCamera } from '../camera/camera';
+import { Page } from '../page';
 
 export class PageSizes {
-  camera: PageCamera;
+  page: Page;
 
-  constructor(camera: PageCamera) {
-    this.camera = camera;
+  get camera() {
+    return this.page.camera;
+  }
+
+  constructor(page: Page) {
+    this.page = page;
   }
 
   screenToWorld1D(screenSize: number): number {

@@ -1,14 +1,18 @@
 import { Vec2 } from 'src/boot/static/vec2';
-import { PageCamera } from '../camera/camera';
-import { PageRects } from './rects';
+import { Page } from '../page';
 
 export class PagePos {
-  rects: PageRects;
-  camera: PageCamera;
+  page: Page;
 
-  constructor(rects: PageRects, camera: PageCamera) {
-    this.rects = rects;
-    this.camera = camera;
+  get rects() {
+    return this.page.rects;
+  }
+  get camera() {
+    return this.page.camera;
+  }
+
+  constructor(page: Page) {
+    this.page = page;
   }
 
   clientFromEvent(event: MouseEvent): Vec2 {

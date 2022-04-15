@@ -1,12 +1,16 @@
 import { Rect } from 'src/boot/static/rect';
 import { Vec2 } from 'src/boot/static/vec2';
-import { PagePos } from './pos';
+import { Page } from '../page';
 
 export class PageRects {
-  pos: PagePos;
+  page: Page;
 
-  constructor(pos: PagePos) {
-    this.pos = pos;
+  get pos() {
+    return this.page.pos;
+  }
+
+  constructor(page: Page) {
+    this.page = page;
   }
 
   fromDisplay() {

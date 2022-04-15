@@ -1,9 +1,10 @@
-import { AxiosInstance } from 'axios';
 import { Deferrer } from 'src/boot/static/defer';
 import { reactive } from 'vue';
+import { App } from '../app';
 import { Factory } from '../composition-root';
 import { PageArrows } from './arrows/arrows';
 import { PageCamera } from './camera/camera';
+import { PagePanning } from './camera/panning';
 import { PageElems } from './elems/elems';
 import { PageNotes } from './notes/notes';
 import { PageActiveElem } from './selection/active-elem';
@@ -18,7 +19,7 @@ export interface IPageReact {
 }
 
 export class Page extends Deferrer {
-  axios: AxiosInstance;
+  app: App;
 
   id: string;
 
@@ -33,15 +34,16 @@ export class Page extends Deferrer {
   selection: PageSelection;
 
   camera: PageCamera;
+  panning: PagePanning;
 
   pos: PagePos;
   rects!: PageRects;
   sizes: PageSizes;
 
-  constructor(factory: Factory, id: string, axios: AxiosInstance) {
+  constructor(factory: Factory, app: App, id: string) {
     super();
 
-    this.axios = axios;
+    this.app = app;
 
     this.id = id;
 
@@ -51,16 +53,17 @@ export class Page extends Deferrer {
 
     this.notes = factory.makeNotes();
     this.arrows = factory.makeArrows();
-    this.elems = factory.makeElems(this.notes, this.arrows);
+    this.elems = factory.makeElems(this);
 
     this.activeElem = factory.makeActiveElem();
     this.activeRegion = factory.makeActiveRegion(this);
-    this.selection = factory.makeSelection(this.elems);
+    this.selection = factory.makeSelection(this);
 
     this.camera = factory.makeCamera(this);
+    this.panning = factory.makePanning(this);
 
-    this.pos = factory.makePos(this.rects, this.camera);
-    this.rects = factory.makeRects(this.pos);
-    this.sizes = factory.makeSizes(this.camera);
+    this.pos = factory.makePos(this);
+    this.rects = factory.makeRects(this);
+    this.sizes = factory.makeSizes(this);
   }
 }

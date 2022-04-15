@@ -1,4 +1,3 @@
-import { AxiosInstance } from 'axios';
 import { Container } from '../static/simple-di';
 import { App } from './app';
 import { PageArrows } from './page/arrows/arrows';
@@ -17,26 +16,22 @@ import { PageSizes } from './page/space/sizes';
 export const container = new Container({
   app: () => () => new App(),
 
-  page: (factory: any) => (id: string, axios: AxiosInstance) =>
-    new Page(factory, id, axios),
+  page: (factory: any) => (app: App, id: string) => new Page(factory, app, id),
 
   camera: () => (page: Page) => new PageCamera(page),
   panning: () => (page: Page) => new PagePanning(page),
 
-  elems: () => (notes: PageNotes, arrows: PageArrows) =>
-    new PageElems(notes, arrows),
   notes: () => () => new PageNotes(),
   arrows: () => () => new PageArrows(),
+  elems: () => (page: Page) => new PageElems(page),
 
   activeElem: () => () => new PageActiveElem(),
   activeRegion: () => (page: Page) => new PageActiveRegion(page),
-  selection: () => (elems: PageElems) => new PageSelection(elems),
+  selection: () => (page: Page) => new PageSelection(page),
 
-  pos: () => (rects: PageRects, camera: PageCamera) => {
-    return new PagePos(rects, camera);
-  },
-  rects: () => (pos: PagePos) => new PageRects(pos),
-  sizes: () => (camera: PageCamera) => new PageSizes(camera),
+  pos: () => (page: Page) => new PagePos(page),
+  rects: () => (page: Page) => new PageRects(page),
+  sizes: () => (page: Page) => new PageSizes(page),
 });
 
 export const factory = container.factory;

@@ -1,6 +1,5 @@
 import { reactive } from 'vue';
-import { PageArrows } from '../arrows/arrows';
-import { PageNotes } from '../notes/notes';
+import { Page } from '../page';
 import { PageActiveElem } from '../selection/active-elem';
 import { PageSelection } from '../selection/selection';
 
@@ -50,11 +49,16 @@ export class PageElem {
 }
 
 export class PageElems {
-  notes: PageNotes;
-  arrows: PageArrows;
+  page: Page;
 
-  constructor(notes: PageNotes, arrows: PageArrows) {
-    this.notes = notes;
-    this.arrows = arrows;
+  get notes() {
+    return this.page.notes;
+  }
+  get arrows() {
+    return this.page.arrows;
+  }
+
+  constructor(page: Page) {
+    this.page = page;
   }
 }

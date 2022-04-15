@@ -1,5 +1,6 @@
 import { computed, reactive } from 'vue';
-import { PageElem, PageElems } from '../elems/elems';
+import { PageElem } from '../elems/elems';
+import { Page } from '../page';
 
 export interface IPageSelectionReact {
   noteSet: Record<string, boolean>;
@@ -10,12 +11,12 @@ export interface IPageSelectionReact {
 }
 
 export class PageSelection {
-  elems: PageElems;
+  page: Page;
 
   react: IPageSelectionReact;
 
-  constructor(elems: PageElems) {
-    this.elems = elems;
+  constructor(page: Page) {
+    this.page = page;
 
     this.react = reactive({
       noteSet: {},
