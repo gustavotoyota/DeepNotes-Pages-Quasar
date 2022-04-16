@@ -1,6 +1,6 @@
 import { Deferrer } from 'src/boot/static/defer';
 import { reactive } from 'vue';
-import { App } from '../app';
+import { DeepNotesApp } from '../app';
 import { Factory } from '../composition-root';
 import { PageArrows } from './arrows/arrows';
 import { PageCamera } from './camera/camera';
@@ -19,7 +19,7 @@ export interface IPageReact {
 }
 
 export class Page extends Deferrer {
-  app: App;
+  app: DeepNotesApp;
 
   id: string;
 
@@ -40,7 +40,7 @@ export class Page extends Deferrer {
   rects!: PageRects;
   sizes: PageSizes;
 
-  constructor(factory: Factory, app: App, id: string) {
+  constructor(factory: Factory, app: DeepNotesApp, id: string) {
     super();
 
     this.app = app;

@@ -1,5 +1,5 @@
 import { Container } from '../static/simple-di';
-import { App } from './app';
+import { DeepNotesApp } from './app';
 import { PageArrows } from './page/arrows/arrows';
 import { PageCamera } from './page/camera/camera';
 import { PagePanning } from './page/camera/panning';
@@ -12,11 +12,15 @@ import { PageSelection } from './page/selection/selection';
 import { PagePos } from './page/space/pos';
 import { PageRects } from './page/space/rects';
 import { PageSizes } from './page/space/sizes';
+import { AppSerialization } from './serialization';
 
 export const container = new Container({
-  app: () => () => new App(),
+  app: (factory: any) => () => new DeepNotesApp(factory),
 
-  page: (factory: any) => (app: App, id: string) => new Page(factory, app, id),
+  serialization: () => (app: DeepNotesApp) => new AppSerialization(app),
+
+  page: (factory: any) => (app: DeepNotesApp, id: string) =>
+    new Page(factory, app, id),
 
   camera: () => (page: Page) => new PageCamera(page),
   panning: () => (page: Page) => new PagePanning(page),
