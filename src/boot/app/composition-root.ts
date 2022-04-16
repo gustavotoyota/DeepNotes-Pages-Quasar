@@ -25,7 +25,7 @@ export const container = new Container({
   arrows: () => () => new PageArrows(),
   elems: () => (page: Page) => new PageElems(page),
 
-  activeElem: () => () => new PageActiveElem(),
+  activeElem: () => (page: Page) => new PageActiveElem(page),
   activeRegion: () => (page: Page) => new PageActiveRegion(page),
   selection: () => (page: Page) => new PageSelection(page),
 

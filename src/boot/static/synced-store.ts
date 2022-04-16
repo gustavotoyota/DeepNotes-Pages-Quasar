@@ -1,15 +1,13 @@
 import { SyncedText } from '@syncedstore/core';
 
-export class StaticSyncedStore {
-  createText(delta: object) {
-    const clone = new SyncedText();
+export function createText(delta: object) {
+  const clone = new SyncedText();
 
-    clone.applyDelta(delta);
+  clone.applyDelta(delta);
 
-    return clone;
-  }
+  return clone;
+}
 
-  cloneText(text: SyncedText) {
-    return this.createText(text.toDelta());
-  }
+export function cloneText(text: SyncedText) {
+  return createText(text.toDelta());
 }

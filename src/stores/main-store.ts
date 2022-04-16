@@ -13,8 +13,6 @@ export const useMainStore = defineStore('main-store', {
 
     pathPages: [] as IPageReference[],
     recentPages: [] as IPageReference[],
-
-    test: null,
   }),
 
   getters: {
@@ -37,9 +35,7 @@ export const useMainStore = defineStore('main-store', {
 
   actions: {
     async fetchData() {
-      const res = await this.axios.get('https://yjs-server.deepnotes.app/');
-
-      this.test = res.data;
+      console.log('Fetch data here');
     },
   },
 });

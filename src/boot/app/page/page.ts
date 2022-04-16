@@ -55,7 +55,7 @@ export class Page extends Deferrer {
     this.arrows = factory.makeArrows();
     this.elems = factory.makeElems(this);
 
-    this.activeElem = factory.makeActiveElem();
+    this.activeElem = factory.makeActiveElem(this);
     this.activeRegion = factory.makeActiveRegion(this);
     this.selection = factory.makeSelection(this);
 

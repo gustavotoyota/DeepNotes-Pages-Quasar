@@ -1,0 +1,13 @@
+diff --git a/node_modules/quasar/src/directives/Ripple.js b/node_modules/quasar/src/directives/Ripple.js
+index ebd27ab..b6abcbf 100644
+--- a/node_modules/quasar/src/directives/Ripple.js
++++ b/node_modules/quasar/src/directives/Ripple.js
+@@ -62,7 +62,7 @@ function showRipple (evt, el, ctx, forceCenter) {
+ }
+ 
+ function updateModifiers (ctx, { modifiers, value, arg, instance }) {
+-  const cfg = Object.assign({}, instance.$q.config.ripple, modifiers, value)
++  const cfg = Object.assign({}, instance.$q?.config.ripple, modifiers, value)
+   ctx.modifiers = {
+     early: cfg.early === true,
+     stop: cfg.stop === true,

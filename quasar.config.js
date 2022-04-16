@@ -92,12 +92,14 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       // https: true
       open: true, // opens browser window automatically
+      port: 16507,
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
     framework: {
       config: {
         dark: true,
+        ripple: true,
       },
 
       // iconSet: 'material-icons', // Quasar icon set

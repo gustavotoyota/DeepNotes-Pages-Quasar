@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+import { Page } from '../page';
 
 export interface IPageActiveElemReact {
   id: string | null;
@@ -6,9 +7,13 @@ export interface IPageActiveElemReact {
 }
 
 export class PageActiveElem {
+  page: Page;
+
   react: IPageActiveElemReact;
 
-  constructor() {
+  constructor(page: Page) {
+    this.page = page;
+
     this.react = reactive({
       id: null,
       type: 'page',

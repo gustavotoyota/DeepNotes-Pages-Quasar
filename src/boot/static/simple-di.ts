@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 import { createDeferrer } from './defer';
-import { capitalize } from './string';
 
 export type Factory<Dependency> = (...args: any) => Dependency;
 export type FactoryDependency<F extends Factory<any>> = ReturnType<F>;
@@ -51,4 +50,8 @@ export class Container<Regs extends Registrations> {
       };
     }
   }
+}
+
+function capitalize(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }

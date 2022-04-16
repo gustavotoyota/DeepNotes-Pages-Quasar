@@ -1,4 +1,4 @@
-export class StaticClipboard {
+export const clipboardUtils = {
   async get(): Promise<string> {
     if (navigator.clipboard && navigator.clipboard.readText)
       return await navigator.clipboard.readText();
@@ -25,7 +25,7 @@ export class StaticClipboard {
     }
 
     return '';
-  }
+  },
 
   set(text: string) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -65,5 +65,5 @@ export class StaticClipboard {
 
       return;
     }
-  }
-}
+  },
+};

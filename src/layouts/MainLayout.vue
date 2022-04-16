@@ -21,6 +21,13 @@ import RightSidebar from 'src/components/RightSidebar.vue';
 </script>
 
 <style>
+* {
+  touch-action: pan-x pan-y;
+}
+*:not(input) {
+  user-select: none;
+}
+
 .q-tooltip {
   font-size: 12px;
 }

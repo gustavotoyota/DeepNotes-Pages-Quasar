@@ -16,6 +16,7 @@
     "@quasar/extras": "^1.0.0",
     "@syncedstore/core": "^0.3.7",
     "axios": "^0.21.1",
+    "patch-package": "^6.4.7",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
     "url": "^0.11.0",
