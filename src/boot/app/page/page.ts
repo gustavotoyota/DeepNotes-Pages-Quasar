@@ -1,5 +1,5 @@
 import { Deferrer } from 'src/boot/static/defer';
-import { reactive } from 'vue';
+import { reactive, UnwrapNestedRefs } from 'vue';
 import { DeepNotesApp } from '../app';
 import { Factory } from '../composition-root';
 import { PageArrows } from './arrows/arrows';
@@ -23,7 +23,7 @@ export class Page extends Deferrer {
 
   id: string;
 
-  react: IPageReact;
+  react: UnwrapNestedRefs<IPageReact>;
 
   notes: PageNotes;
   arrows: PageArrows;
@@ -47,7 +47,7 @@ export class Page extends Deferrer {
 
     this.id = id;
 
-    this.react = reactive({
+    this.react = reactive<IPageReact>({
       name: '',
     });
 

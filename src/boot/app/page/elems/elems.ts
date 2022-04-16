@@ -1,7 +1,5 @@
-import { reactive } from 'vue';
+import { reactive, UnwrapNestedRefs } from 'vue';
 import { Page } from '../page';
-import { PageActiveElem } from '../selection/active-elem';
-import { PageSelection } from '../selection/selection';
 
 export enum ElemType {
   NOTE = 'note',
@@ -16,30 +14,22 @@ export interface IElemReact {
 }
 
 export class PageElem {
+  page: Page;
+
   id: string;
   type: ElemType;
   parentId: string | null;
 
-  activeElem: PageActiveElem;
-  selection: PageSelection;
+  react: UnwrapNestedRefs<IElemReact>;
 
-  react: IElemReact;
+  constructor(page: Page, id: string, type: ElemType, parentId: string | null) {
+    this.page = page;
 
-  constructor(params: {
-    id: string;
-    type: ElemType;
-    parentId: string | null;
-    activeElem: PageActiveElem;
-    selection: PageSelection;
-  }) {
-    this.id = params.id;
-    this.type = params.type;
-    this.parentId = params.parentId;
+    this.id = id;
+    this.type = type;
+    this.parentId = parentId;
 
-    this.activeElem = params.activeElem;
-    this.selection = params.selection;
-
-    this.react = reactive({
+    this.react = reactive<IElemReact>({
       active: false,
       selected: false,
 

@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, ComputedRef, reactive, UnwrapNestedRefs } from 'vue';
 import { PageElem } from '../elems/elems';
 import { Page } from '../page';
 
@@ -6,19 +6,19 @@ export interface IPageSelectionReact {
   noteSet: Record<string, boolean>;
   arrowSet: Record<string, boolean>;
 
-  noteIds: string[];
-  arrowIds: string[];
+  noteIds: ComputedRef<string[]>;
+  arrowIds: ComputedRef<string[]>;
 }
 
 export class PageSelection {
   page: Page;
 
-  react: IPageSelectionReact;
+  react: UnwrapNestedRefs<IPageSelectionReact>;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.react = reactive({
+    this.react = reactive<IPageSelectionReact>({
       noteSet: {},
       arrowSet: {},
 

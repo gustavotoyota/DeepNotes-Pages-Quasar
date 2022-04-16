@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import { reactive, UnwrapNestedRefs } from 'vue';
 import { Page } from '../page';
 
 export interface IPageActiveElemReact {
@@ -9,12 +9,12 @@ export interface IPageActiveElemReact {
 export class PageActiveElem {
   page: Page;
 
-  react: IPageActiveElemReact;
+  react: UnwrapNestedRefs<IPageActiveElemReact>;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.react = reactive({
+    this.react = reactive<IPageActiveElemReact>({
       id: null,
       type: 'page',
     });
