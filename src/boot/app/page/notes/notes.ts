@@ -1,13 +1,16 @@
-import { reactive } from 'vue';
+import { refProp } from 'src/boot/static/vue';
+import { UnwrapNestedRefs } from 'vue';
 import { PageNote } from './note';
 
+export interface IPageNotesReact {
+  map: Record<string, PageNote>;
+}
+
 export class PageNotes {
-  react: {
-    map: Record<string, PageNote>;
-  };
+  react!: UnwrapNestedRefs<IPageNotesReact>;
 
   constructor() {
-    this.react = reactive({
+    refProp<IPageNotesReact>(this, 'react', {
       map: {},
     });
   }

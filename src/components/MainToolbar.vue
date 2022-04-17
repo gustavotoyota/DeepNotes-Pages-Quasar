@@ -20,21 +20,21 @@
       />
 
       <div style="flex: 1; width: 0; display: flex">
-        <space-gap style="width: 8px" />
+        <SpaceGap style="width: 8px" />
 
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Cut"
           icon="mdi-content-cut"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Copy"
           icon="mdi-content-copy"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Paste"
           icon="mdi-content-paste"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Duplicate"
           icon="mdi-content-duplicate"
         />
@@ -44,11 +44,11 @@
           style="margin: 0 7px"
         />
 
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Undo"
           icon="mdi-undo"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Redo"
           icon="mdi-redo"
         />
@@ -58,12 +58,12 @@
           style="margin: 0 7px"
         />
 
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Select all"
           icon="mdi-select-all"
           size="24px"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Delete"
           icon="mdi-delete-outline"
           size="24px"
@@ -74,22 +74,22 @@
           style="margin: 0 7px"
         />
 
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Align left"
           icon="mdi-format-align-left"
           size="21px"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Align center"
           icon="mdi-format-align-center"
           size="21px"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Align right"
           icon="mdi-format-align-right"
           size="21px"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Justify"
           icon="mdi-format-align-justify"
           size="21px"
@@ -100,12 +100,12 @@
           style="margin: 0 7px"
         />
 
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Header 1"
           icon="mdi-format-header-1"
           size="24px"
         />
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Header 2"
           icon="mdi-format-header-2"
           size="24px"
@@ -116,13 +116,13 @@
           style="margin: 0 7px"
         />
 
-        <toolbar-btn
+        <ToolbarBtn
           tooltip="Clear formatting"
           icon="mdi-format-clear"
           size="24px"
         />
 
-        <space-gap style="width: 8px" />
+        <SpaceGap style="width: 8px" />
       </div>
 
       <q-btn

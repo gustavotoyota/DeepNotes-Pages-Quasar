@@ -14,7 +14,7 @@ export class PageRects {
   }
 
   fromDisplay() {
-    const node = document.querySelector('.display.active');
+    const node = document.getElementById('display');
 
     if (node == null) throw 'No active display';
 

@@ -48,14 +48,14 @@
         mini: uiStore.leftSidebarMini,
       }"
     >
-      <sidebar-page
+      <SidebarPage
         name="Main pagesdf sdh fkjhsdkf hshdkjfh kjsdhf ksjdh fkjsjkd fjks hdkfh"
         :active="true"
       />
 
-      <sidebar-page name="Another page" />
+      <SidebarPage name="Another page" />
 
-      <sidebar-page name="Another page" />
+      <SidebarPage name="Another page" />
     </q-list>
   </q-drawer>
 </template>

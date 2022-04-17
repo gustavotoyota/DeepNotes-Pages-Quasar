@@ -3,17 +3,17 @@
     view="lHr lpR fFf"
     v-show="mainStore.mounted"
   >
-    <main-toolbar />
+    <MainToolbar />
 
-    <left-sidebar />
-    <right-sidebar />
+    <LeftSidebar />
+    <RightSidebar />
 
     <q-page-container>
       <router-view />
     </q-page-container>
   </q-layout>
 
-  <loading-overlay v-if="!mainStore.mounted" />
+  <loading-overlay v-if="mainStore.mounted !== true" />
 </template>
 
 <script
@@ -23,7 +23,7 @@
 import MainToolbar from '../components/MainToolbar.vue';
 import LeftSidebar from '../components/LeftSidebar.vue';
 import RightSidebar from 'src/components/RightSidebar.vue';
-import LoadingOverlay from 'src/components/LoadingOverlay.vue';
+import LoadingOverlay from 'src/components/misc/LoadingOverlay.vue';
 
 import { useMainStore } from 'src/stores/main-store';
 

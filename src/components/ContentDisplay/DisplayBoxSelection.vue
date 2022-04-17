@@ -25,8 +25,8 @@
   setup
   lang="ts"
 >
-import { Page } from 'src/boot/app/page/page';
+import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';
 
-const page = inject<Page>('page');
+const page = inject<AppPage>('page');
 </script>

@@ -1,28 +1,17 @@
 <template>
-  <div class="display">
-    <loading-overlay />
-  </div>
+  <LoadingOverlay />
 </template>
 
 <script
   setup
   lang="ts"
 >
-import { Page } from 'src/boot/app/page/page';
-import LoadingOverlay from './LoadingOverlay.vue';
+import { AppPage } from 'src/boot/app/page/page';
+import LoadingOverlay from './misc/LoadingOverlay.vue';
 
 defineProps<{
-  page: Page;
+  page: AppPage;
 }>();
 </script>
 
-<style scoped>
-.display {
-  position: absolute;
-
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}
-</style>
+<style scoped></style>

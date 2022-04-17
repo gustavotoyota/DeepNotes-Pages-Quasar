@@ -1,4 +1,5 @@
-import { reactive, UnwrapNestedRefs } from 'vue';
+import { refProp } from 'src/boot/static/vue';
+import { UnwrapNestedRefs } from 'vue';
 import { AppPage } from '../page';
 
 export enum ElemType {
@@ -20,7 +21,7 @@ export class PageElem {
   type: ElemType;
   parentId: string | null;
 
-  react: UnwrapNestedRefs<IPageElemReact>;
+  react!: UnwrapNestedRefs<IPageElemReact>;
 
   constructor(
     page: AppPage,
@@ -34,7 +35,7 @@ export class PageElem {
     this.type = type;
     this.parentId = parentId;
 
-    this.react = reactive<IPageElemReact>({
+    refProp<IPageElemReact>(this, 'react', {
       active: false,
       selected: false,
 

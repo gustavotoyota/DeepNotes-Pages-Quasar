@@ -1,4 +1,5 @@
-import { reactive } from 'vue';
+import { refProp } from 'src/boot/static/vue';
+import { UnwrapNestedRefs } from 'vue';
 import { ElemType, PageElem } from '../elems/elems';
 import { AppPage } from '../page';
 
@@ -8,13 +9,15 @@ export class PageArrow extends PageElem {
   }
 }
 
+export interface IPageArrowsReact {
+  map: Record<string, PageArrow>;
+}
+
 export class PageArrows {
-  react: {
-    map: Record<string, PageArrow>;
-  };
+  react!: UnwrapNestedRefs<IPageArrowsReact>;
 
   constructor() {
-    this.react = reactive({
+    refProp<IPageArrowsReact>(this, 'react', {
       map: {},
     });
   }
