@@ -1,12 +1,12 @@
 import { reactive, UnwrapNestedRefs } from 'vue';
-import { Page } from '../page';
+import { AppPage } from '../page';
 
 export enum ElemType {
   NOTE = 'note',
   ARROW = 'arrow',
 }
 
-export interface IElemReact {
+export interface IPageElemReact {
   active: boolean;
   selected: boolean;
 
@@ -14,22 +14,27 @@ export interface IElemReact {
 }
 
 export class PageElem {
-  page: Page;
+  page: AppPage;
 
   id: string;
   type: ElemType;
   parentId: string | null;
 
-  react: UnwrapNestedRefs<IElemReact>;
+  react: UnwrapNestedRefs<IPageElemReact>;
 
-  constructor(page: Page, id: string, type: ElemType, parentId: string | null) {
+  constructor(
+    page: AppPage,
+    id: string,
+    type: ElemType,
+    parentId: string | null
+  ) {
     this.page = page;
 
     this.id = id;
     this.type = type;
     this.parentId = parentId;
 
-    this.react = reactive<IElemReact>({
+    this.react = reactive<IPageElemReact>({
       active: false,
       selected: false,
 
@@ -39,7 +44,7 @@ export class PageElem {
 }
 
 export class PageElems {
-  page: Page;
+  page: AppPage;
 
   get notes() {
     return this.page.notes;
@@ -48,7 +53,7 @@ export class PageElems {
     return this.page.arrows;
   }
 
-  constructor(page: Page) {
+  constructor(page: AppPage) {
     this.page = page;
   }
 }

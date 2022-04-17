@@ -1,12 +1,12 @@
 import { Vec2 } from 'src/boot/static/vec2';
-import { Page } from '../page';
+import { AppPage } from '../page';
 
 export class PagePanning {
-  page: Page;
+  page: AppPage;
 
   currentPos: Vec2 = new Vec2();
 
-  constructor(page: Page) {
+  constructor(page: AppPage) {
     this.page = page;
   }
 

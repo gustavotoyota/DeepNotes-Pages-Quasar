@@ -1,8 +1,8 @@
 import { Vec2 } from 'src/boot/static/vec2';
-import { Page } from '../page';
+import { AppPage } from '../page';
 
 export class PagePos {
-  page: Page;
+  page: AppPage;
 
   get rects() {
     return this.page.rects;
@@ -11,7 +11,7 @@ export class PagePos {
     return this.page.camera;
   }
 
-  constructor(page: Page) {
+  constructor(page: AppPage) {
     this.page = page;
   }
 

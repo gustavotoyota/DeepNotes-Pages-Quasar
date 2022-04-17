@@ -1,5 +1,5 @@
 import { Deferrer } from 'src/boot/static/defer';
-import { reactive, UnwrapNestedRefs } from 'vue';
+import { reactive } from 'vue';
 import { DeepNotesApp } from '../app';
 import { Factory } from '../composition-root';
 import { PageArrows } from './arrows/arrows';
@@ -9,29 +9,29 @@ import { PageElems } from './elems/elems';
 import { PageNotes } from './notes/notes';
 import { PageActiveElem } from './selection/active-elem';
 import { PageActiveRegion } from './selection/active-region';
+import { PageBoxSelection } from './selection/box-selection';
 import { PageSelection } from './selection/selection';
 import { PagePos } from './space/pos';
 import { PageRects } from './space/rects';
 import { PageSizes } from './space/sizes';
 
-export interface IPageReact {
-  name: string;
-}
-
-export class Page extends Deferrer {
+export class AppPage extends Deferrer {
   app: DeepNotesApp;
 
   id: string;
 
-  react: UnwrapNestedRefs<IPageReact>;
+  react: {
+    name: string;
+  };
 
   notes: PageNotes;
   arrows: PageArrows;
   elems: PageElems;
 
+  selection: PageSelection;
   activeElem: PageActiveElem;
   activeRegion: PageActiveRegion;
-  selection: PageSelection;
+  boxSelection: PageBoxSelection;
 
   camera: PageCamera;
   panning: PagePanning;
@@ -47,7 +47,7 @@ export class Page extends Deferrer {
 
     this.id = id;
 
-    this.react = reactive<IPageReact>({
+    this.react = reactive({
       name: '',
     });
 
@@ -55,9 +55,10 @@ export class Page extends Deferrer {
     this.arrows = factory.makeArrows();
     this.elems = factory.makeElems(this);
 
+    this.selection = factory.makeSelection(this);
     this.activeElem = factory.makeActiveElem(this);
     this.activeRegion = factory.makeActiveRegion(this);
-    this.selection = factory.makeSelection(this);
+    this.boxSelection = factory.makeBoxSelection(this);
 
     this.camera = factory.makeCamera(this);
     this.panning = factory.makePanning(this);

@@ -1,26 +1,24 @@
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
-import { computed, reactive, UnwrapNestedRefs, WritableComputedRef } from 'vue';
-import { Page } from '../page';
-
-export interface ICameraReact {
-  pos: IVec2;
-
-  _zoom: number;
-  zoom: WritableComputedRef<number>;
-
-  lockPos: boolean;
-  lockZoom: boolean;
-}
+import { computed, reactive } from 'vue';
+import { AppPage } from '../page';
 
 export class PageCamera {
-  page: Page;
+  page: AppPage;
 
-  react: UnwrapNestedRefs<ICameraReact>;
+  react: {
+    pos: IVec2;
 
-  constructor(page: Page) {
+    _zoom: number;
+    zoom: number;
+
+    lockPos: boolean;
+    lockZoom: boolean;
+  };
+
+  constructor(page: AppPage) {
     this.page = page;
 
-    this.react = reactive<ICameraReact>({
+    this.react = reactive({
       pos: new Vec2(),
 
       _zoom: 1,

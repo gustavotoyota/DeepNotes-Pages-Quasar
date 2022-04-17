@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia';
-import { Page } from 'src/boot/app/page/page';
+import { AppPage } from 'src/boot/app/page/page';
 
 export const usePageCache = defineStore('page-cache', {
   state: () => ({
-    cache: [] as Page[],
+    cache: [] as AppPage[],
   }),
 
   getters: {},

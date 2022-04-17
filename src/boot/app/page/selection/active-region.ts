@@ -1,9 +1,9 @@
-import { Page } from '../page';
+import { AppPage } from '../page';
 
 export class PageActiveRegion {
-  page: Page;
+  page: AppPage;
 
-  constructor(page: Page) {
+  constructor(page: AppPage) {
     this.page = page;
   }
 }

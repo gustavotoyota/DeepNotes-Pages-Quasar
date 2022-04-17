@@ -1,20 +1,18 @@
-import { reactive, UnwrapNestedRefs } from 'vue';
-import { Page } from '../page';
-
-export interface IPageActiveElemReact {
-  id: string | null;
-  type: string;
-}
+import { reactive } from 'vue';
+import { AppPage } from '../page';
 
 export class PageActiveElem {
-  page: Page;
+  page: AppPage;
 
-  react: UnwrapNestedRefs<IPageActiveElemReact>;
+  react: {
+    id: string | null;
+    type: string;
+  };
 
-  constructor(page: Page) {
+  constructor(page: AppPage) {
     this.page = page;
 
-    this.react = reactive<IPageActiveElemReact>({
+    this.react = reactive({
       id: null,
       type: 'page',
     });

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { Page } from 'src/boot/app/page/page';
+import { AppPage } from 'src/boot/app/page/page';
 import { usePageCache } from './page-cache';
 
 export interface IPageReference {
@@ -24,7 +24,7 @@ export const useMainStore = defineStore('main-store', {
       );
     },
 
-    currentPage(state): Page | null {
+    currentPage(state): AppPage | null {
       const pageCache = usePageCache();
 
       return (

@@ -1,14 +1,14 @@
 import { Vec2 } from 'src/boot/static/vec2';
-import { Page } from '../page';
+import { AppPage } from '../page';
 
 export class PageSizes {
-  page: Page;
+  page: AppPage;
 
   get camera() {
     return this.page.camera;
   }
 
-  constructor(page: Page) {
+  constructor(page: AppPage) {
     this.page = page;
   }
 
