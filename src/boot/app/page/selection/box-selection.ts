@@ -69,18 +69,6 @@ export class PageBoxSelection {
   private _pointerUp = function (this: PageBoxSelection, event: PointerEvent) {
     this.react.active = false;
 
-    const startPos = this.page.pos.displayToClient(this.react.startPos);
-    const endPos = this.page.pos.eventToClient(event);
-
-    const topLeft = new Vec2(
-      Math.min(startPos.x, endPos.x),
-      Math.min(startPos.y, endPos.y)
-    );
-    const bottomRight = new Vec2(
-      Math.max(startPos.x, endPos.x),
-      Math.max(startPos.y, endPos.y)
-    );
-
     // TO DO
   }.bind(this);
 }

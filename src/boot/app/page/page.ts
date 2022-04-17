@@ -18,6 +18,8 @@ import { PageSizes } from './space/sizes';
 
 export interface IAppPageReact {
   name: string;
+
+  loaded: boolean;
 }
 
 export class AppPage extends Deferrer {
@@ -50,7 +52,7 @@ export class AppPage extends Deferrer {
 
     this.id = id;
 
-    refProp<IAppPageReact>(this, 'react', { name: '' });
+    refProp<IAppPageReact>(this, 'react', { name: '', loaded: true });
 
     this.notes = factory.makeNotes();
     this.arrows = factory.makeArrows();

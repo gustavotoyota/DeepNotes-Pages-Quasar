@@ -38,6 +38,10 @@ const mainStore = useMainStore();
   user-select: none;
 }
 
+html {
+  overflow: hidden;
+}
+
 .q-tooltip {
   font-size: 12px;
 }
