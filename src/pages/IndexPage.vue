@@ -1,8 +1,10 @@
 <template>
-  <q-page> </q-page>
+  <MainContent />
 </template>
 
 <script
   setup
   lang="ts"
-></script>
+>
+import MainContent from 'src/components/MainContent.vue';
+</script>

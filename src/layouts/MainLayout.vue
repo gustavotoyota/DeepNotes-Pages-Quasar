@@ -1,5 +1,8 @@
 <template>
-  <q-layout view="lHr lpR fFf">
+  <q-layout
+    view="lHr lpR fFf"
+    v-show="mainStore.mounted"
+  >
     <main-toolbar />
 
     <left-sidebar />
@@ -9,6 +12,8 @@
       <router-view />
     </q-page-container>
   </q-layout>
+
+  <loading-overlay v-if="!mainStore.mounted" />
 </template>
 
 <script
@@ -18,6 +23,11 @@
 import MainToolbar from '../components/MainToolbar.vue';
 import LeftSidebar from '../components/LeftSidebar.vue';
 import RightSidebar from 'src/components/RightSidebar.vue';
+import LoadingOverlay from 'src/components/LoadingOverlay.vue';
+
+import { useMainStore } from 'src/stores/main-store';
+
+const mainStore = useMainStore();
 </script>
 
 <style>
@@ -49,6 +59,10 @@ import RightSidebar from 'src/components/RightSidebar.vue';
 .q-drawer .q-item {
   justify-content: normal !important;
   padding-left: 16px !important;
+}
+
+.q-page-container {
+  transition: padding-left 0.2s ease, padding-right 0.2s ease;
 }
 
 /* Scrollbars */

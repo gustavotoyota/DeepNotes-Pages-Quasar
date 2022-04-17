@@ -9,6 +9,8 @@ export interface IPageReference {
 
 export const useMainStore = defineStore('main-store', {
   state: () => ({
+    mounted: false,
+
     currentPageId: null,
 
     pathPages: [] as IPageReference[],
