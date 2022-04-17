@@ -1,19 +1,19 @@
 export function getValue(
   initialObj: any,
   path: string[],
-  defaultVal: any
+  defaultVal: () => any
 ): any {
   let obj = initialObj;
 
   for (const key of path.slice(0, -1)) {
     if (obj[key] == null) {
-      return defaultVal;
+      return defaultVal();
     }
 
     obj = obj[key];
   }
 
-  return obj[path.at(-1) ?? ''] ?? defaultVal;
+  return obj[path.at(-1) ?? ''] ?? defaultVal();
 }
 
 export function setValue(initialObj: any, path: string[], val: any): void {

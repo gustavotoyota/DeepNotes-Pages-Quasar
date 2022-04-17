@@ -11,7 +11,7 @@ import { ElemType, IElemReact, PageElem } from '../elems/elems';
 import { Page } from '../page';
 import { IRegionCollab } from '../regions';
 import { Quill } from 'quill';
-import { getValue, setValue } from 'src/boot/static/dyn-access';
+import { getValue, setValue } from 'src/boot/static/dynamic-access';
 
 export const INoteCollabSize = z
   .object({
@@ -77,15 +77,15 @@ export interface INoteSize {
   expanded: WritableComputedRef<string>;
   collapsed: WritableComputedRef<string>;
 }
+export type NoteSizeProp = keyof INoteSize;
 
 export interface INoteReact extends IElemReact {
+  parent: WritableComputedRef<PageNote | null>;
+
   editing: boolean;
   dragging: boolean;
 
   anchor: WritableComputedRef<IVec2>;
-
-  collabWidth: INoteSize;
-  domWidth: ComputedRef<string>;
 
   head: {
     enabled: WritableComputedRef<boolean>;
@@ -113,6 +113,13 @@ export interface INoteReact extends IElemReact {
     locallyCollapsed: boolean;
   };
 
+  sizeProp: ComputedRef<NoteSizeProp>;
+
+  collabWidth: INoteSize;
+  autoWidth: ComputedRef<boolean>;
+  domWidth: ComputedRef<string>;
+  targetWidth: ComputedRef<string>;
+
   topSection: ComputedRef<NoteSection>;
   bottomSection: ComputedRef<NoteSection>;
   numSections: ComputedRef<number>;
@@ -121,7 +128,7 @@ export interface INoteReact extends IElemReact {
 function mapValue<T>(
   initialObj: any,
   path: string[],
-  defaultVal: T
+  defaultVal: () => T
 ): WritableComputedRef<T> {
   return computed({
     get: () => getValue(initialObj, path, defaultVal),
@@ -134,6 +141,8 @@ export class PageNote extends PageElem {
 
   declare react: UnwrapNestedRefs<INoteReact>;
 
+  private _parent: PageNote | null = null;
+
   constructor(
     page: Page,
     id: string,
@@ -144,44 +153,56 @@ export class PageNote extends PageElem {
 
     this.collab = collab;
 
-    const mapCollab = (path: string[], defaultVal: any) => {
+    const mapCollab = (path: string[], defaultVal: () => any) => {
       return mapValue(this.collab, path, defaultVal);
     };
 
     const makeSectionSize = (section: NoteSection) => {
       return {
-        expanded: mapCollab([section, 'height', 'expanded'], 'auto'),
-        collapsed: mapCollab([section, 'height', 'collapsed'], 'auto'),
+        expanded: mapCollab([section, 'height', 'expanded'], () => 'auto'),
+        collapsed: mapCollab([section, 'height', 'collapsed'], () => 'auto'),
       };
     };
 
     const makeTextSection = (section: NoteTextSection) => {
       return {
-        enabled: mapCollab([section, 'enabled'], false),
+        enabled: mapCollab([section, 'enabled'], () => false),
         quill: null,
         collabHeight: makeSectionSize(section),
       };
     };
 
     const react: Omit<INoteReact, keyof IElemReact> = {
+      parent: computed({
+        get: () => {
+          return this._parent;
+        },
+        set: (val) => {
+          this._parent = val;
+        },
+      }),
+
       editing: false,
       dragging: false,
 
-      anchor: mapCollab(['anchor'], new Vec2(0.5, 0.5)),
+      anchor: mapCollab(['anchor'], () => new Vec2(0.5, 0.5)),
 
       head: makeTextSection('head'),
       body: makeTextSection('body'),
       container: {
-        enabled: mapCollab(['container', 'enabled'], false),
-        horizontal: mapCollab(['container', 'horizontal'], false),
-        spatial: mapCollab(['container', 'spatial'], false),
-        wrapChildren: mapCollab(['container', 'wrapChildren'], false),
-        stretchChildren: mapCollab(['container', 'stretchChildren'], true),
+        enabled: mapCollab(['container', 'enabled'], () => false),
+        horizontal: mapCollab(['container', 'horizontal'], () => false),
+        spatial: mapCollab(['container', 'spatial'], () => false),
+        wrapChildren: mapCollab(['container', 'wrapChildren'], () => false),
+        stretchChildren: mapCollab(
+          ['container', 'stretchChildren'],
+          () => true
+        ),
         collabHeight: makeSectionSize('container'),
       },
 
       collapsing: {
-        enabled: mapCollab(['collapsing', 'enabled'], false),
+        enabled: mapCollab(['collapsing', 'enabled'], () => false),
         collapsed: computed({
           get: () => {
             if (!this.react.collapsing.enabled) {
@@ -196,9 +217,41 @@ export class PageNote extends PageElem {
           },
           set: (val) => setValue(this.collab, ['collapsing', 'collapsed'], val),
         }),
-        localCollapsing: mapCollab(['collapsing', 'localCollapsing'], false),
+        localCollapsing: mapCollab(
+          ['collapsing', 'localCollapsing'],
+          () => false
+        ),
         locallyCollapsed: false,
       },
+
+      sizeProp: computed(() =>
+        this.react.collapsing.collapsed ? 'collapsed' : 'expanded'
+      ),
+
+      collabWidth: {
+        expanded: mapCollab(['width', 'expanded'], () => 'auto'),
+        collapsed: mapCollab(['width', 'collapsed'], () => 'auto'),
+      },
+      autoWidth: computed(() => {
+        if (
+          this.react.parent != null &&
+          !this.react.parent.react.autoWidth &&
+          !this.react.parent.react.container.horizontal &&
+          this.react.parent.react.container.stretchChildren
+        )
+          return false;
+
+        if (this.react.collabWidth[this.react.sizeProp].endsWith('px'))
+          return false;
+
+        return true;
+      }),
+      targetWidth: computed(() => {
+        return this.react.autoWidth ? 'auto' : '0px';
+      }),
+      domWidth: computed(() => {
+        return 'test';
+      }),
 
       topSection: computed(() => {
         if (this.react.head.enabled) {
@@ -238,14 +291,6 @@ export class PageNote extends PageElem {
         }
 
         return numSections;
-      }),
-
-      collabWidth: {
-        expanded: computed(() => this.collab.width?.expanded ?? ''),
-        collapsed: computed(() => this.collab.width?.collapsed ?? ''),
-      },
-      domWidth: computed(() => {
-        return 'asd';
       }),
     };
 

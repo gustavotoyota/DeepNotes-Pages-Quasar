@@ -4,6 +4,7 @@ import { PageArrows } from './page/arrows/arrows';
 import { PageCamera } from './page/camera/camera';
 import { PagePanning } from './page/camera/panning';
 import { PageElems } from './page/elems/elems';
+import { INoteCollab, PageNote } from './page/notes/note';
 import { PageNotes } from './page/notes/notes';
 import { Page } from './page/page';
 import { PageActiveElem } from './page/selection/active-elem';
@@ -26,6 +27,11 @@ export const container = new Container({
   panning: () => (page: Page) => new PagePanning(page),
 
   notes: () => () => new PageNotes(),
+  note:
+    () =>
+    (page: Page, id: string, parent: PageNote | null, collab: INoteCollab) =>
+      new PageNote(page, id, parent, collab),
+
   arrows: () => () => new PageArrows(),
   elems: () => (page: Page) => new PageElems(page),
 
