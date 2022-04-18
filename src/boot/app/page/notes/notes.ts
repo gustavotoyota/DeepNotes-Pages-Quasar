@@ -1,9 +1,9 @@
 import { refProp } from 'src/boot/static/vue';
-import { UnwrapNestedRefs } from 'vue';
+import { shallowReactive, ShallowReactive, UnwrapNestedRefs } from 'vue';
 import { PageNote } from './note';
 
 export interface INotesReact {
-  map: Record<string, PageNote>;
+  map: ShallowReactive<Record<string, PageNote>>;
 }
 
 export class PageNotes {
@@ -11,7 +11,23 @@ export class PageNotes {
 
   constructor() {
     refProp<INotesReact>(this, 'react', {
-      map: {},
+      map: shallowReactive({}),
     });
+  }
+
+  fromId(noteId: string): PageNote | null {
+    return this.react.map[noteId] ?? null;
+  }
+  toId(note: PageNote): string {
+    return note.id;
+  }
+
+  fromIds(noteIds: string[]): PageNote[] {
+    return noteIds
+      .map((noteId) => this.react.map[noteId])
+      .filter((note) => note != null);
+  }
+  toIds(notes: PageNote[]): string[] {
+    return notes.map((note) => note.id);
   }
 }

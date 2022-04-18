@@ -7,16 +7,16 @@ import { INoteCollab } from './notes/note';
 import { AppPage, IPageCollab } from './page';
 
 export interface IAppCollabStore {
-  page: Partial<IPageCollab>;
+  page: IPageCollab;
   notes: { [key: string]: INoteCollab };
   arrows: { [key: string]: IArrowCollab };
 }
 
 export class PageCollab {
-  page: AppPage;
+  readonly page: AppPage;
 
-  store: IAppCollabStore;
-  doc: Y.Doc;
+  readonly store: IAppCollabStore;
+  readonly doc: Y.Doc;
 
   indexedDbProvider!: IndexeddbPersistence;
   websocketProvider!: WebsocketProvider;
@@ -30,7 +30,7 @@ export class PageCollab {
         notes: {},
         arrows: {},
       })
-    );
+    ) as IAppCollabStore;
 
     this.doc = getYjsValue(this.store) as Y.Doc;
   }

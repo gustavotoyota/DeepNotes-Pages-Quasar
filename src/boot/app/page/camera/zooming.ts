@@ -2,7 +2,7 @@ import { hasVertScrollbar } from 'src/boot/static/dom';
 import { AppPage } from '../page';
 
 export class PageZooming {
-  page: AppPage;
+  readonly page: AppPage;
 
   constructor(page: AppPage) {
     this.page = page;

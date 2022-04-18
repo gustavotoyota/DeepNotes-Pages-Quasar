@@ -123,6 +123,9 @@ export interface INoteReact extends IPageElemReact {
   topSection: ComputedRef<NoteSection>;
   bottomSection: ComputedRef<NoteSection>;
   numSections: ComputedRef<number>;
+
+  noteIds: ComputedRef<string[]>;
+  arrowIds: ComputedRef<string[]>;
 }
 
 function mapValue<T>(
@@ -292,8 +295,17 @@ export class PageNote extends PageElem {
 
         return numSections;
       }),
+
+      noteIds: computed(() => this.collab.noteIds ?? []),
+      arrowIds: computed(() => this.collab.arrowIds ?? []),
     };
 
     Object.assign(this.react, react);
+  }
+
+  bringToTop() {
+    if (this.collab.zIndex === this.page.react.collab.nextZIndex - 1) return;
+
+    this.collab.zIndex = this.page.react.collab.nextZIndex++;
   }
 }

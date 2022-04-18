@@ -6,9 +6,6 @@
     >
       <q-btn
         round
-        :icon="
-          uiStore.leftSidebarMini ? 'mdi-chevron-right' : 'mdi-chevron-left'
-        "
         style="
           border-top-left-radius: 0;
           border-bottom-left-radius: 0;
@@ -17,7 +14,14 @@
         "
         class="bg-grey-9"
         @click="uiStore.toggleLeftSidebar()"
-      />
+      >
+        <q-icon
+          style="position: relative; left: -2px"
+          :name="
+            uiStore.leftSidebarMini ? 'mdi-chevron-right' : 'mdi-chevron-left'
+          "
+        />
+      </q-btn>
 
       <div style="flex: 1; width: 0; display: flex">
         <SpaceGap style="width: 8px" />
@@ -128,9 +132,6 @@
       <q-btn
         dense
         round
-        :icon="
-          uiStore.rightSidebarMini ? 'mdi-chevron-left' : 'mdi-chevron-right'
-        "
         style="
           border-top-right-radius: 0;
           border-bottom-right-radius: 0;
@@ -139,7 +140,14 @@
         "
         class="bg-grey-9"
         @click="uiStore.toggleRightSidebar()"
-      />
+      >
+        <q-icon
+          :name="
+            uiStore.rightSidebarMini ? 'mdi-chevron-left' : 'mdi-chevron-right'
+          "
+          style="position: relative; right: -2px"
+        />
+      </q-btn>
     </q-toolbar>
   </q-header>
 </template>

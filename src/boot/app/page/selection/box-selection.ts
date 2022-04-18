@@ -14,7 +14,7 @@ export interface IPageBoxSelectionReact {
 export class PageBoxSelection {
   static readonly MIN_DISTANCE = 5;
 
-  page: AppPage;
+  readonly page: AppPage;
 
   react!: UnwrapNestedRefs<IPageBoxSelectionReact>;
 

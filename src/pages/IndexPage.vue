@@ -12,7 +12,7 @@
   lang="ts"
 >
 import { DeepNotesApp } from 'src/boot/app/app';
-import { factory } from 'src/boot/app/composition-root';
+import { factory } from 'src/boot/static/composition-root';
 import { AppPage } from 'src/boot/app/page/page';
 import ContentDisplay from 'src/components/ContentDisplay.vue';
 import { inject, onMounted, provide, shallowRef } from 'vue';

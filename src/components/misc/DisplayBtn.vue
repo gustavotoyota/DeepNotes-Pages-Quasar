@@ -1,10 +1,9 @@
 <template>
   <q-btn
-    class="display-button"
+    class="display-btn"
     :icon="icon"
     color="grey-9"
     dense
-    style=""
   />
 </template>
 
@@ -18,7 +17,7 @@ defineProps<{
 </script>
 
 <style scoped>
-.display-button {
+.display-btn {
   min-width: 36px;
   height: 36px;
 

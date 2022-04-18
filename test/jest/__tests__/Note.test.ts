@@ -1,5 +1,5 @@
 import { reactive } from 'vue';
-import { factory } from '../../../src/boot/app/composition-root';
+import { factory } from '../../../src/boot/static/composition-root';
 import { PageNote } from './../../../src/boot/app/page/notes/note';
 
 describe('targetWidth', () => {

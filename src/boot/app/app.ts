@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers';
-import { Factory, factory } from './composition-root';
+import { Factory, factory } from '../static/composition-root';
 import 'src/boot/static/types';
 import { AppSerialization } from './serialization';
 

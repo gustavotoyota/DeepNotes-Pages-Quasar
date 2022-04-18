@@ -2,7 +2,7 @@ import { Vec2 } from 'src/boot/static/vec2';
 import { AppPage } from '../page';
 
 export class PageSizes {
-  page: AppPage;
+  readonly page: AppPage;
 
   get camera() {
     return this.page.camera;

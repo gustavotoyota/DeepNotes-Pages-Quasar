@@ -15,7 +15,7 @@ export interface IPageElemReact {
 }
 
 export class PageElem {
-  page: AppPage;
+  readonly page: AppPage;
 
   id: string;
   type: ElemType;

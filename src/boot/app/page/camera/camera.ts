@@ -14,7 +14,7 @@ export interface IPageCameraReact {
 }
 
 export class PageCamera {
-  page: AppPage;
+  readonly page: AppPage;
 
   react!: UnwrapNestedRefs<IPageCameraReact>;
 

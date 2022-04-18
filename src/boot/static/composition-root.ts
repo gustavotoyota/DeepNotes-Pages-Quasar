@@ -1,21 +1,22 @@
-import { Container } from '../static/simple-di';
-import { DeepNotesApp } from './app';
-import { PageArrows } from './page/arrows/arrows';
-import { PageCamera } from './page/camera/camera';
-import { PagePanning } from './page/camera/panning';
-import { PageZooming } from './page/camera/zooming';
-import { PageElems } from './page/elems/elems';
-import { INoteCollab, PageNote } from './page/notes/note';
-import { PageNotes } from './page/notes/notes';
-import { AppPage } from './page/page';
-import { PageActiveElem } from './page/selection/active-elem';
-import { PageActiveRegion } from './page/selection/active-region';
-import { PageBoxSelection } from './page/selection/box-selection';
-import { PageSelection } from './page/selection/selection';
-import { PagePos } from './page/space/pos';
-import { PageRects } from './page/space/rects';
-import { PageSizes } from './page/space/sizes';
-import { AppSerialization } from './serialization';
+import { Container } from './simple-di';
+import { DeepNotesApp } from '../app/app';
+import { PageArrows } from '../app/page/arrows/arrows';
+import { PageCamera } from '../app/page/camera/camera';
+import { PagePanning } from '../app/page/camera/panning';
+import { PageZooming } from '../app/page/camera/zooming';
+import { PageElems } from '../app/page/elems/elems';
+import { INoteCollab, PageNote } from '../app/page/notes/note';
+import { PageNotes } from '../app/page/notes/notes';
+import { AppPage } from '../app/page/page';
+import { PageActiveElem } from '../app/page/selection/active-elem';
+import { PageActiveRegion } from '../app/page/selection/active-region';
+import { PageBoxSelection } from '../app/page/selection/box-selection';
+import { PageSelection } from '../app/page/selection/selection';
+import { PagePos } from '../app/page/space/pos';
+import { PageRects } from '../app/page/space/rects';
+import { PageSizes } from '../app/page/space/sizes';
+import { AppSerialization } from '../app/serialization';
+import { PageCollab } from '../app/page/collab';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
@@ -24,6 +25,8 @@ export const container = new Container({
 
   page: (factory: any) => (app: DeepNotesApp, id: string) =>
     new AppPage(factory, app, id),
+
+  collab: () => (page: AppPage) => new PageCollab(page),
 
   camera: () => (page: AppPage) => new PageCamera(page),
   panning: () => (page: AppPage) => new PagePanning(page),

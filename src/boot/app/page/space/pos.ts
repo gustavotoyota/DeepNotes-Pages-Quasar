@@ -2,7 +2,7 @@ import { Vec2 } from 'src/boot/static/vec2';
 import { AppPage } from '../page';
 
 export class PagePos {
-  page: AppPage;
+  readonly page: AppPage;
 
   get rects() {
     return this.page.rects;

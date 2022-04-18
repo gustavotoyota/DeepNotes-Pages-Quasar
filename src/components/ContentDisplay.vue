@@ -5,7 +5,7 @@
   >
     <DisplayBackground />
     <DisplayBoxSelection />
-    <DisplayButtons />
+    <DisplayBtns />
 
     <LoadingOverlay v-if="!page.react.loaded" />
   </div>
@@ -20,7 +20,7 @@ import { provide } from 'vue';
 import LoadingOverlay from './misc/LoadingOverlay.vue';
 import DisplayBackground from './ContentDisplay/DisplayBackground.vue';
 import DisplayBoxSelection from './ContentDisplay/DisplayBoxSelection.vue';
-import DisplayButtons from './ContentDisplay/DisplayButtons.vue';
+import DisplayBtns from './ContentDisplay/DisplayBtns.vue';
 
 const props = defineProps<{
   page: AppPage;

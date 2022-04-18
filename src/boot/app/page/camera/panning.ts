@@ -2,7 +2,7 @@ import { Vec2 } from 'src/boot/static/vec2';
 import { AppPage } from '../page';
 
 export class PagePanning {
-  page: AppPage;
+  readonly page: AppPage;
 
   currentPos: Vec2 = new Vec2();
 
