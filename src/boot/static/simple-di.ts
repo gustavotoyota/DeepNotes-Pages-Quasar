@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { createDeferrer } from './defer';
 
 export type Factory<Dependency> = (...args: any) => Dependency;

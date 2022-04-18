@@ -4,14 +4,14 @@ import { ElemType, PageElem } from '../elems/elems';
 import { AppPage } from '../page';
 
 export const IArrowEndpoint = z.object({
-  arrowId: z.string().nullable().default(null),
-  pos: IVec2.default({ x: 0, y: 0 }),
+  noteId: z.string().optional(),
+  pos: IVec2.optional(),
 });
 export type IArrowEndpoint = z.infer<typeof IArrowEndpoint>;
 
 export const IArrowCollab = z.object({
-  start: IArrowEndpoint.default({}),
-  end: IArrowEndpoint.default({}),
+  start: IArrowEndpoint,
+  end: IArrowEndpoint,
 });
 export type IArrowCollab = z.infer<typeof IArrowCollab>;
 

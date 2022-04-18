@@ -23,7 +23,7 @@ export type INoteCollabSection = z.infer<typeof INoteCollabSection>;
 
 export const INoteCollabTextSection = INoteCollabSection.extend({
   enabled: z.boolean().optional(),
-  text: z.any() as z.ZodType<SyncedText>,
+  value: z.any() as z.ZodType<SyncedText>,
   wrap: z.boolean().optional(),
 });
 export type INoteCollabTextSection = z.infer<typeof INoteCollabTextSection>;
@@ -74,6 +74,15 @@ export interface INoteSize {
 }
 export type NoteSizeProp = keyof INoteSize;
 
+export interface INoteSectionReact {
+  enabled: WritableComputedRef<boolean>;
+  collabHeight: INoteSize;
+}
+
+export interface INoteTextSectionReact extends INoteSectionReact {
+  quill: Quill | null;
+}
+
 export interface INoteReact extends IRegionReact {
   parent: WritableComputedRef<PageNote | null>;
 
@@ -82,23 +91,14 @@ export interface INoteReact extends IRegionReact {
 
   anchor: WritableComputedRef<IVec2>;
 
-  head: {
-    enabled: WritableComputedRef<boolean>;
-    quill: Quill | null;
-    collabHeight: INoteSize;
-  };
-  body: {
-    enabled: WritableComputedRef<boolean>;
-    quill: Quill | null;
-    collabHeight: INoteSize;
-  };
-  container: {
-    enabled: WritableComputedRef<boolean>;
+  head: INoteTextSectionReact;
+  body: INoteTextSectionReact;
+
+  container: INoteSectionReact & {
     horizontal: WritableComputedRef<boolean>;
     spatial: WritableComputedRef<boolean>;
     wrapChildren: WritableComputedRef<boolean>;
     stretchChildren: WritableComputedRef<boolean>;
-    collabHeight: INoteSize;
   };
 
   collapsing: {

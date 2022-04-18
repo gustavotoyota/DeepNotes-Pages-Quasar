@@ -3,7 +3,6 @@ export class Deferred<T extends object> {
   value: T = null as any;
 
   constructor() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this.placeholder = new Proxy(this, {
       apply(target, thisArg, args) {
