@@ -5,6 +5,9 @@ import { INoteCollab } from './page/notes/note';
 import { Op } from 'src/boot/static/types';
 import { IRegionCollab } from './page/regions/region';
 import { cloneDeep, pull } from 'lodash';
+import { createText } from '../static/synced-store';
+import { v4 } from 'uuid';
+import { IArrowCollab } from './page/arrows/arrow';
 
 // Arrow
 
@@ -74,10 +77,6 @@ export class AppSerialization {
   }
 
   serialize(container: IRegionCollab): ISerialRegion {
-    if (this.app.react.page == null) {
-      return {};
-    }
-
     const serialRegion: ISerialRegion = {};
 
     // Serialize notes
@@ -150,5 +149,124 @@ export class AppSerialization {
     }
 
     return serialRegion;
+  }
+
+  private _deserializeAux(serialRegion: ISerialRegion): IRegionCollab {
+    const noteMap = new Map<number, string>();
+
+    // Deserialize notes
+
+    let noteIds;
+
+    if (serialRegion.notes != null) {
+      noteIds = [];
+
+      for (let i = 0; i < serialRegion.notes.length; i++) {
+        const serialNote = serialRegion.notes[i];
+
+        const noteCollab = {} as Partial<INoteCollab>;
+
+        // Head and body
+
+        noteCollab.head = {
+          enabled: serialNote.head.enabled,
+          value: createText(serialNote.head),
+          wrap: serialNote.head.wrap,
+        };
+        noteCollab.body = {
+          enabled: serialNote.body.enabled,
+          value: createText(serialNote.body),
+          wrap: serialNote.body.wrap,
+        };
+
+        // Rest of the keys
+
+        const collabKeys = Object.keys(serialNote);
+        pull(collabKeys, 'head', 'body', 'notes', 'arrows');
+
+        for (const collabKey of collabKeys) {
+          // @ts-ignore
+          noteCollab[collabKey] = cloneDeep(serialNote[collabKey]);
+        }
+
+        noteCollab.zIndex = this.app.react.page.react.collab.nextZIndex++;
+
+        // Children
+
+        const deserializedChild = this._deserializeAux(serialNote);
+
+        noteCollab.noteIds = deserializedChild.noteIds;
+        noteCollab.arrowIds = deserializedChild.arrowIds;
+
+        // Add note data to the store
+
+        const noteId = v4();
+
+        this.app.react.page.notes.react.collab[noteId] =
+          noteCollab as INoteCollab;
+
+        noteMap.set(i, noteId);
+
+        noteIds.push(noteId);
+      }
+    }
+
+    // Deserialize arrows
+
+    let arrowIds;
+
+    if (serialRegion.arrows != null) {
+      arrowIds = [];
+
+      for (const serialArrow of serialRegion.arrows) {
+        const arrowCollab: IArrowCollab = {
+          start: {
+            noteId: noteMap.get(serialArrow.start.noteIndex ?? -1),
+            pos: serialArrow.start.pos,
+          },
+          end: {
+            noteId: noteMap.get(serialArrow.end.noteIndex ?? -1),
+            pos: serialArrow.end.pos,
+          },
+        };
+
+        const arrowId = v4();
+
+        this.app.react.page.arrows.react.collab[arrowId] =
+          arrowCollab as IArrowCollab;
+
+        arrowIds.push(arrowId);
+      }
+    }
+
+    return { noteIds, arrowIds };
+  }
+  deserialize(
+    serialRegion: ISerialRegion,
+    destRegion: IRegionCollab,
+    destIndex?: number | null
+  ): IRegionCollab {
+    serialRegion = ISerialRegion.parse(serialRegion);
+
+    let result: IRegionCollab = { noteIds: [], arrowIds: [] };
+
+    this.app.react.page.collab.doc.transact(() => {
+      result = this._deserializeAux(serialRegion);
+
+      if (result.noteIds != null) {
+        destRegion.noteIds ??= [];
+
+        destIndex = destIndex ?? destRegion.noteIds.length;
+        destRegion.noteIds.splice(destIndex, 0, ...result.noteIds);
+      }
+
+      if (result.arrowIds != null) {
+        destRegion.arrowIds ??= [];
+
+        destRegion.arrowIds.push(...result.arrowIds);
+      }
+    });
+
+    return result;
   }
 }

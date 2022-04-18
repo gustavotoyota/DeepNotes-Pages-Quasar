@@ -103,8 +103,8 @@ export class AppPage extends PageRegion {
 
     this.collab = factory.makeCollab(this);
 
-    this.notes = factory.makeNotes();
-    this.arrows = factory.makeArrows();
+    this.notes = factory.makeNotes(this);
+    this.arrows = factory.makeArrows(this);
     this.elems = factory.makeElems(this);
 
     this.selection = factory.makeSelection(this);

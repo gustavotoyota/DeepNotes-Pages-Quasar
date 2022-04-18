@@ -1,17 +1,32 @@
 import { refProp } from 'src/boot/static/vue';
-import { shallowReactive, ShallowReactive, UnwrapRef } from 'vue';
-import { PageArrow } from './arrow';
+import {
+  computed,
+  ComputedRef,
+  shallowReactive,
+  ShallowReactive,
+  UnwrapRef,
+} from 'vue';
+import { AppPage } from '../page';
+import { IArrowCollab, PageArrow } from './arrow';
 
 export interface IArrowsReact {
   map: ShallowReactive<Record<string, PageArrow>>;
+
+  collab: ComputedRef<Record<string, IArrowCollab>>;
 }
 
 export class PageArrows {
+  page: AppPage;
+
   react: UnwrapRef<IArrowsReact>;
 
-  constructor() {
+  constructor(page: AppPage) {
+    this.page = page;
+
     this.react = refProp<IArrowsReact>(this, 'react', {
       map: shallowReactive({}),
+
+      collab: computed(() => this.page.collab.store.arrows),
     });
   }
 

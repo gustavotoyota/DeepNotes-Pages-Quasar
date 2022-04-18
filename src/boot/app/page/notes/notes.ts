@@ -1,17 +1,32 @@
 import { refProp } from 'src/boot/static/vue';
-import { shallowReactive, ShallowReactive, UnwrapRef } from 'vue';
-import { PageNote } from './note';
+import {
+  computed,
+  ComputedRef,
+  shallowReactive,
+  ShallowReactive,
+  UnwrapRef,
+} from 'vue';
+import { AppPage } from '../page';
+import { INoteCollab, PageNote } from './note';
 
 export interface INotesReact {
   map: ShallowReactive<Record<string, PageNote>>;
+
+  collab: ComputedRef<Record<string, INoteCollab>>;
 }
 
 export class PageNotes {
+  page: AppPage;
+
   react: UnwrapRef<INotesReact>;
 
-  constructor() {
+  constructor(page: AppPage) {
+    this.page = page;
+
     this.react = refProp<INotesReact>(this, 'react', {
       map: shallowReactive({}),
+
+      collab: computed(() => this.page.collab.store.notes),
     });
   }
 

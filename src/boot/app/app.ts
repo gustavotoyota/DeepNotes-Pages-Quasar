@@ -16,7 +16,7 @@ declare module '@vue/runtime-core' {
 export interface IAppReact {
   pageId: string | null;
 
-  page: ComputedRef<AppPage | null>;
+  page: ComputedRef<AppPage>;
 }
 
 export class DeepNotesApp {

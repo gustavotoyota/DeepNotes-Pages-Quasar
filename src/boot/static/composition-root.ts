@@ -35,13 +35,13 @@ export const container = new Container({
 
   elems: () => (page: AppPage) => new PageElems(page),
 
-  notes: () => () => new PageNotes(),
+  notes: () => (page: AppPage) => new PageNotes(page),
   note:
     () =>
     (page: AppPage, id: string, parentId: string | null, collab: INoteCollab) =>
       new PageNote(page, id, parentId, collab),
 
-  arrows: () => () => new PageArrows(),
+  arrows: () => (page: AppPage) => new PageArrows(page),
   arrow:
     () =>
     (
