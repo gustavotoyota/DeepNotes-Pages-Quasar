@@ -32,7 +32,7 @@ export const INoteCollab = IRegionCollab.extend({
   link: z.string().uuid().or(z.string().url()).nullable().optional(),
 
   anchor: IVec2.optional(),
-  pos: IVec2,
+  pos: IVec2.optional(),
 
   width: INoteCollabSize,
 
@@ -90,6 +90,7 @@ export interface INoteReact extends IRegionReact {
   dragging: boolean;
 
   anchor: WritableComputedRef<IVec2>;
+  pos: WritableComputedRef<IVec2>;
 
   head: INoteTextSectionReact;
   body: INoteTextSectionReact;
@@ -170,6 +171,7 @@ export class PageNote extends PageRegion {
       dragging: false,
 
       anchor: mapCollab(['anchor'], () => new Vec2(0.5, 0.5)),
+      pos: mapCollab(['pos'], () => new Vec2(0, 0)),
 
       head: makeTextSection('head', false),
       body: makeTextSection('body', true),

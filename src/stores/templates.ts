@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia';
+import { ISerialNote } from 'src/boot/app/serialization';
 import { Vec2 } from 'src/boot/static/vec2';
 
 export interface ITemplate {
   id: string;
   name: string;
   visible: boolean;
-  //data: ISerialNote
+  data: ISerialNote;
 }
 
 export const useTemplates = defineStore('templates', {
