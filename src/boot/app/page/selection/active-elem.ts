@@ -1,5 +1,5 @@
 import { refProp } from 'src/boot/static/vue';
-import { computed, ComputedRef, UnwrapNestedRefs } from 'vue';
+import { computed, ComputedRef, UnwrapRef } from 'vue';
 import { ElemType, PageElem } from '../elems/elems';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
@@ -15,12 +15,12 @@ export interface IPageActiveElemReact {
 export class PageActiveElem {
   readonly page: AppPage;
 
-  react!: UnwrapNestedRefs<IPageActiveElemReact>;
+  react: UnwrapRef<IPageActiveElemReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    refProp<IPageActiveElemReact>(this, 'react', {
+    this.react = refProp<IPageActiveElemReact>(this, 'react', {
       id: null,
       type: null,
 

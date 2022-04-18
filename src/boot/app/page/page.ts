@@ -1,16 +1,14 @@
-import { Deferrer } from 'src/boot/static/defer';
 import { refProp } from 'src/boot/static/vue';
-import { computed, ComputedRef, UnwrapNestedRefs } from 'vue';
+import { computed, ComputedRef, UnwrapRef } from 'vue';
 import { z } from 'zod';
 import { DeepNotesApp } from '../app';
 import { Factory } from '../../static/composition-root';
-import { PageArrow, PageArrows } from './arrows/arrows';
+import { PageArrows } from './arrows/arrows';
 import { PageCamera } from './camera/camera';
 import { PagePanning } from './camera/panning';
 import { PageZooming } from './camera/zooming';
-import { PageElems } from './elems/elems';
+import { ElemType, IElemReact, PageElem, PageElems } from './elems/elems';
 import { PageNotes } from './notes/notes';
-import { IRegionCollab } from './regions';
 import { PageActiveElem } from './selection/active-elem';
 import { PageActiveRegion } from './selection/active-region';
 import { PageBoxSelection } from './selection/box-selection';
@@ -19,7 +17,7 @@ import { PagePos } from './space/pos';
 import { PageRects } from './space/rects';
 import { PageSizes } from './space/sizes';
 import { PageCollab } from './collab';
-import { PageNote } from './notes/note';
+import { IRegionCollab, IRegionReact } from './regions/region';
 
 export const IPageCollab = IRegionCollab.extend({
   name: z.string(),
@@ -28,23 +26,20 @@ export const IPageCollab = IRegionCollab.extend({
 });
 export type IPageCollab = z.infer<typeof IPageCollab>;
 
-export interface IAppPageReact {
+export interface IAppPageReact extends IElemReact, IRegionReact {
   name: string;
 
   loaded: boolean;
 
   collab: ComputedRef<IPageCollab>;
-
-  notes: ComputedRef<PageNote[]>;
-  arrows: ComputedRef<PageArrow[]>;
 }
 
-export class AppPage extends Deferrer {
+export class AppPage extends PageElem {
   readonly app: DeepNotesApp;
 
   readonly id: string;
 
-  react!: UnwrapNestedRefs<IAppPageReact>;
+  declare react: UnwrapRef<IAppPageReact>;
 
   readonly collab: PageCollab;
 
@@ -62,29 +57,33 @@ export class AppPage extends Deferrer {
   readonly zooming: PageZooming;
 
   readonly pos: PagePos;
-  readonly rects!: PageRects;
+  readonly rects: PageRects;
   readonly sizes: PageSizes;
 
   constructor(factory: Factory, app: DeepNotesApp, id: string) {
-    super();
+    super(null as any, id, ElemType.NOTE, null);
 
     this.app = app;
 
     this.id = id;
 
-    refProp<IAppPageReact>(this, 'react', {
+    this.react = refProp<IAppPageReact>(this, 'react', {
       name: '',
 
-      loaded: true,
+      active: false,
+      selected: false,
+
+      index: -1,
+
+      loaded: false,
 
       collab: computed(() => this.collab.store.page),
 
-      notes: computed(() =>
-        this.notes.fromIds(this.react.collab.noteIds ?? [])
-      ),
-      arrows: computed(() =>
-        this.arrows.fromIds(this.react.collab.arrowIds ?? [])
-      ),
+      noteIds: computed(() => this.react.collab.noteIds ?? []),
+      arrowIds: computed(() => this.react.collab.arrowIds ?? []),
+
+      notes: computed(() => this.notes.fromIds(this.react.noteIds)),
+      arrows: computed(() => this.arrows.fromIds(this.react.arrowIds)),
     });
 
     this.collab = factory.makeCollab(this);

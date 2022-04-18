@@ -1,17 +1,12 @@
 import { SyncedText } from '@syncedstore/core';
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
-import {
-  computed,
-  ComputedRef,
-  UnwrapNestedRefs,
-  WritableComputedRef,
-} from 'vue';
+import { computed, ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
 import { z } from 'zod';
-import { ElemType, IPageElemReact, PageElem } from '../elems/elems';
+import { ElemType, IElemReact, PageElem } from '../elems/elems';
 import { AppPage } from '../page';
-import { IRegionCollab } from '../regions';
 import { Quill } from 'quill';
-import { getValue, setValue } from 'src/boot/static/dynamic-access';
+import { getDeepValue, setDeepValue } from 'src/boot/static/deep-access';
+import { IRegionCollab, IRegionReact } from '../regions/region';
 
 export const INoteCollabSize = z
   .object({
@@ -79,7 +74,7 @@ export interface INoteSize {
 }
 export type NoteSizeProp = keyof INoteSize;
 
-export interface INoteReact extends IPageElemReact {
+export interface INoteReact extends IElemReact, IRegionReact {
   parent: WritableComputedRef<PageNote | null>;
 
   editing: boolean;
@@ -123,26 +118,12 @@ export interface INoteReact extends IPageElemReact {
   topSection: ComputedRef<NoteSection>;
   bottomSection: ComputedRef<NoteSection>;
   numSections: ComputedRef<number>;
-
-  noteIds: ComputedRef<string[]>;
-  arrowIds: ComputedRef<string[]>;
-}
-
-function mapValue<T>(
-  initialObj: any,
-  path: string[],
-  defaultVal: () => T
-): WritableComputedRef<T> {
-  return computed({
-    get: () => getValue(initialObj, path, defaultVal),
-    set: (val: any) => setValue(initialObj, path, val),
-  });
 }
 
 export class PageNote extends PageElem {
   collab: INoteCollab;
 
-  declare react: UnwrapNestedRefs<INoteReact>;
+  declare react: UnwrapRef<INoteReact>;
 
   private _parent: PageNote | null = null;
 
@@ -157,7 +138,7 @@ export class PageNote extends PageElem {
     this.collab = collab;
 
     const mapCollab = (path: string[], defaultVal: () => any) => {
-      return mapValue(this.collab, path, defaultVal);
+      return mapDeepValue(this.collab, path, defaultVal);
     };
 
     const makeSectionSize = (section: NoteSection) => {
@@ -167,15 +148,15 @@ export class PageNote extends PageElem {
       };
     };
 
-    const makeTextSection = (section: NoteTextSection) => {
+    const makeTextSection = (section: NoteTextSection, defaultVal: boolean) => {
       return {
-        enabled: mapCollab([section, 'enabled'], () => false),
+        enabled: mapCollab([section, 'enabled'], () => defaultVal),
         quill: null,
         collabHeight: makeSectionSize(section),
       };
     };
 
-    const react: Omit<INoteReact, keyof IPageElemReact> = {
+    const react: Omit<INoteReact, keyof IElemReact> = {
       parent: computed({
         get: () => {
           return this._parent;
@@ -190,8 +171,8 @@ export class PageNote extends PageElem {
 
       anchor: mapCollab(['anchor'], () => new Vec2(0.5, 0.5)),
 
-      head: makeTextSection('head'),
-      body: makeTextSection('body'),
+      head: makeTextSection('head', false),
+      body: makeTextSection('body', true),
       container: {
         enabled: mapCollab(['container', 'enabled'], () => false),
         horizontal: mapCollab(['container', 'horizontal'], () => false),
@@ -218,7 +199,8 @@ export class PageNote extends PageElem {
 
             return this.collab.collapsing?.collapsed ?? false;
           },
-          set: (val) => setValue(this.collab, ['collapsing', 'collapsed'], val),
+          set: (val) =>
+            setDeepValue(this.collab, ['collapsing', 'collapsed'], val),
         }),
         localCollapsing: mapCollab(
           ['collapsing', 'localCollapsing'],
@@ -236,6 +218,8 @@ export class PageNote extends PageElem {
         collapsed: mapCollab(['width', 'collapsed'], () => 'auto'),
       },
       autoWidth: computed(() => {
+        // Returns false if has fixed width parent with stretched vertical children
+
         if (
           this.react.parent != null &&
           !this.react.parent.react.autoWidth &&
@@ -243,6 +227,8 @@ export class PageNote extends PageElem {
           this.react.parent.react.container.stretchChildren
         )
           return false;
+
+        // Returns false if has fixed width itself
 
         if (this.react.collabWidth[this.react.sizeProp].endsWith('px'))
           return false;
@@ -298,6 +284,9 @@ export class PageNote extends PageElem {
 
       noteIds: computed(() => this.collab.noteIds ?? []),
       arrowIds: computed(() => this.collab.arrowIds ?? []),
+
+      notes: computed(() => this.page.notes.fromIds(this.react.noteIds)),
+      arrows: computed(() => this.page.arrows.fromIds(this.react.arrowIds)),
     };
 
     Object.assign(this.react, react);
@@ -308,4 +297,15 @@ export class PageNote extends PageElem {
 
     this.collab.zIndex = this.page.react.collab.nextZIndex++;
   }
+}
+
+function mapDeepValue<T>(
+  initialObj: any,
+  path: string[],
+  defaultVal: () => T
+): WritableComputedRef<T> {
+  return computed({
+    get: () => getDeepValue(initialObj, path, defaultVal),
+    set: (val: any) => setDeepValue(initialObj, path, val),
+  });
 }

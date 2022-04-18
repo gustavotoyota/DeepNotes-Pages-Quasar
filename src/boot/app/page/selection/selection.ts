@@ -1,6 +1,6 @@
 import { refProp } from 'src/boot/static/vue';
-import { computed, ComputedRef, UnwrapNestedRefs } from 'vue';
-import { PageArrow } from '../arrows/arrows';
+import { computed, ComputedRef, UnwrapRef } from 'vue';
+import { PageArrow } from '../arrows/arrow';
 import { PageElem } from '../elems/elems';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
@@ -20,12 +20,12 @@ export interface IPageSelectionReact {
 export class PageSelection {
   readonly page: AppPage;
 
-  react!: UnwrapNestedRefs<IPageSelectionReact>;
+  react: UnwrapRef<IPageSelectionReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    refProp<IPageSelectionReact>(this, 'react', {
+    this.react = refProp<IPageSelectionReact>(this, 'react', {
       noteSet: {},
       arrowSet: {},
 
@@ -45,15 +45,18 @@ export class PageSelection {
   }
 
   clear(activeRegionId?: string | null) {
-    for (const elem of this.react.elems) this.remove(elem);
+    for (const elem of this.react.elems) {
+      this.remove(elem);
+    }
 
     this.react.noteSet = {};
     this.react.arrowSet = {};
 
     this.page.activeElem.clear();
 
-    if (activeRegionId !== undefined)
+    if (activeRegionId !== undefined) {
       this.page.activeRegion.react.id = activeRegionId;
+    }
   }
 
   add(...elems: PageElem[]) {

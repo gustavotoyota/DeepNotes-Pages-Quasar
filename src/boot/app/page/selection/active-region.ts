@@ -1,6 +1,6 @@
 import { refProp } from 'src/boot/static/vue';
-import { computed, ComputedRef, UnwrapNestedRefs } from 'vue';
-import { PageArrow } from '../arrows/arrows';
+import { computed, ComputedRef, UnwrapRef } from 'vue';
+import { PageArrow } from '../arrows/arrow';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 
@@ -19,12 +19,12 @@ export interface IActiveRegionReact {
 export class PageActiveRegion {
   readonly page: AppPage;
 
-  react!: UnwrapNestedRefs<IActiveRegionReact>;
+  react: UnwrapRef<IActiveRegionReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    refProp(this, 'react', {
+    this.react = refProp(this, 'react', {
       id: null,
 
       elem: computed(() => {

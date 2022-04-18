@@ -1,7 +1,7 @@
 import { listenPointerEvents } from 'src/boot/static/dom';
 import { Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
-import { UnwrapNestedRefs } from 'vue';
+import { UnwrapRef } from 'vue';
 import { AppPage } from '../page';
 
 export interface IPageBoxSelectionReact {
@@ -16,14 +16,14 @@ export class PageBoxSelection {
 
   readonly page: AppPage;
 
-  react!: UnwrapNestedRefs<IPageBoxSelectionReact>;
+  react: UnwrapRef<IPageBoxSelectionReact>;
 
   downEvent!: PointerEvent;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    refProp<IPageBoxSelectionReact>(this, 'react', {
+    this.react = refProp<IPageBoxSelectionReact>(this, 'react', {
       active: false,
 
       startPos: new Vec2(),

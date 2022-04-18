@@ -1,5 +1,5 @@
 import { refProp } from 'src/boot/static/vue';
-import { UnwrapNestedRefs } from 'vue';
+import { UnwrapRef } from 'vue';
 import { AppPage } from '../page';
 
 export enum ElemType {
@@ -7,7 +7,7 @@ export enum ElemType {
   ARROW = 'arrow',
 }
 
-export interface IPageElemReact {
+export interface IElemReact {
   active: boolean;
   selected: boolean;
 
@@ -21,7 +21,7 @@ export class PageElem {
   type: ElemType;
   parentId: string | null;
 
-  react!: UnwrapNestedRefs<IPageElemReact>;
+  react: UnwrapRef<IElemReact>;
 
   constructor(
     page: AppPage,
@@ -35,7 +35,7 @@ export class PageElem {
     this.type = type;
     this.parentId = parentId;
 
-    refProp<IPageElemReact>(this, 'react', {
+    this.react = refProp<IElemReact>(this, 'react', {
       active: false,
       selected: false,
 

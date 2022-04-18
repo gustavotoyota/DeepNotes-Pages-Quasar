@@ -1,5 +1,5 @@
 import { refProp } from 'src/boot/static/vue';
-import { shallowReactive, ShallowReactive, UnwrapNestedRefs } from 'vue';
+import { shallowReactive, ShallowReactive, UnwrapRef } from 'vue';
 import { PageNote } from './note';
 
 export interface INotesReact {
@@ -7,10 +7,10 @@ export interface INotesReact {
 }
 
 export class PageNotes {
-  react!: UnwrapNestedRefs<INotesReact>;
+  react: UnwrapRef<INotesReact>;
 
   constructor() {
-    refProp<INotesReact>(this, 'react', {
+    this.react = refProp<INotesReact>(this, 'react', {
       map: shallowReactive({}),
     });
   }

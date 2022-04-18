@@ -1,4 +1,4 @@
-export function getValue(
+export function getDeepValue(
   initialObj: any,
   path: string[],
   defaultVal: () => any
@@ -16,7 +16,7 @@ export function getValue(
   return obj[path.at(-1) ?? ''] ?? defaultVal();
 }
 
-export function setValue(initialObj: any, path: string[], val: any): void {
+export function setDeepValue(initialObj: any, path: string[], val: any): void {
   let obj = initialObj;
 
   for (const key of path.slice(0, -1)) {

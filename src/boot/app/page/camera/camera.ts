@@ -1,6 +1,6 @@
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
-import { computed, UnwrapNestedRefs, WritableComputedRef } from 'vue';
+import { computed, UnwrapRef, WritableComputedRef } from 'vue';
 import { AppPage } from '../page';
 
 export interface IPageCameraReact {
@@ -16,12 +16,12 @@ export interface IPageCameraReact {
 export class PageCamera {
   readonly page: AppPage;
 
-  react!: UnwrapNestedRefs<IPageCameraReact>;
+  react: UnwrapRef<IPageCameraReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    refProp<IPageCameraReact>(this, 'react', {
+    this.react = refProp<IPageCameraReact>(this, 'react', {
       pos: new Vec2(),
 
       _zoom: 1,
