@@ -23,8 +23,12 @@ const page = shallowRef<AppPage>();
 
 provide('page', page);
 
-onMounted(() => {
+onMounted(async () => {
   page.value = factory.makePage(app, '');
+
+  await page.value.collab.preSync();
+
+  page.value.collab.postSync();
 });
 </script>
 

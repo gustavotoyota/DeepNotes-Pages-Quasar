@@ -3,11 +3,12 @@ import { computed, ComputedRef, UnwrapRef } from 'vue';
 import { PageArrow } from '../arrows/arrow';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
+import { PageRegion } from '../regions/region';
 
 export interface IActiveRegionReact {
   id: string | null;
 
-  elem: ComputedRef<PageNote | null>;
+  region: ComputedRef<PageRegion>;
 
   noteIds: ComputedRef<string[]>;
   arrowIds: ComputedRef<string[]>;
@@ -27,19 +28,19 @@ export class PageActiveRegion {
     this.react = refProp(this, 'react', {
       id: null,
 
-      elem: computed(() => {
+      region: computed(() => {
         if (this.react.id == null) {
-          return null;
+          return this.page;
         } else {
           return this.page.notes.react.map[this.react.id];
         }
       }),
 
-      noteIds: computed(() => this.react.elem?.react.noteIds ?? []),
-      arrowIds: computed(() => this.react.elem?.react.arrowIds ?? []),
+      noteIds: computed(() => this.react.region.react.noteIds),
+      arrowIds: computed(() => this.react.region.react.arrowIds),
 
-      notes: computed(() => this.page.notes.fromIds(this.react.noteIds)),
-      arrows: computed(() => this.page.arrows.fromIds(this.react.arrowIds)),
+      notes: computed(() => this.react.region.react.notes),
+      arrows: computed(() => this.react.region.react.arrows),
     });
   }
 }

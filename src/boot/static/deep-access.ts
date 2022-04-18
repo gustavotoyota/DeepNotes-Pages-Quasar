@@ -1,4 +1,4 @@
-export function getDeepValue(
+export function getDeep(
   initialObj: any,
   path: string[],
   defaultVal: () => any
@@ -16,7 +16,7 @@ export function getDeepValue(
   return obj[path.at(-1) ?? ''] ?? defaultVal();
 }
 
-export function setDeepValue(initialObj: any, path: string[], val: any): void {
+export function setDeep(initialObj: any, path: string[], val: any): void {
   let obj = initialObj;
 
   for (const key of path.slice(0, -1)) {

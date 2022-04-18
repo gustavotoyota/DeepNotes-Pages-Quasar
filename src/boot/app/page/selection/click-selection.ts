@@ -15,16 +15,17 @@ export class PageClickSelection {
     if (
       elem.parentId != null &&
       event.shiftKey &&
-      this.page.activeElem.react.exists
+      this.page.activeElem.react.elem instanceof PageNote &&
+      elem instanceof PageNote
     ) {
-      const fromIndex = (this.page.activeElem.react.elem as PageNote).react
-        .index;
-      const toIndex = (elem as PageNote).react.index;
+      const fromIndex = this.page.activeElem.react.elem.react.index;
+      const toIndex = elem.react.index;
 
       const step = Math.sign(toIndex - fromIndex);
 
-      for (let i = fromIndex; i !== toIndex; i += step)
+      for (let i = fromIndex; i !== toIndex; i += step) {
         this.page.selection.add(this.page.activeRegion.react.notes[i]);
+      }
     }
 
     // Clear selection if not holding Ctrl or Shift

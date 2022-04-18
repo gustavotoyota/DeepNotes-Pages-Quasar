@@ -48,7 +48,7 @@ export class PageCollab {
     });
   }
 
-  async startSync() {
+  async preSync() {
     const promises = [];
 
     const roomName = `page-${this.page.id}-3`;

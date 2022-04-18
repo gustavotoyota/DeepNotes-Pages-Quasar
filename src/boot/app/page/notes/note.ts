@@ -2,11 +2,11 @@ import { SyncedText } from '@syncedstore/core';
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { computed, ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
 import { z } from 'zod';
-import { ElemType, IElemReact, PageElem } from '../elems/elems';
+import { ElemType, IElemReact } from '../elems/elems';
 import { AppPage } from '../page';
 import { Quill } from 'quill';
-import { getDeepValue, setDeepValue } from 'src/boot/static/deep-access';
-import { IRegionCollab, IRegionReact } from '../regions/region';
+import { getDeep, setDeep } from 'src/boot/static/deep-access';
+import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
 
 export const INoteCollabSize = z
   .object({
@@ -74,7 +74,7 @@ export interface INoteSize {
 }
 export type NoteSizeProp = keyof INoteSize;
 
-export interface INoteReact extends IElemReact, IRegionReact {
+export interface INoteReact extends IRegionReact {
   parent: WritableComputedRef<PageNote | null>;
 
   editing: boolean;
@@ -120,7 +120,7 @@ export interface INoteReact extends IElemReact, IRegionReact {
   numSections: ComputedRef<number>;
 }
 
-export class PageNote extends PageElem {
+export class PageNote extends PageRegion {
   collab: INoteCollab;
 
   declare react: UnwrapRef<INoteReact>;
@@ -138,7 +138,7 @@ export class PageNote extends PageElem {
     this.collab = collab;
 
     const mapCollab = (path: string[], defaultVal: () => any) => {
-      return mapDeepValue(this.collab, path, defaultVal);
+      return mapDeep(this.collab, path, defaultVal);
     };
 
     const makeSectionSize = (section: NoteSection) => {
@@ -199,8 +199,7 @@ export class PageNote extends PageElem {
 
             return this.collab.collapsing?.collapsed ?? false;
           },
-          set: (val) =>
-            setDeepValue(this.collab, ['collapsing', 'collapsed'], val),
+          set: (val) => setDeep(this.collab, ['collapsing', 'collapsed'], val),
         }),
         localCollapsing: mapCollab(
           ['collapsing', 'localCollapsing'],
@@ -299,13 +298,13 @@ export class PageNote extends PageElem {
   }
 }
 
-function mapDeepValue<T>(
+function mapDeep<T>(
   initialObj: any,
   path: string[],
   defaultVal: () => T
 ): WritableComputedRef<T> {
   return computed({
-    get: () => getDeepValue(initialObj, path, defaultVal),
-    set: (val: any) => setDeepValue(initialObj, path, val),
+    get: () => getDeep(initialObj, path, defaultVal),
+    set: (val: any) => setDeep(initialObj, path, val),
   });
 }

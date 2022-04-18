@@ -7,7 +7,7 @@ import { PageArrows } from './arrows/arrows';
 import { PageCamera } from './camera/camera';
 import { PagePanning } from './camera/panning';
 import { PageZooming } from './camera/zooming';
-import { ElemType, IElemReact, PageElem, PageElems } from './elems/elems';
+import { ElemType, PageElems } from './elems/elems';
 import { PageNotes } from './notes/notes';
 import { PageActiveElem } from './selection/active-elem';
 import { PageActiveRegion } from './selection/active-region';
@@ -17,7 +17,7 @@ import { PagePos } from './space/pos';
 import { PageRects } from './space/rects';
 import { PageSizes } from './space/sizes';
 import { PageCollab } from './collab';
-import { IRegionCollab, IRegionReact } from './regions/region';
+import { IRegionCollab, IRegionReact, PageRegion } from './regions/region';
 
 export const IPageCollab = IRegionCollab.extend({
   name: z.string(),
@@ -26,7 +26,7 @@ export const IPageCollab = IRegionCollab.extend({
 });
 export type IPageCollab = z.infer<typeof IPageCollab>;
 
-export interface IAppPageReact extends IElemReact, IRegionReact {
+export interface IAppPageReact extends IRegionReact {
   name: string;
 
   loaded: boolean;
@@ -34,7 +34,7 @@ export interface IAppPageReact extends IElemReact, IRegionReact {
   collab: ComputedRef<IPageCollab>;
 }
 
-export class AppPage extends PageElem {
+export class AppPage extends PageRegion {
   readonly app: DeepNotesApp;
 
   readonly id: string;
