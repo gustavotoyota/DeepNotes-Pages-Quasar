@@ -13,40 +13,38 @@ import { IRegionCollab } from '../regions';
 import { Quill } from 'quill';
 import { getValue, setValue } from 'src/boot/static/dynamic-access';
 
-export const IPageNoteCollabSize = z
+export const INoteCollabSize = z
   .object({
     expanded: z.string().optional(),
     collapsed: z.string().optional(),
   })
   .optional();
-export type IPageNoteCollabSize = z.infer<typeof IPageNoteCollabSize>;
+export type INoteCollabSize = z.infer<typeof INoteCollabSize>;
 
-export const IPageNoteCollabSection = z.object({
-  height: IPageNoteCollabSize,
+export const INoteCollabSection = z.object({
+  height: INoteCollabSize,
 });
-export type IPageNoteCollabSection = z.infer<typeof IPageNoteCollabSection>;
+export type INoteCollabSection = z.infer<typeof INoteCollabSection>;
 
-export const IPageNoteCollabTextSection = IPageNoteCollabSection.extend({
+export const INoteCollabTextSection = INoteCollabSection.extend({
   enabled: z.boolean().optional(),
   text: z.any() as z.ZodType<SyncedText>,
   wrap: z.boolean().optional(),
 });
-export type IPageNoteCollabTextSection = z.infer<
-  typeof IPageNoteCollabTextSection
->;
+export type INoteCollabTextSection = z.infer<typeof INoteCollabTextSection>;
 
-export const IPageNoteCollab = IRegionCollab.extend({
+export const INoteCollab = IRegionCollab.extend({
   link: z.string().uuid().or(z.string().url()).nullable().optional(),
 
   anchor: IVec2.optional(),
   pos: IVec2,
 
-  width: IPageNoteCollabSize,
+  width: INoteCollabSize,
 
-  head: IPageNoteCollabTextSection,
-  body: IPageNoteCollabTextSection,
+  head: INoteCollabTextSection,
+  body: INoteCollabTextSection,
 
-  container: IPageNoteCollabSection.extend({
+  container: INoteCollabSection.extend({
     enabled: z.boolean().optional(),
 
     horizontal: z.boolean().optional(),
@@ -70,18 +68,18 @@ export const IPageNoteCollab = IRegionCollab.extend({
 
   zIndex: z.number(),
 });
-export type IPageNoteCollab = z.infer<typeof IPageNoteCollab>;
+export type INoteCollab = z.infer<typeof INoteCollab>;
 
 export type NoteSection = 'head' | 'body' | 'container';
 export type NoteTextSection = 'head' | 'body';
 
-export interface IPageNoteSize {
+export interface INoteSize {
   expanded: WritableComputedRef<string>;
   collapsed: WritableComputedRef<string>;
 }
-export type NoteSizeProp = keyof IPageNoteSize;
+export type NoteSizeProp = keyof INoteSize;
 
-export interface IPageNoteReact extends IPageElemReact {
+export interface INoteReact extends IPageElemReact {
   parent: WritableComputedRef<PageNote | null>;
 
   editing: boolean;
@@ -92,12 +90,12 @@ export interface IPageNoteReact extends IPageElemReact {
   head: {
     enabled: WritableComputedRef<boolean>;
     quill: Quill | null;
-    collabHeight: IPageNoteSize;
+    collabHeight: INoteSize;
   };
   body: {
     enabled: WritableComputedRef<boolean>;
     quill: Quill | null;
-    collabHeight: IPageNoteSize;
+    collabHeight: INoteSize;
   };
   container: {
     enabled: WritableComputedRef<boolean>;
@@ -105,7 +103,7 @@ export interface IPageNoteReact extends IPageElemReact {
     spatial: WritableComputedRef<boolean>;
     wrapChildren: WritableComputedRef<boolean>;
     stretchChildren: WritableComputedRef<boolean>;
-    collabHeight: IPageNoteSize;
+    collabHeight: INoteSize;
   };
 
   collapsing: {
@@ -117,7 +115,7 @@ export interface IPageNoteReact extends IPageElemReact {
 
   sizeProp: ComputedRef<NoteSizeProp>;
 
-  collabWidth: IPageNoteSize;
+  collabWidth: INoteSize;
   autoWidth: ComputedRef<boolean>;
   domWidth: ComputedRef<string>;
   targetWidth: ComputedRef<string>;
@@ -139,9 +137,9 @@ function mapValue<T>(
 }
 
 export class PageNote extends PageElem {
-  collab: IPageNoteCollab;
+  collab: INoteCollab;
 
-  declare react: UnwrapNestedRefs<IPageNoteReact>;
+  declare react: UnwrapNestedRefs<INoteReact>;
 
   private _parent: PageNote | null = null;
 
@@ -149,7 +147,7 @@ export class PageNote extends PageElem {
     page: AppPage,
     id: string,
     parentId: string | null,
-    collab: IPageNoteCollab
+    collab: INoteCollab
   ) {
     super(page, id, ElemType.NOTE, parentId);
 
@@ -174,7 +172,7 @@ export class PageNote extends PageElem {
       };
     };
 
-    const react: Omit<IPageNoteReact, keyof IPageElemReact> = {
+    const react: Omit<INoteReact, keyof IPageElemReact> = {
       parent: computed({
         get: () => {
           return this._parent;

@@ -1,11 +1,9 @@
 <template>
   <q-page>
-    <div id="display">
-      <ContentDisplay
-        v-if="page != null"
-        :page="page"
-      />
-    </div>
+    <ContentDisplay
+      v-if="page != null"
+      :page="page"
+    />
   </q-page>
 </template>
 
@@ -19,7 +17,6 @@ import { AppPage } from 'src/boot/app/page/page';
 import ContentDisplay from 'src/components/ContentDisplay.vue';
 import { inject, onMounted, provide, shallowRef } from 'vue';
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const app = inject<DeepNotesApp>('app')!;
 
 const page = shallowRef<AppPage>();
@@ -39,5 +36,7 @@ onMounted(() => {
   top: 0;
   right: 0;
   bottom: 0;
+
+  overflow: hidden;
 }
 </style>

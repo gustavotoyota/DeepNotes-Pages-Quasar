@@ -1,3 +1,3 @@
 <template>
-  <div style="flex: none"></div>
+  <div style="flex: none; pointer-events: none"></div>
 </template>

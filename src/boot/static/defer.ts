@@ -49,8 +49,8 @@ export class Deferred<T extends object> {
   }
 }
 
-export function createDeferrer<T = Record<string, any>>(target: any = {}): T {
-  return new Proxy(target, {
+export function createDeferrer<T = Record<string, any>>(target: any): T {
+  return new Proxy(target ?? {}, {
     get(target, propertyKey) {
       if (propertyKey in target && target[propertyKey] !== undefined) {
         const value = target[propertyKey];

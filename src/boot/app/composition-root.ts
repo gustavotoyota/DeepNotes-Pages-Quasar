@@ -3,8 +3,9 @@ import { DeepNotesApp } from './app';
 import { PageArrows } from './page/arrows/arrows';
 import { PageCamera } from './page/camera/camera';
 import { PagePanning } from './page/camera/panning';
+import { PageZooming } from './page/camera/zooming';
 import { PageElems } from './page/elems/elems';
-import { IPageNoteCollab, PageNote } from './page/notes/note';
+import { INoteCollab, PageNote } from './page/notes/note';
 import { PageNotes } from './page/notes/notes';
 import { AppPage } from './page/page';
 import { PageActiveElem } from './page/selection/active-elem';
@@ -26,16 +27,12 @@ export const container = new Container({
 
   camera: () => (page: AppPage) => new PageCamera(page),
   panning: () => (page: AppPage) => new PagePanning(page),
+  zooming: () => (page: AppPage) => new PageZooming(page),
 
   notes: () => () => new PageNotes(),
   note:
     () =>
-    (
-      page: AppPage,
-      id: string,
-      parentId: string | null,
-      collab: IPageNoteCollab
-    ) =>
+    (page: AppPage, id: string, parentId: string | null, collab: INoteCollab) =>
       new PageNote(page, id, parentId, collab),
 
   arrows: () => () => new PageArrows(),
