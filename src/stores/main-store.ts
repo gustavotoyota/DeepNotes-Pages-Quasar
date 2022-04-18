@@ -1,11 +1,6 @@
 import { defineStore } from 'pinia';
-import { AppPage } from 'src/boot/app/page/page';
+import { AppPage, IPageReference } from 'src/boot/app/page/page';
 import { usePageCache } from './page-cache';
-
-export interface IPageReference {
-  id: string;
-  name: string;
-}
 
 export const useMainStore = defineStore('main-store', {
   state: () => ({
@@ -29,8 +24,8 @@ export const useMainStore = defineStore('main-store', {
 
       return (
         pageCache.cache.find((page) => {
-          return page.id === state.currentPageId;
-        }) ?? null
+          return page.value.id === state.currentPageId;
+        })?.value ?? null
       );
     },
   },

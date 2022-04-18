@@ -11,7 +11,9 @@ export class PagePanning {
   }
 
   start(event: PointerEvent) {
-    if (this.page.camera.react.lockPos) return;
+    if (this.page.camera.react.lockPos) {
+      return;
+    }
 
     this.currentPos = this.page.pos.eventToClient(event);
   }

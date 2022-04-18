@@ -2,6 +2,7 @@ import syncedStore, { getYjsValue, Y } from '@syncedstore/core';
 import { reactive } from 'vue';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket';
+import { encodeStateAsUpdateV2 } from 'yjs';
 import { IArrowCollab } from './arrows/arrow';
 import { INoteCollab } from './notes/note';
 import { AppPage, IPageCollab } from './page';
@@ -82,6 +83,8 @@ export class PageCollab {
 
   postSync() {
     // To do
+
+    this.page.react.size = encodeStateAsUpdateV2(this.doc).byteLength;
 
     this.page.react.loaded = true;
   }

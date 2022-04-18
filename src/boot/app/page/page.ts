@@ -19,6 +19,11 @@ import { PageSizes } from './space/sizes';
 import { PageCollab } from './collab';
 import { IRegionCollab, IRegionReact, PageRegion } from './regions/region';
 
+export interface IPageReference {
+  id: string;
+  name: string;
+}
+
 export const IPageCollab = IRegionCollab.extend({
   name: z.string(),
 
@@ -32,6 +37,8 @@ export interface IAppPageReact extends IRegionReact {
   loaded: boolean;
 
   collab: ComputedRef<IPageCollab>;
+
+  size: number;
 }
 
 export class AppPage extends PageRegion {
@@ -61,23 +68,31 @@ export class AppPage extends PageRegion {
   readonly sizes: PageSizes;
 
   constructor(factory: Factory, app: DeepNotesApp, id: string) {
-    super(null as any, id, ElemType.NOTE, null);
+    super(null as any, id, ElemType.PAGE, null);
 
     this.app = app;
 
     this.id = id;
 
     this.react = refProp<IAppPageReact>(this, 'react', {
+      // Page
+
       name: '',
+
+      loaded: false,
+
+      collab: computed(() => this.collab.store.page),
+
+      size: 0,
+
+      // Elem
 
       active: false,
       selected: false,
 
       index: -1,
 
-      loaded: false,
-
-      collab: computed(() => this.collab.store.page),
+      // Region
 
       noteIds: computed(() => this.react.collab.noteIds ?? []),
       arrowIds: computed(() => this.react.collab.arrowIds ?? []),

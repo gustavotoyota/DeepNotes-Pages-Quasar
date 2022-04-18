@@ -1,7 +1,7 @@
 import { refProp } from 'src/boot/static/vue';
 import { computed, ComputedRef, UnwrapRef } from 'vue';
 import { PageArrow } from '../arrows/arrow';
-import { PageElem } from '../elems/elems';
+import { ElemType, PageElem } from '../elems/elems';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 
@@ -14,7 +14,7 @@ export interface IPageSelectionReact {
 
   notes: ComputedRef<PageNote[]>;
   arrows: ComputedRef<PageArrow[]>;
-  elems: ComputedRef<PageArrow[]>;
+  elems: ComputedRef<PageElem[]>;
 }
 
 export class PageSelection {
@@ -40,7 +40,11 @@ export class PageSelection {
     });
   }
 
-  has(elem: PageElem) {
+  has(elem: PageElem): boolean {
+    if (elem.type === ElemType.PAGE) {
+      return false;
+    }
+
     return elem.id in this.react[`${elem.type}Set`];
   }
 
@@ -61,7 +65,7 @@ export class PageSelection {
 
   add(...elems: PageElem[]) {
     for (const elem of elems) {
-      if (elem.react.selected) {
+      if (elem.react.selected || elem.type === ElemType.PAGE) {
         continue;
       }
 
@@ -83,7 +87,7 @@ export class PageSelection {
   }
   remove(...elems: PageElem[]) {
     for (const elem of elems) {
-      if (!elem.react.selected) {
+      if (!elem.react.selected || elem.type === ElemType.PAGE) {
         continue;
       }
 

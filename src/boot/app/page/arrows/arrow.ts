@@ -16,7 +16,16 @@ export const IArrowCollab = z.object({
 export type IArrowCollab = z.infer<typeof IArrowCollab>;
 
 export class PageArrow extends PageElem {
-  constructor(page: AppPage, id: string, parentId: string | null) {
+  collab: IArrowCollab;
+
+  constructor(
+    page: AppPage,
+    id: string,
+    parentId: string | null,
+    collab: IArrowCollab
+  ) {
     super(page, id, ElemType.ARROW, parentId);
+
+    this.collab = collab;
   }
 }

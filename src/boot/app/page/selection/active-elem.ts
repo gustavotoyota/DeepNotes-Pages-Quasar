@@ -6,7 +6,7 @@ import { AppPage } from '../page';
 
 export interface IPageActiveElemReact {
   id: string | null;
-  type: ElemType | null;
+  type: ElemType;
 
   elem: ComputedRef<PageElem | null>;
   exists: ComputedRef<boolean>;
@@ -22,10 +22,10 @@ export class PageActiveElem {
 
     this.react = refProp<IPageActiveElemReact>(this, 'react', {
       id: null,
-      type: null,
+      type: ElemType.PAGE,
 
       elem: computed((): PageElem | null => {
-        if (this.react.id == null || this.react.type == null) {
+        if (this.react.id == null || this.react.type === ElemType.PAGE) {
           return null;
         }
 
@@ -69,7 +69,7 @@ export class PageActiveElem {
     this.page.selection.add(elem);
 
     if (elem instanceof PageNote) {
-      //elem.bringToTop();
+      elem.bringToTop();
     }
   }
 

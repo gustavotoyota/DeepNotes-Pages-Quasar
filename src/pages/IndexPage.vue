@@ -16,8 +16,11 @@ import { factory } from 'src/boot/static/composition-root';
 import { AppPage } from 'src/boot/app/page/page';
 import ContentDisplay from 'src/components/ContentDisplay.vue';
 import { inject, onMounted, provide, shallowRef } from 'vue';
+import { usePageCache } from 'src/stores/page-cache';
 
 const app = inject<DeepNotesApp>('app')!;
+
+const pageCache = usePageCache();
 
 const page = shallowRef<AppPage>();
 
@@ -25,6 +28,8 @@ provide('page', page);
 
 onMounted(async () => {
   page.value = factory.makePage(app, '');
+
+  pageCache.addPage(page.value);
 
   await page.value.collab.preSync();
 

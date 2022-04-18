@@ -17,6 +17,7 @@ import { PageRects } from '../app/page/space/rects';
 import { PageSizes } from '../app/page/space/sizes';
 import { AppSerialization } from '../app/serialization';
 import { PageCollab } from '../app/page/collab';
+import { IArrowCollab, PageArrow } from '../app/page/arrows/arrow';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
@@ -32,6 +33,8 @@ export const container = new Container({
   panning: () => (page: AppPage) => new PagePanning(page),
   zooming: () => (page: AppPage) => new PageZooming(page),
 
+  elems: () => (page: AppPage) => new PageElems(page),
+
   notes: () => () => new PageNotes(),
   note:
     () =>
@@ -39,7 +42,15 @@ export const container = new Container({
       new PageNote(page, id, parentId, collab),
 
   arrows: () => () => new PageArrows(),
-  elems: () => (page: AppPage) => new PageElems(page),
+  arrow:
+    () =>
+    (
+      page: AppPage,
+      id: string,
+      parentId: string | null,
+      collab: IArrowCollab
+    ) =>
+      new PageArrow(page, id, parentId, collab),
 
   selection: () => (page: AppPage) => new PageSelection(page),
   activeElem: () => (page: AppPage) => new PageActiveElem(page),

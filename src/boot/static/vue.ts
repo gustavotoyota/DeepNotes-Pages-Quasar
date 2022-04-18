@@ -1,4 +1,4 @@
-import { ref, shallowRef, UnwrapRef } from 'vue';
+import { markRaw, ref, shallowRef, UnwrapRef } from 'vue';
 
 export function refProp<T>(obj: object, key: string, value: T): UnwrapRef<T> {
   const aux = ref(value);
@@ -28,4 +28,10 @@ export function shallowRefProp<T>(obj: object, key: string, value: T): T {
   });
 
   return aux.value;
+}
+
+export class RawObject {
+  constructor() {
+    return markRaw(this);
+  }
 }

@@ -3,6 +3,7 @@ import { UnwrapRef } from 'vue';
 import { AppPage } from '../page';
 
 export enum ElemType {
+  PAGE = 'page',
   NOTE = 'note',
   ARROW = 'arrow',
 }
