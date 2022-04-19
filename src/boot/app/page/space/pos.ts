@@ -16,7 +16,7 @@ export class PagePos {
   }
 
   eventToClient(event: MouseEvent): Vec2 {
-    return new Vec2(event.x, event.y);
+    return new Vec2(event.clientX, event.clientY);
   }
   eventToDisplay(event: MouseEvent): Vec2 {
     return this.clientToDisplay(this.eventToClient(event));
