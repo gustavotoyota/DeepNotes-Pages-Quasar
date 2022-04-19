@@ -5,15 +5,14 @@ import { z } from 'zod';
 import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
 import { Quill } from 'quill';
-import { getDeep, setDeep } from 'src/boot/static/deep-access';
 import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
 
 export const INoteCollabSize = z
   .object({
-    expanded: z.string().optional(),
-    collapsed: z.string().optional(),
+    expanded: z.string().default('auto'),
+    collapsed: z.string().default('auto'),
   })
-  .optional();
+  .default({});
 export type INoteCollabSize = z.infer<typeof INoteCollabSize>;
 
 export const INoteCollabSection = z.object({
@@ -22,17 +21,17 @@ export const INoteCollabSection = z.object({
 export type INoteCollabSection = z.infer<typeof INoteCollabSection>;
 
 export const INoteCollabTextSection = INoteCollabSection.extend({
-  enabled: z.boolean().optional(),
+  enabled: z.boolean(),
   value: z.any() as z.ZodType<SyncedText>,
-  wrap: z.boolean().optional(),
+  wrap: z.boolean().default(true),
 });
 export type INoteCollabTextSection = z.infer<typeof INoteCollabTextSection>;
 
 export const INoteCollab = IRegionCollab.extend({
-  link: z.string().uuid().or(z.string().url()).nullable().optional(),
+  link: z.string().uuid().or(z.string().url()).nullable().default(null),
 
-  anchor: IVec2.optional(),
-  pos: IVec2.optional(),
+  anchor: IVec2.default({ x: 0.5, y: 0.5 }),
+  pos: IVec2.default({ x: 0, y: 0 }),
 
   width: INoteCollabSize,
 
@@ -40,26 +39,26 @@ export const INoteCollab = IRegionCollab.extend({
   body: INoteCollabTextSection,
 
   container: INoteCollabSection.extend({
-    enabled: z.boolean().optional(),
+    enabled: z.boolean().default(false),
 
-    horizontal: z.boolean().optional(),
-    spatial: z.boolean().optional(),
+    horizontal: z.boolean().default(false),
+    spatial: z.boolean().default(false),
 
-    wrapChildren: z.boolean().optional(),
-    stretchChildren: z.boolean().optional(),
-  }).optional(),
+    wrapChildren: z.boolean().default(false),
+    stretchChildren: z.boolean().default(true),
+  }).default({}),
 
   collapsing: z
     .object({
-      enabled: z.boolean().optional(),
-      collapsed: z.boolean().optional(),
-      localCollapsing: z.boolean().optional(),
+      enabled: z.boolean().default(false),
+      collapsed: z.boolean().default(false),
+      localCollapsing: z.boolean().default(false),
     })
-    .optional(),
+    .default({}),
 
-  movable: z.boolean().optional(),
-  resizable: z.boolean().optional(),
-  readOnly: z.boolean().optional(),
+  movable: z.boolean().default(true),
+  resizable: z.boolean().default(true),
+  readOnly: z.boolean().default(false),
 
   zIndex: z.number(),
 });
@@ -95,29 +94,14 @@ export interface INoteReact extends IRegionReact {
   editing: boolean;
   dragging: boolean;
 
-  anchor: INoteVec2React;
-  pos: INoteVec2React;
+  headQuill: Quill | null;
+  bodyQuill: Quill | null;
 
-  head: INoteTextSectionReact;
-  body: INoteTextSectionReact;
-
-  container: INoteSectionReact & {
-    horizontal: WritableComputedRef<boolean>;
-    spatial: WritableComputedRef<boolean>;
-    wrapChildren: WritableComputedRef<boolean>;
-    stretchChildren: WritableComputedRef<boolean>;
-  };
-
-  collapsing: {
-    enabled: WritableComputedRef<boolean>;
-    collapsed: WritableComputedRef<boolean>;
-    localCollapsing: WritableComputedRef<boolean>;
-    locallyCollapsed: boolean;
-  };
+  collapsed: ComputedRef<boolean>;
+  locallyCollapsed: boolean;
 
   sizeProp: ComputedRef<NoteSizeProp>;
 
-  collabWidth: INoteSize;
   autoWidth: ComputedRef<boolean>;
   domWidth: ComputedRef<string>;
   targetWidth: ComputedRef<string>;
@@ -148,33 +132,6 @@ export class PageNote extends PageRegion {
 
     this.collab = collab;
 
-    const mapCollab = (path: string[], defaultVal: () => any) => {
-      return mapDeep(this.collab, path, defaultVal);
-    };
-
-    const mapVec2 = (path: string[], defaultVal: Vec2) => {
-      return {
-        x: mapCollab([...path, 'x'], () => defaultVal.x),
-        y: mapCollab([...path, 'y'], () => defaultVal.y),
-      };
-    };
-
-    const mapSectionSize = (section: NoteSection) => {
-      return {
-        expanded: mapCollab([section, 'height', 'expanded'], () => 'auto'),
-        collapsed: mapCollab([section, 'height', 'collapsed'], () => 'auto'),
-      };
-    };
-
-    const mapTextSection = (section: NoteTextSection, defaultVal: boolean) => {
-      return {
-        enabled: mapCollab([section, 'enabled'], () => defaultVal),
-        wrap: mapCollab([section, 'wrap'], () => defaultVal),
-        quill: null,
-        collabHeight: mapSectionSize(section),
-      };
-    };
-
     const react: Omit<INoteReact, keyof IElemReact> = {
       parent: computed({
         get: () => {
@@ -188,69 +145,40 @@ export class PageNote extends PageRegion {
       editing: false,
       dragging: false,
 
-      anchor: mapVec2(['anchor'], new Vec2(0.5, 0.5)),
-      pos: mapVec2(['pos'], new Vec2(0, 0)),
+      headQuill: null,
+      bodyQuill: null,
 
-      head: mapTextSection('head', false),
-      body: mapTextSection('body', true),
-      container: {
-        enabled: mapCollab(['container', 'enabled'], () => false),
-        horizontal: mapCollab(['container', 'horizontal'], () => false),
-        spatial: mapCollab(['container', 'spatial'], () => false),
-        wrapChildren: mapCollab(['container', 'wrapChildren'], () => false),
-        stretchChildren: mapCollab(
-          ['container', 'stretchChildren'],
-          () => true
-        ),
-        collabHeight: mapSectionSize('container'),
-      },
+      collapsed: computed(() => {
+        if (!this.collab.collapsing.enabled) {
+          return false;
+        }
 
-      collapsing: {
-        enabled: mapCollab(['collapsing', 'enabled'], () => false),
-        collapsed: computed({
-          get: () => {
-            if (!this.react.collapsing.enabled) {
-              return false;
-            }
+        if (this.collab.collapsing.localCollapsing) {
+          return this.react.locallyCollapsed;
+        }
 
-            if (this.react.collapsing.localCollapsing) {
-              return this.react.collapsing.locallyCollapsed;
-            }
-
-            return this.collab.collapsing?.collapsed ?? false;
-          },
-          set: (val) => setDeep(this.collab, ['collapsing', 'collapsed'], val),
-        }),
-        localCollapsing: mapCollab(
-          ['collapsing', 'localCollapsing'],
-          () => false
-        ),
-        locallyCollapsed: false,
-      },
+        return this.collab.collapsing.collapsed;
+      }),
+      locallyCollapsed: false,
 
       sizeProp: computed(() =>
-        this.react.collapsing.collapsed ? 'collapsed' : 'expanded'
+        this.react.collapsed ? 'collapsed' : 'expanded'
       ),
 
-      collabWidth: {
-        expanded: mapCollab(['width', 'expanded'], () => 'auto'),
-        collapsed: mapCollab(['width', 'collapsed'], () => 'auto'),
-      },
       autoWidth: computed(() => {
         // Returns false if has fixed width parent with stretched vertical children
 
         if (
           this.react.parent != null &&
           !this.react.parent.react.autoWidth &&
-          !this.react.parent.react.container.horizontal &&
-          this.react.parent.react.container.stretchChildren
+          !this.react.parent.collab.container.horizontal &&
+          this.react.parent.collab.container.stretchChildren
         )
           return false;
 
         // Returns false if has fixed width itself
 
-        if (this.react.collabWidth[this.react.sizeProp].endsWith('px'))
-          return false;
+        if (this.collab.width[this.react.sizeProp].endsWith('px')) return false;
 
         return true;
       }),
@@ -262,24 +190,24 @@ export class PageNote extends PageRegion {
       }),
 
       topSection: computed(() => {
-        if (this.react.head.enabled) {
+        if (this.collab.head.enabled) {
           return 'head';
-        } else if (this.react.body.enabled) {
+        } else if (this.collab.body.enabled) {
           return 'body';
-        } else if (this.react.container.enabled) {
+        } else if (this.collab.container.enabled) {
           return 'container';
         } else {
           throw new Error('No sections enabled');
         }
       }),
       bottomSection: computed(() => {
-        if (this.react.collapsing.collapsed) {
+        if (this.react.collapsed) {
           return this.react.topSection;
-        } else if (this.react.container.enabled) {
+        } else if (this.collab.container.enabled) {
           return 'container';
-        } else if (this.react.body.enabled) {
+        } else if (this.collab.body.enabled) {
           return 'body';
-        } else if (this.react.head.enabled) {
+        } else if (this.collab.head.enabled) {
           return 'head';
         } else {
           throw new Error('No sections enabled');
@@ -288,13 +216,13 @@ export class PageNote extends PageRegion {
       numSections: computed(() => {
         let numSections = 0;
 
-        if (this.react.head.enabled) {
+        if (this.collab.head.enabled) {
           ++numSections;
         }
-        if (this.react.body.enabled) {
+        if (this.collab.body.enabled) {
           ++numSections;
         }
-        if (this.react.container.enabled) {
+        if (this.collab.container.enabled) {
           ++numSections;
         }
 
@@ -320,15 +248,4 @@ export class PageNote extends PageRegion {
 
     this.collab.zIndex = this.page.react.collab.nextZIndex++;
   }
-}
-
-function mapDeep<T>(
-  initialObj: any,
-  path: string[],
-  defaultVal: () => T
-): WritableComputedRef<T> {
-  return computed({
-    get: () => getDeep(initialObj, path, defaultVal),
-    set: (val: any) => setDeep(initialObj, path, val),
-  });
 }

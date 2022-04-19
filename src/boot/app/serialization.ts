@@ -13,8 +13,8 @@ import { Op } from '../static/quill';
 // Arrow
 
 export const ISerialArrowEndpoint = z.object({
-  noteIndex: z.number().optional(),
-  pos: IVec2.optional(),
+  noteIndex: z.number().nullable().default(null),
+  pos: IVec2.default({ x: 0, y: 0 }),
 });
 export type ISerialArrowEndpoint = z.infer<typeof ISerialArrowEndpoint>;
 
@@ -27,9 +27,13 @@ export type ISerialArrow = z.infer<typeof ISerialArrow>;
 // Note
 
 export const ISerialTextSection = z.object({
-  enabled: z.boolean().optional(),
+  enabled: z.boolean(),
   value: Op.array().default([{ insert: '\n' }]),
-  wrap: z.boolean().optional(),
+  wrap: z.boolean().default(true),
+  height: z.object({
+    expanded: z.string().default('auto'),
+    collapsed: z.string().default('auto'),
+  }),
 });
 export type ISerialTextSection = z.infer<typeof ISerialTextSection>;
 
@@ -52,8 +56,8 @@ export const ISerialNote = z.lazy(() =>
     head: ISerialTextSection,
     body: ISerialTextSection,
 
-    notes: ISerialNote.array().optional(),
-    arrows: ISerialArrow.array().optional(),
+    notes: ISerialNote.array().default([]),
+    arrows: ISerialArrow.array().default([]),
   })
 ) as z.ZodType<ISerialNote>;
 
@@ -65,8 +69,8 @@ export interface ISerialRegion {
 }
 export const ISerialRegion = z.lazy(() =>
   z.object({
-    notes: ISerialNote.array().optional(),
-    arrows: ISerialArrow.array().optional(),
+    notes: ISerialNote.array().default([]),
+    arrows: ISerialArrow.array().default([]),
   })
 ) as z.ZodType<ISerialRegion>;
 
@@ -99,11 +103,13 @@ export class AppSerialization {
         enabled: note.collab.head.enabled,
         value: note.collab.head.value.toDelta(),
         wrap: note.collab.head.wrap,
+        height: cloneDeep(note.collab.head.height),
       };
       serialNote.body = {
         enabled: note.collab.body.enabled,
         value: note.collab.body.value.toDelta(),
         wrap: note.collab.body.wrap,
+        height: cloneDeep(note.collab.body.height),
       };
 
       // Rest of the properties
@@ -133,11 +139,11 @@ export class AppSerialization {
     )) {
       const serialArrow: ISerialArrow = {
         start: {
-          noteIndex: noteMap.get(arrow.collab.start.noteId ?? ''),
+          noteIndex: noteMap.get(arrow.collab.start.noteId ?? '') ?? null,
           pos: arrow.collab.start.pos,
         },
         end: {
-          noteIndex: noteMap.get(arrow.collab.end.noteId ?? ''),
+          noteIndex: noteMap.get(arrow.collab.end.noteId ?? '') ?? null,
           pos: arrow.collab.end.pos,
         },
       };
@@ -173,11 +179,13 @@ export class AppSerialization {
           enabled: serialNote.head.enabled,
           value: createText(serialNote.head),
           wrap: serialNote.head.wrap,
+          height: cloneDeep(serialNote.head.height),
         };
         noteCollab.body = {
           enabled: serialNote.body.enabled,
           value: createText(serialNote.body),
           wrap: serialNote.body.wrap,
+          height: cloneDeep(serialNote.body.height),
         };
 
         // Rest of the keys
@@ -220,11 +228,11 @@ export class AppSerialization {
       for (const serialArrow of serialRegion.arrows) {
         const arrowCollab: IArrowCollab = {
           start: {
-            noteId: noteMap.get(serialArrow.start.noteIndex ?? -1),
+            noteId: noteMap.get(serialArrow.start.noteIndex ?? -1) ?? null,
             pos: serialArrow.start.pos,
           },
           end: {
-            noteId: noteMap.get(serialArrow.end.noteIndex ?? -1),
+            noteId: noteMap.get(serialArrow.end.noteIndex ?? -1) ?? null,
             pos: serialArrow.end.pos,
           },
         };

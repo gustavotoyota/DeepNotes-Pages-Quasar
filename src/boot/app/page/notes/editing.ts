@@ -43,7 +43,7 @@ export class AppEditing {
 
     nextTick(() => {
       for (const section of ['head', 'body'] as ('head' | 'body')[]) {
-        const quill = note.react[section].quill;
+        const quill = note.react[`${section}Quill`];
 
         if (quill == null) {
           continue;
@@ -59,7 +59,7 @@ export class AppEditing {
       }
 
       section = section ?? note.react.topSection;
-      const quill = note.react[section].quill;
+      const quill = note.react[`${section}Quill`];
 
       if (quill == null) {
         return;
@@ -77,7 +77,7 @@ export class AppEditing {
     }
 
     for (const section of ['head', 'body'] as ('head' | 'body')[]) {
-      const quill = this.react.note.react[section].quill;
+      const quill = this.react.note.react[`${section}Quill`];
 
       if (quill == null) {
         continue;

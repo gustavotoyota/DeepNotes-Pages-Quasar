@@ -4,8 +4,8 @@ import { ElemType, PageElem } from '../elems/elem';
 import { AppPage } from '../page';
 
 export const IArrowEndpoint = z.object({
-  noteId: z.string().optional(),
-  pos: IVec2.optional(),
+  noteId: z.string().nullable().default(null),
+  pos: IVec2.default({ x: 0, y: 0 }),
 });
 export type IArrowEndpoint = z.infer<typeof IArrowEndpoint>;
 

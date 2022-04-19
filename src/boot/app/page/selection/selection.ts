@@ -114,8 +114,8 @@ export class PageSelection {
   shift(shiftX: number, shiftY: number) {
     this.page.collab.doc.transact(() => {
       for (const note of this.react.notes) {
-        note.react.pos.x += shiftX;
-        note.react.pos.y += shiftY;
+        note.collab.pos.x += shiftX;
+        note.collab.pos.y += shiftY;
       }
     });
   }
