@@ -20,8 +20,8 @@ export interface ITemplate {
 export interface ITemplatesReact {
   list: ShallowReactive<ITemplate[]>;
 
-  defaultId: string | null;
-  default: ComputedRef<ITemplate | null>;
+  defaultId: string;
+  default: ComputedRef<ITemplate>;
 
   popup: {
     visible: boolean;
@@ -50,13 +50,13 @@ export class AppTemplates {
         },
       ]),
 
-      defaultId: null,
+      defaultId: 'default',
 
       default: computed(
         () =>
           this.react.list.find((item) => {
             return item.id === this.react.defaultId;
-          }) ?? null
+          })!
       ),
 
       popup: {

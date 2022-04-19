@@ -18,11 +18,13 @@ import { PageSizes } from '../app/page/space/sizes';
 import { AppSerialization } from '../app/serialization';
 import { PageCollab } from '../app/page/collab';
 import { IArrowCollab, PageArrow } from '../app/page/arrows/arrow';
+import { AppTemplates } from '../app/templates';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
 
   serialization: () => (app: DeepNotesApp) => new AppSerialization(app),
+  templates: () => (app: DeepNotesApp) => new AppTemplates(app),
 
   page: (factory: any) => (app: DeepNotesApp, id: string) =>
     new AppPage(factory, app, id),
@@ -35,13 +37,13 @@ export const container = new Container({
 
   elems: () => (page: AppPage) => new PageElems(page),
 
-  notes: () => (page: AppPage) => new PageNotes(page),
+  notes: (factory: any) => (page: AppPage) => new PageNotes(factory, page),
   note:
     () =>
     (page: AppPage, id: string, parentId: string | null, collab: INoteCollab) =>
       new PageNote(page, id, parentId, collab),
 
-  arrows: () => (page: AppPage) => new PageArrows(page),
+  arrows: (factory: any) => (page: AppPage) => new PageArrows(factory, page),
   arrow:
     () =>
     (

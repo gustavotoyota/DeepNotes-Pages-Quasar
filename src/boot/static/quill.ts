@@ -1,3 +1,19 @@
+import * as QuillDelta from 'quill-delta';
+import { z } from 'zod';
+
+export type Op = QuillDelta.Op;
+export type AttributeMap = QuillDelta.AttributeMap;
+
+export const AttributeMap: z.ZodType<QuillDelta.AttributeMap> = z.record(
+  z.unknown()
+);
+export const Op: z.ZodType<QuillDelta.Op> = z.object({
+  insert: z.string().or(z.record(z.unknown())).optional(),
+  delete: z.number().optional(),
+  retain: z.number().or(z.record(z.unknown())).optional(),
+  attributes: AttributeMap.optional(),
+});
+
 export const quillOptions = {
   theme: 'bubble',
 
@@ -41,30 +57,30 @@ export const quillOptions = {
         'italic',
         'underline',
         'strike',
-        { 'header': 1 },
-        { 'header': 2 },
+        { header: 1 },
+        { header: 2 },
         'link',
         'image',
       ],
       [
-        { 'align': '' },
-        { 'align': 'center' },
-        { 'align': 'right' },
-        { 'align': 'justify' },
-        { 'list': 'bullet' },
-        { 'list': 'ordered'},
-        { 'indent': '-1' },
-        { 'indent': '+1' },
+        { align: '' },
+        { align: 'center' },
+        { align: 'right' },
+        { align: 'justify' },
+        { list: 'bullet' },
+        { list: 'ordered' },
+        { indent: '-1' },
+        { indent: '+1' },
       ],
       [
         'code',
         'code-block',
         'blockquote',
-        { 'script': 'sub' },
-        { 'script': 'super' },
+        { script: 'sub' },
+        { script: 'super' },
         'formula',
         'clean',
       ],
     ],
   },
-}
+};

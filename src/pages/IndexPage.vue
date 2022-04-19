@@ -33,7 +33,7 @@ onMounted(async () => {
 
   await page.value.collab.preSync();
 
-  page.value.collab.postSync();
+  page.value.postSync();
 });
 </script>
 

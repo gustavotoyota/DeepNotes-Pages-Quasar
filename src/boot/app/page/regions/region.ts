@@ -1,12 +1,12 @@
 import { ComputedRef, UnwrapRef } from 'vue';
 import { z } from 'zod';
 import { PageArrow } from '../arrows/arrow';
-import { IElemReact, PageElem } from '../elems/elems';
+import { IElemReact, PageElem } from '../elems/elem';
 import { PageNote } from '../notes/note';
 
 export const IRegionCollab = z.object({
-  noteIds: z.string().array().optional(),
-  arrowIds: z.string().array().optional(),
+  noteIds: z.string().array().default([]),
+  arrowIds: z.string().array().default([]),
 });
 export type IRegionCollab = z.infer<typeof IRegionCollab>;
 

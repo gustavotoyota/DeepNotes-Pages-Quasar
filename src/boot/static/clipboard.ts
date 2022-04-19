@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    clipboardData: any;
+  }
+}
+
 export const clipboardUtils = {
   async get(): Promise<string> {
     if (navigator.clipboard && navigator.clipboard.readText)

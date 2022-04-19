@@ -2,7 +2,6 @@ import syncedStore, { getYjsValue, Y } from '@syncedstore/core';
 import { reactive } from 'vue';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket';
-import { encodeStateAsUpdateV2 } from 'yjs';
 import { IArrowCollab } from './arrows/arrow';
 import { INoteCollab } from './notes/note';
 import { AppPage, IPageCollab } from './page';
@@ -34,12 +33,10 @@ export class PageCollab {
     ) as IAppCollabStore;
 
     this.doc = getYjsValue(this.store) as Y.Doc;
-  }
 
-  reset(pageName: string) {
     this.doc.transact(() => {
       Object.assign(this.store.page, {
-        name: pageName,
+        name: '',
 
         noteIds: [],
         arrowIds: [],
@@ -79,13 +76,5 @@ export class PageCollab {
     );
 
     await Promise.all(promises);
-  }
-
-  postSync() {
-    // To do
-
-    this.page.react.size = encodeStateAsUpdateV2(this.doc).byteLength;
-
-    this.page.react.loaded = true;
   }
 }

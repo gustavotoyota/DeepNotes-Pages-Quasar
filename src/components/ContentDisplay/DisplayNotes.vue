@@ -14,7 +14,14 @@
           `translate(${-page.camera.react.pos.x}px, ${-page.camera.react.pos
             .y}px)`,
       }"
-    ></div>
+    >
+      <DisplayNote
+        v-for="(note, index) in page.react.notes"
+        :key="note.id"
+        :note="note"
+        :index="index"
+      />
+    </div>
   </div>
 </template>
 
@@ -24,6 +31,7 @@
 >
 import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';
+import DisplayNote from './DisplayNote.vue';
 
-const page = inject<AppPage>('page');
+const page = inject<AppPage>('page')!;
 </script>

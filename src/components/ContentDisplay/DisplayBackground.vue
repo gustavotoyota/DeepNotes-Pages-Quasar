@@ -2,6 +2,7 @@
   <div
     class="display-background"
     @pointerdown.left="onPointerDown"
+    @dblclick.left="onDoubleClick"
   ></div>
 </template>
 
@@ -9,13 +10,22 @@
   setup
   lang="ts"
 >
+import { DeepNotesApp } from 'src/boot/app/app';
 import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';
+
+const app = inject<DeepNotesApp>('app')!;
 
 const page = inject<AppPage>('page')!;
 
 function onPointerDown(event: PointerEvent) {
   page.boxSelection.start(event);
+}
+
+function onDoubleClick(event: MouseEvent) {
+  const clientPos = page.pos.eventToClient(event);
+
+  page.notes.createFromTemplate(app.templates.react.default, clientPos);
 }
 </script>
 

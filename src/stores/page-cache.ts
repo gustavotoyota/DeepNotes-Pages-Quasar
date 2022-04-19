@@ -1,18 +1,32 @@
 import { defineStore } from 'pinia';
 import { AppPage } from 'src/boot/app/page/page';
-import { computed, markRaw, reactive, toRefs, watch } from 'vue';
+import {
+  computed,
+  reactive,
+  shallowReactive,
+  ShallowReactive,
+  toRefs,
+  watch,
+} from 'vue';
+import { useMainStore } from './main-store';
 
 export const usePageCache = defineStore('page-cache', () => {
   const state = reactive({
-    cache: [] as AppPage[],
+    cache: [] as ShallowReactive<AppPage[]>,
   });
 
   function addPage(page: AppPage) {
+    const mainStore = useMainStore();
+
     if (state.cache.find((item) => item.id === page.id)) {
       return;
     }
 
-    state.cache.push(markRaw(page));
+    if (mainStore.currentPageId == null) {
+      mainStore.currentPageId = page.id;
+    }
+
+    state.cache.push(shallowReactive(page));
   }
 
   const totalSize = computed(() => {

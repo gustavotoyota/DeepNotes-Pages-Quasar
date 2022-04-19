@@ -2,7 +2,7 @@ import { SyncedText } from '@syncedstore/core';
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { computed, ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
 import { z } from 'zod';
-import { ElemType, IElemReact } from '../elems/elems';
+import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
 import { Quill } from 'quill';
 import { getDeep, setDeep } from 'src/boot/static/deep-access';
@@ -119,6 +119,10 @@ export interface INoteReact extends IRegionReact {
   topSection: ComputedRef<NoteSection>;
   bottomSection: ComputedRef<NoteSection>;
   numSections: ComputedRef<number>;
+
+  index: number;
+
+  worldSize: Vec2;
 }
 
 export class PageNote extends PageRegion {
@@ -283,8 +287,12 @@ export class PageNote extends PageRegion {
         return numSections;
       }),
 
-      noteIds: computed(() => this.collab.noteIds ?? []),
-      arrowIds: computed(() => this.collab.arrowIds ?? []),
+      index: -1,
+
+      worldSize: new Vec2(0, 0),
+
+      noteIds: computed(() => this.collab.noteIds),
+      arrowIds: computed(() => this.collab.arrowIds),
 
       notes: computed(() => this.page.notes.fromIds(this.react.noteIds)),
       arrows: computed(() => this.page.arrows.fromIds(this.react.arrowIds)),

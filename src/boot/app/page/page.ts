@@ -7,7 +7,7 @@ import { PageArrows } from './arrows/arrows';
 import { PageCamera } from './camera/camera';
 import { PagePanning } from './camera/panning';
 import { PageZooming } from './camera/zooming';
-import { ElemType, PageElems } from './elems/elems';
+import { ElemType } from './elems/elem';
 import { PageNotes } from './notes/notes';
 import { PageActiveElem } from './selection/active-elem';
 import { PageActiveRegion } from './selection/active-region';
@@ -18,6 +18,8 @@ import { PageRects } from './space/rects';
 import { PageSizes } from './space/sizes';
 import { PageCollab } from './collab';
 import { IRegionCollab, IRegionReact, PageRegion } from './regions/region';
+import { PageElems } from './elems/elems';
+import { encodeStateAsUpdateV2 } from 'yjs';
 
 export interface IPageReference {
   id: string;
@@ -90,12 +92,13 @@ export class AppPage extends PageRegion {
       active: false,
       selected: false,
 
-      index: -1,
-
       // Region
 
-      noteIds: computed(() => this.react.collab.noteIds ?? []),
-      arrowIds: computed(() => this.react.collab.arrowIds ?? []),
+      noteIds: computed(() => {
+        console.log('asd');
+        return this.react.collab.noteIds;
+      }),
+      arrowIds: computed(() => this.react.collab.arrowIds),
 
       notes: computed(() => this.notes.fromIds(this.react.noteIds)),
       arrows: computed(() => this.arrows.fromIds(this.react.arrowIds)),
@@ -119,5 +122,13 @@ export class AppPage extends PageRegion {
     this.pos = factory.makePos(this);
     this.rects = factory.makeRects(this);
     this.sizes = factory.makeSizes(this);
+  }
+
+  postSync() {
+    this.elems.setup();
+
+    this.react.size = encodeStateAsUpdateV2(this.collab.doc).byteLength;
+
+    this.react.loaded = true;
   }
 }

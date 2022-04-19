@@ -2,12 +2,13 @@ import { z } from 'zod';
 import { IVec2 } from '../static/vec2';
 import { DeepNotesApp } from './app';
 import { INoteCollab } from './page/notes/note';
-import { Op } from 'src/boot/static/types';
 import { IRegionCollab } from './page/regions/region';
 import { cloneDeep, pull } from 'lodash';
 import { createText } from '../static/synced-store';
 import { v4 } from 'uuid';
 import { IArrowCollab } from './page/arrows/arrow';
+import { useMainStore } from 'src/stores/main-store';
+import { Op } from '../static/quill';
 
 // Arrow
 
@@ -79,15 +80,15 @@ export class AppSerialization {
   serialize(container: IRegionCollab): ISerialRegion {
     const serialRegion: ISerialRegion = {};
 
+    const mainStore = useMainStore();
+
     // Serialize notes
 
     const noteMap = new Map<string, number>();
 
     serialRegion.notes = [];
 
-    for (const note of this.app.react.page.notes.fromIds(
-      container.noteIds ?? []
-    )) {
+    for (const note of mainStore.currentPage.notes.fromIds(container.noteIds)) {
       // Children
 
       const serialNote: Partial<ISerialNote> = this.serialize(note.collab);
@@ -127,8 +128,8 @@ export class AppSerialization {
 
     serialRegion.arrows = [];
 
-    for (const arrow of this.app.react.page.arrows.fromIds(
-      container.arrowIds ?? []
+    for (const arrow of mainStore.currentPage.arrows.fromIds(
+      container.arrowIds
     )) {
       const serialArrow: ISerialArrow = {
         start: {
@@ -152,15 +153,15 @@ export class AppSerialization {
   }
 
   private _deserializeAux(serialRegion: ISerialRegion): IRegionCollab {
+    const mainStore = useMainStore();
+
     const noteMap = new Map<number, string>();
 
     // Deserialize notes
 
-    let noteIds;
+    const noteIds = [];
 
     if (serialRegion.notes != null) {
-      noteIds = [];
-
       for (let i = 0; i < serialRegion.notes.length; i++) {
         const serialNote = serialRegion.notes[i];
 
@@ -189,7 +190,7 @@ export class AppSerialization {
           noteCollab[collabKey] = cloneDeep(serialNote[collabKey]);
         }
 
-        noteCollab.zIndex = this.app.react.page.react.collab.nextZIndex++;
+        noteCollab.zIndex = mainStore.currentPage.react.collab.nextZIndex++;
 
         // Children
 
@@ -202,7 +203,7 @@ export class AppSerialization {
 
         const noteId = v4();
 
-        this.app.react.page.notes.react.collab[noteId] =
+        mainStore.currentPage.notes.react.collab[noteId] =
           noteCollab as INoteCollab;
 
         noteMap.set(i, noteId);
@@ -213,11 +214,9 @@ export class AppSerialization {
 
     // Deserialize arrows
 
-    let arrowIds;
+    const arrowIds = [];
 
     if (serialRegion.arrows != null) {
-      arrowIds = [];
-
       for (const serialArrow of serialRegion.arrows) {
         const arrowCollab: IArrowCollab = {
           start: {
@@ -232,7 +231,7 @@ export class AppSerialization {
 
         const arrowId = v4();
 
-        this.app.react.page.arrows.react.collab[arrowId] =
+        mainStore.currentPage.arrows.react.collab[arrowId] =
           arrowCollab as IArrowCollab;
 
         arrowIds.push(arrowId);
@@ -246,25 +245,19 @@ export class AppSerialization {
     destRegion: IRegionCollab,
     destIndex?: number | null
   ): IRegionCollab {
-    serialRegion = ISerialRegion.parse(serialRegion);
-
     let result: IRegionCollab = { noteIds: [], arrowIds: [] };
 
-    this.app.react.page.collab.doc.transact(() => {
+    serialRegion = ISerialRegion.parse(serialRegion);
+
+    const mainStore = useMainStore();
+
+    mainStore.currentPage.collab.doc.transact(() => {
       result = this._deserializeAux(serialRegion);
 
-      if (result.noteIds != null) {
-        destRegion.noteIds ??= [];
+      destIndex = destIndex ?? destRegion.noteIds.length;
+      destRegion.noteIds.splice(destIndex, 0, ...result.noteIds);
 
-        destIndex = destIndex ?? destRegion.noteIds.length;
-        destRegion.noteIds.splice(destIndex, 0, ...result.noteIds);
-      }
-
-      if (result.arrowIds != null) {
-        destRegion.arrowIds ??= [];
-
-        destRegion.arrowIds.push(...result.arrowIds);
-      }
+      destRegion.arrowIds.push(...result.arrowIds);
     });
 
     return result;

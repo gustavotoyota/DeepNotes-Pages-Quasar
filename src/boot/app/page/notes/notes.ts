@@ -1,4 +1,8 @@
+import { getYjsValue, SyncedArray, SyncedMap } from '@syncedstore/core';
+import { Factory } from 'src/boot/static/composition-root';
+import { Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
+import { ITemplate } from 'src/stores/templates';
 import {
   computed,
   ComputedRef,
@@ -16,11 +20,14 @@ export interface INotesReact {
 }
 
 export class PageNotes {
+  factory: Factory;
   page: AppPage;
 
   react: UnwrapRef<INotesReact>;
 
-  constructor(page: AppPage) {
+  constructor(factory: Factory, page: AppPage) {
+    this.factory = factory;
+
     this.page = page;
 
     this.react = refProp<INotesReact>(this, 'react', {
@@ -44,5 +51,69 @@ export class PageNotes {
   }
   toIds(notes: PageNote[]): string[] {
     return notes.map((note) => note.id);
+  }
+
+  createAndObserveChildren(noteId: string, parentId: string | null): void {
+    const collab = this.react.collab[noteId];
+
+    console.log('Collab', collab);
+
+    const note = this.factory.makeNote(this.page, noteId, parentId, collab);
+
+    console.log('Created', note.id);
+
+    this.react.map[note.id] = note;
+
+    this.createAndObserveIds(note.collab.noteIds, note.id);
+    this.page.arrows.createAndObserveIds(note.collab.arrowIds, parentId);
+  }
+  createAndObserveIds(noteIds: string[], parentId: string | null) {
+    for (const noteId of noteIds)
+      this.createAndObserveChildren(noteId, parentId);
+
+    (getYjsValue(noteIds) as SyncedArray<string>).observe((event) => {
+      for (const delta of event.changes.delta) {
+        if (delta.insert == null) continue;
+
+        for (const noteId of delta.insert)
+          this.createAndObserveChildren(noteId, parentId);
+      }
+    });
+  }
+
+  observeMap() {
+    (getYjsValue(this.react.collab) as SyncedMap<INoteCollab>).observe(
+      (event) => {
+        for (const [noteId, change] of event.changes.keys) {
+          if (change.action !== 'delete') continue;
+
+          delete this.react.map[noteId];
+        }
+      }
+    );
+  }
+
+  createFromTemplate(template: ITemplate, clientPos: Vec2) {
+    const noteId = this.page.app.serialization.deserialize(
+      {
+        notes: [template.data],
+        arrows: [],
+      },
+      this.page.react.collab
+    ).noteIds[0];
+
+    const note = this.page.notes.react.map[noteId];
+
+    //note.collab.pos = new Vec2(Number.MAX_VALUE, Number.MAX_VALUE);
+
+    note.collab.pos = this.page.pos.clientToWorld(clientPos);
+
+    // setTimeout(() => {
+    //   const worldPos = this.page.pos.clientToWorld(clientPos)
+
+    //   note.collab.pos = note.worldSize.mul(new Vec2(note.collab.anchor).subScalar(0.5)).add(worldPos)
+
+    //   this.page.editing.start(note, note.topSection)
+    // }, 0)
   }
 }

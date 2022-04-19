@@ -1,4 +1,4 @@
-import { PageElem } from '../elems/elems';
+import { PageElem } from '../elems/elem';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 
