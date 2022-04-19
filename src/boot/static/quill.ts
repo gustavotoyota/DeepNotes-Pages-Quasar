@@ -40,7 +40,7 @@ export const quillOptions = {
   ],
 
   modules: {
-    syntax: true,
+    //syntax: true,
 
     cursors: true,
 

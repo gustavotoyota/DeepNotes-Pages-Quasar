@@ -18,13 +18,11 @@ import { PageSizes } from '../app/page/space/sizes';
 import { AppSerialization } from '../app/serialization';
 import { PageCollab } from '../app/page/collab';
 import { IArrowCollab, PageArrow } from '../app/page/arrows/arrow';
-import { AppTemplates } from '../app/templates';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
 
   serialization: () => (app: DeepNotesApp) => new AppSerialization(app),
-  templates: () => (app: DeepNotesApp) => new AppTemplates(app),
 
   page: (factory: any) => (app: DeepNotesApp, id: string) =>
     new AppPage(factory, app, id),

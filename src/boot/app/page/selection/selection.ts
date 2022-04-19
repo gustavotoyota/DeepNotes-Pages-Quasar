@@ -99,4 +99,24 @@ export class PageSelection {
       }
     }
   }
+
+  set(...elems: PageElem[]) {
+    this.clear();
+    this.add(...elems);
+  }
+
+  selectAll() {
+    for (const elem of this.page.activeRegion.react.elems) {
+      this.add(elem);
+    }
+  }
+
+  shift(shiftX: number, shiftY: number) {
+    this.page.collab.doc.transact(() => {
+      for (const note of this.react.notes) {
+        note.react.pos.x += shiftX;
+        note.react.pos.y += shiftY;
+      }
+    });
+  }
 }

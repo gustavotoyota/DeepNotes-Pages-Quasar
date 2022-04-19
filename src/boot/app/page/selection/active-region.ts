@@ -1,6 +1,7 @@
 import { refProp } from 'src/boot/static/vue';
 import { computed, ComputedRef, UnwrapRef } from 'vue';
 import { PageArrow } from '../arrows/arrow';
+import { PageElem } from '../elems/elem';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 import { PageRegion } from '../regions/region';
@@ -15,6 +16,7 @@ export interface IActiveRegionReact {
 
   notes: ComputedRef<PageNote[]>;
   arrows: ComputedRef<PageArrow[]>;
+  elems: ComputedRef<PageElem[]>;
 }
 
 export class PageActiveRegion {
@@ -41,6 +43,9 @@ export class PageActiveRegion {
 
       notes: computed(() => this.react.region.react.notes),
       arrows: computed(() => this.react.region.react.arrows),
+      elems: computed(() =>
+        (this.react.notes as PageElem[]).concat(this.react.arrows)
+      ),
     });
   }
 }

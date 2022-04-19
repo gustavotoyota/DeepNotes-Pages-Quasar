@@ -74,6 +74,11 @@ export interface INoteSize {
 }
 export type NoteSizeProp = keyof INoteSize;
 
+export interface INoteVec2React {
+  x: WritableComputedRef<number>;
+  y: WritableComputedRef<number>;
+}
+
 export interface INoteSectionReact {
   enabled: WritableComputedRef<boolean>;
   collabHeight: INoteSize;
@@ -90,8 +95,8 @@ export interface INoteReact extends IRegionReact {
   editing: boolean;
   dragging: boolean;
 
-  anchor: WritableComputedRef<IVec2>;
-  pos: WritableComputedRef<IVec2>;
+  anchor: INoteVec2React;
+  pos: INoteVec2React;
 
   head: INoteTextSectionReact;
   body: INoteTextSectionReact;
@@ -147,19 +152,26 @@ export class PageNote extends PageRegion {
       return mapDeep(this.collab, path, defaultVal);
     };
 
-    const makeSectionSize = (section: NoteSection) => {
+    const mapVec2 = (path: string[], defaultVal: Vec2) => {
+      return {
+        x: mapCollab([...path, 'x'], () => defaultVal.x),
+        y: mapCollab([...path, 'y'], () => defaultVal.y),
+      };
+    };
+
+    const mapSectionSize = (section: NoteSection) => {
       return {
         expanded: mapCollab([section, 'height', 'expanded'], () => 'auto'),
         collapsed: mapCollab([section, 'height', 'collapsed'], () => 'auto'),
       };
     };
 
-    const makeTextSection = (section: NoteTextSection, defaultVal: boolean) => {
+    const mapTextSection = (section: NoteTextSection, defaultVal: boolean) => {
       return {
         enabled: mapCollab([section, 'enabled'], () => defaultVal),
         wrap: mapCollab([section, 'wrap'], () => defaultVal),
         quill: null,
-        collabHeight: makeSectionSize(section),
+        collabHeight: mapSectionSize(section),
       };
     };
 
@@ -176,11 +188,11 @@ export class PageNote extends PageRegion {
       editing: false,
       dragging: false,
 
-      anchor: mapCollab(['anchor'], () => new Vec2(0.5, 0.5)),
-      pos: mapCollab(['pos'], () => new Vec2(0, 0)),
+      anchor: mapVec2(['anchor'], new Vec2(0.5, 0.5)),
+      pos: mapVec2(['pos'], new Vec2(0, 0)),
 
-      head: makeTextSection('head', false),
-      body: makeTextSection('body', true),
+      head: mapTextSection('head', false),
+      body: mapTextSection('body', true),
       container: {
         enabled: mapCollab(['container', 'enabled'], () => false),
         horizontal: mapCollab(['container', 'horizontal'], () => false),
@@ -190,7 +202,7 @@ export class PageNote extends PageRegion {
           ['container', 'stretchChildren'],
           () => true
         ),
-        collabHeight: makeSectionSize('container'),
+        collabHeight: mapSectionSize('container'),
       },
 
       collapsing: {

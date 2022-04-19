@@ -2,7 +2,6 @@ import { boot } from 'quasar/wrappers';
 import { Factory, factory } from '../static/composition-root';
 import 'src/boot/static/types';
 import { AppSerialization } from './serialization';
-import { AppTemplates } from './templates';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -12,11 +11,9 @@ declare module '@vue/runtime-core' {
 
 export class DeepNotesApp {
   readonly serialization: AppSerialization;
-  readonly templates: AppTemplates;
 
   constructor(factory: Factory) {
     this.serialization = factory.makeSerialization(this);
-    this.templates = factory.makeTemplates(this);
   }
 }
 

@@ -1,6 +1,5 @@
-import 'highlight.js/styles/atom-one-dark.css';
-
 import hljs from 'highlight.js';
+import 'highlight.js/styles/atom-one-dark.css';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -8,3 +7,5 @@ declare global {
 }
 
 globalThis.hljs = hljs;
+
+console.log('hljs', hljs);

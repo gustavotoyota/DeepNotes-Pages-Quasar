@@ -11,8 +11,18 @@ export interface ITemplate {
 
 export const useTemplates = defineStore('templates', {
   state: () => ({
-    list: [] as ITemplate[],
-    defaultId: null,
+    list: [
+      {
+        id: 'default',
+        name: 'Default',
+        visible: true,
+        data: {
+          head: { value: [{ insert: '\n' }] },
+          body: { value: [{ insert: '\n' }] },
+        },
+      },
+    ] as ITemplate[],
+    defaultId: 'default',
 
     popup: {
       visible: false,
@@ -21,15 +31,15 @@ export const useTemplates = defineStore('templates', {
   }),
 
   getters: {
-    default(): ITemplate | undefined {
-      return this.list.find((item) => item.id === this.defaultId);
+    default(): ITemplate {
+      return this.list.find((item) => item.id === this.defaultId) as ITemplate;
     },
   },
 
   actions: {
     showPopup(pos: Vec2) {
-      this.popup.pos = pos;
       this.popup.visible = true;
+      this.popup.pos = pos;
     },
   },
 });

@@ -10,11 +10,9 @@
   setup
   lang="ts"
 >
-import { DeepNotesApp } from 'src/boot/app/app';
 import { AppPage } from 'src/boot/app/page/page';
+import { useTemplates } from 'src/stores/templates';
 import { inject } from 'vue';
-
-const app = inject<DeepNotesApp>('app')!;
 
 const page = inject<AppPage>('page')!;
 
@@ -23,9 +21,11 @@ function onPointerDown(event: PointerEvent) {
 }
 
 function onDoubleClick(event: MouseEvent) {
+  const templates = useTemplates();
+
   const clientPos = page.pos.eventToClient(event);
 
-  page.notes.createFromTemplate(app.templates.react.default, clientPos);
+  page.notes.createFromTemplate(templates.default, clientPos);
 }
 </script>
 
