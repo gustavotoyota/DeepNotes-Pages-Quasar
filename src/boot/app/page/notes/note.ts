@@ -80,6 +80,7 @@ export interface INoteSectionReact {
 }
 
 export interface INoteTextSectionReact extends INoteSectionReact {
+  wrap: WritableComputedRef<boolean>;
   quill: Quill | null;
 }
 
@@ -156,6 +157,7 @@ export class PageNote extends PageRegion {
     const makeTextSection = (section: NoteTextSection, defaultVal: boolean) => {
       return {
         enabled: mapCollab([section, 'enabled'], () => defaultVal),
+        wrap: mapCollab([section, 'wrap'], () => defaultVal),
         quill: null,
         collabHeight: makeSectionSize(section),
       };

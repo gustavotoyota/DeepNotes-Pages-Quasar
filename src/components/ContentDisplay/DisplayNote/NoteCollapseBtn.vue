@@ -1,0 +1,45 @@
+<template>
+  <div
+    v-if="note.react.collapsing.enabled && note.react.topSection === section"
+    style="flex: none"
+  >
+    <q-btn
+      class="note-collapse-button"
+      :style="{ height: note.react.numSections === 1 ? '38.45px' : '100%' }"
+      @click.left.stop=""
+      @pointerdown.left.stop
+      @dblclick.left.stop
+    >
+      <q-icon
+        :name="
+          note.react.collapsing.collapsed
+            ? 'mdi-chevron-down'
+            : 'mdi-chevron-up'
+        "
+      />
+    </q-btn>
+  </div>
+</template>
+
+<script
+  setup
+  lang="ts"
+>
+import { NoteSection, PageNote } from 'src/boot/app/page/notes/note';
+import { AppPage } from 'src/boot/app/page/page';
+import { inject } from 'vue';
+
+defineProps<{
+  section: NoteSection;
+}>();
+
+const page = inject<AppPage>('page')!;
+const note = inject<PageNote>('note')!;
+</script>
+
+<style scoped>
+.note-collapse-button {
+  min-width: 0 !important;
+  width: 32px;
+}
+</style>

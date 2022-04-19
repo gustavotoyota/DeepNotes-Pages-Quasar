@@ -1,5 +1,12 @@
 <template>
-  <NoteAnchor></NoteAnchor>
+  <NoteAnchor>
+    <NoteFrame>
+      <NoteContent>
+        <NoteTextSection section="head" />
+        <NoteTextSection section="body" />
+      </NoteContent>
+    </NoteFrame>
+  </NoteAnchor>
 </template>
 
 <script
@@ -9,6 +16,9 @@
 import { PageNote } from 'src/boot/app/page/notes/note';
 import { provide, watchEffect } from 'vue';
 import NoteAnchor from './DisplayNote/NoteAnchor.vue';
+import NoteFrame from './DisplayNote/NoteFrame.vue';
+import NoteContent from './DisplayNote/NoteContent.vue';
+import NoteTextSection from './DisplayNote/NoteTextSection.vue';
 
 const props = defineProps<{
   note: PageNote;

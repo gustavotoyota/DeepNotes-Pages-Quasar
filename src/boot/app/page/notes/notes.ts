@@ -56,11 +56,7 @@ export class PageNotes {
   createAndObserveChildren(noteId: string, parentId: string | null): void {
     const collab = this.react.collab[noteId];
 
-    console.log('Collab', collab);
-
     const note = this.factory.makeNote(this.page, noteId, parentId, collab);
-
-    console.log('Created', note.id);
 
     this.react.map[note.id] = note;
 

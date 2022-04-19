@@ -32,8 +32,8 @@ module.exports = configure(function (/* ctx */) {
       'external/i18n',
       'external/axios',
       'external/syncedstore',
-      { path: 'external/quill', server: false },
       { path: 'external/highlight', server: false },
+      { path: 'external/quill', server: false },
       'app/app',
     ],
 

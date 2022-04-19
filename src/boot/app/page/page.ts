@@ -94,10 +94,7 @@ export class AppPage extends PageRegion {
 
       // Region
 
-      noteIds: computed(() => {
-        console.log('asd');
-        return this.react.collab.noteIds;
-      }),
+      noteIds: computed(() => this.react.collab.noteIds),
       arrowIds: computed(() => this.react.collab.arrowIds),
 
       notes: computed(() => this.notes.fromIds(this.react.noteIds)),
