@@ -39,4 +39,13 @@ export class Rect {
       this.bottomRight.addScalar(amount)
     );
   }
+
+  inside(rect: Rect) {
+    return (
+      this.topLeft.x >= rect.topLeft.x &&
+      this.topLeft.y >= rect.topLeft.y &&
+      this.bottomRight.x <= rect.bottomRight.x &&
+      this.bottomRight.y <= rect.bottomRight.y
+    );
+  }
 }

@@ -4,18 +4,18 @@
     class="box-selection"
     :style="{
       left: `${Math.min(
-        boxSelection.react.startPos.x,
-        boxSelection.react.endPos.x
+        boxSelection.react.displayStart.x,
+        boxSelection.react.displayEnd.x
       )}px`,
       top: `${Math.min(
-        boxSelection.react.startPos.y,
-        boxSelection.react.endPos.y
+        boxSelection.react.displayStart.y,
+        boxSelection.react.displayEnd.y
       )}px`,
       width: `${Math.abs(
-        boxSelection.react.endPos.x - boxSelection.react.startPos.x
+        boxSelection.react.displayEnd.x - boxSelection.react.displayStart.x
       )}px`,
       height: `${Math.abs(
-        boxSelection.react.endPos.y - boxSelection.react.startPos.y
+        boxSelection.react.displayEnd.y - boxSelection.react.displayStart.y
       )}px`,
     }"
   ></div>

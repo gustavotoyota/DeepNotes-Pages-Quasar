@@ -6,6 +6,7 @@ import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
 import { Quill } from 'quill';
 import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
+import { Rect } from 'src/boot/static/rect';
 
 export const INoteCollabSize = z
   .object({
@@ -121,6 +122,10 @@ export interface INoteReact extends IRegionReact {
   index: number;
 
   worldSize: Vec2;
+  worldRect: ComputedRef<Rect>;
+
+  clientSize: ComputedRef<Vec2>;
+  clientRect: ComputedRef<Rect>;
 }
 
 export class PageNote extends PageRegion {
@@ -249,6 +254,26 @@ export class PageNote extends PageRegion {
       index: -1,
 
       worldSize: new Vec2(0, 0),
+      worldRect: computed(
+        () =>
+          new Rect(
+            new Vec2(this.collab.pos).sub(
+              new Vec2(this.collab.anchor).mul(this.react.worldSize)
+            ),
+            new Vec2(this.collab.pos).add(
+              new Vec2(1)
+                .sub(new Vec2(this.collab.anchor))
+                .mul(this.react.worldSize)
+            )
+          )
+      ),
+
+      clientSize: computed(() =>
+        this.page.pos.worldToClient(this.react.worldSize)
+      ),
+      clientRect: computed(() =>
+        this.page.rects.worldToClient(this.react.worldRect)
+      ),
 
       noteIds: computed(() => this.collab.noteIds),
       arrowIds: computed(() => this.collab.arrowIds),
@@ -261,7 +286,9 @@ export class PageNote extends PageRegion {
   }
 
   bringToTop() {
-    if (this.collab.zIndex === this.page.react.collab.nextZIndex - 1) return;
+    if (this.collab.zIndex === this.page.react.collab.nextZIndex - 1) {
+      return;
+    }
 
     this.collab.zIndex = this.page.react.collab.nextZIndex++;
   }
