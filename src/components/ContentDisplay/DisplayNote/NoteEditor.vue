@@ -100,7 +100,10 @@ const paddingFix = computed(
 );
 </script>
 
-<style scoped>
+<style
+  scoped
+  lang="scss"
+>
 .note-editor {
   height: 100%;
 
@@ -111,12 +114,12 @@ const paddingFix = computed(
   position: static;
 }
 
+$note-padding: 9px;
+
 .note-editor :deep(.ql-editor) {
-  padding: 9px !important;
+  padding: $note-padding !important;
 
-  box-sizing: content-box;
-
-  min-width: max(1px, 100%);
+  min-width: MAX(1px + $note-padding * 2, 100%);
   max-width: 100%;
 
   min-height: 100%;
