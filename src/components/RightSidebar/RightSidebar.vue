@@ -46,9 +46,9 @@ import { ElemType } from 'src/boot/app/page/elems/elem';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { toRef } from 'vue';
-import NoteProperties from './RightSidebar/NoteProperties.vue';
-import ArrowProperties from './RightSidebar/ArrowProperties.vue';
-import PageProperties from './RightSidebar/PageProperties.vue';
+import NoteProperties from './NoteProperties.vue';
+import ArrowProperties from './ArrowProperties.vue';
+import PageProperties from './PageProperties.vue';
 
 const uiStore = useUIStore();
 

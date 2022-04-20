@@ -21,11 +21,11 @@
 >
 import { AppPage } from 'src/boot/app/page/page';
 import { provide } from 'vue';
-import LoadingOverlay from './misc/LoadingOverlay.vue';
-import DisplayBackground from './ContentDisplay/DisplayBackground.vue';
-import DisplayBoxSelection from './ContentDisplay/DisplayBoxSelection.vue';
-import DisplayBtns from './ContentDisplay/DisplayBtns.vue';
-import DisplayNotes from './ContentDisplay/DisplayNotes.vue';
+import LoadingOverlay from '../misc/LoadingOverlay.vue';
+import DisplayBackground from './DisplayBackground.vue';
+import DisplayBoxSelection from './DisplayBoxSelection.vue';
+import DisplayBtns from './DisplayBtns.vue';
+import DisplayNotes from './DisplayNotes.vue';
 
 const props = defineProps<{
   page: AppPage;

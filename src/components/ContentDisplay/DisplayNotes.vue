@@ -31,7 +31,7 @@
 >
 import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';
-import DisplayNote from './DisplayNote.vue';
+import DisplayNote from './DisplayNote/DisplayNote.vue';
 
 const page = inject<AppPage>('page')!;
 </script>

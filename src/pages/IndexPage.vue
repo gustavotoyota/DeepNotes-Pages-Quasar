@@ -14,7 +14,7 @@
 import { DeepNotesApp } from 'src/boot/app/app';
 import { factory } from 'src/boot/static/composition-root';
 import { AppPage } from 'src/boot/app/page/page';
-import ContentDisplay from 'src/components/ContentDisplay.vue';
+import ContentDisplay from 'src/components/ContentDisplay/ContentDisplay.vue';
 import { inject, onMounted, provide, shallowRef } from 'vue';
 import { usePageCache } from 'src/stores/page-cache';
 

@@ -29,11 +29,11 @@
 >
 import { PageNote } from 'src/boot/app/page/notes/note';
 import { provide, watchEffect } from 'vue';
-import NoteAnchor from './DisplayNote/NoteAnchor.vue';
-import NoteFrame from './DisplayNote/NoteFrame.vue';
-import NoteContent from './DisplayNote/NoteContent.vue';
-import NoteTextSection from './DisplayNote/NoteTextSection.vue';
-import NoteContainerSection from './DisplayNote/NoteContainerSection.vue';
+import NoteAnchor from './NoteAnchor.vue';
+import NoteFrame from './NoteFrame.vue';
+import NoteContent from './NoteContent.vue';
+import NoteTextSection from './NoteTextSection.vue';
+import NoteContainerSection from './NoteContainerSection.vue';
 
 const props = defineProps<{
   note: PageNote;

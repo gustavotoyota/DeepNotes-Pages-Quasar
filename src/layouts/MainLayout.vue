@@ -24,7 +24,7 @@
 >
 import MainToolbar from '../components/MainToolbar.vue';
 import LeftSidebar from '../components/LeftSidebar.vue';
-import RightSidebar from 'src/components/RightSidebar.vue';
+import RightSidebar from 'src/components/RightSidebar/RightSidebar.vue';
 import LoadingOverlay from 'src/components/misc/LoadingOverlay.vue';
 
 import { useMainStore } from 'src/stores/main-store';
