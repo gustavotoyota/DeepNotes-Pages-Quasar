@@ -20,6 +20,8 @@ import { PageCollab } from './collab';
 import { IRegionCollab, IRegionReact, PageRegion } from './regions/region';
 import { PageElems } from './elems/elems';
 import { encodeStateAsUpdateV2 } from 'yjs';
+import { PageEditing } from './notes/editing';
+import { PageClickSelection } from './selection/click-selection';
 
 export interface IPageReference {
   id: string;
@@ -53,12 +55,15 @@ export class AppPage extends PageRegion {
   readonly collab: PageCollab;
 
   readonly notes: PageNotes;
+  readonly editing: PageEditing;
+
   readonly arrows: PageArrows;
   readonly elems: PageElems;
 
   readonly selection: PageSelection;
   readonly activeElem: PageActiveElem;
   readonly activeRegion: PageActiveRegion;
+  readonly clickSelection: PageClickSelection;
   readonly boxSelection: PageBoxSelection;
 
   readonly camera: PageCamera;
@@ -104,12 +109,15 @@ export class AppPage extends PageRegion {
     this.collab = factory.makeCollab(this);
 
     this.notes = factory.makeNotes(this);
+    this.editing = factory.makeEditing(this);
+
     this.arrows = factory.makeArrows(this);
     this.elems = factory.makeElems(this);
 
     this.selection = factory.makeSelection(this);
     this.activeElem = factory.makeActiveElem(this);
     this.activeRegion = factory.makeActiveRegion(this);
+    this.clickSelection = factory.makeClickSelection(this);
     this.boxSelection = factory.makeBoxSelection(this);
 
     this.camera = factory.makeCamera(this);

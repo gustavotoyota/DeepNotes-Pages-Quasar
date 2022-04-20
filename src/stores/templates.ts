@@ -17,8 +17,14 @@ export const useTemplates = defineStore('templates', {
         name: 'Default',
         visible: true,
         data: {
-          head: { value: [{ insert: '\n' }] },
-          body: { value: [{ insert: '\n' }] },
+          head: {
+            enabled: false,
+            value: [{ insert: '\n' }],
+          },
+          body: {
+            enabled: true,
+            value: [{ insert: '\n' }],
+          },
         },
       },
     ] as ITemplate[],

@@ -102,9 +102,17 @@ export interface INoteReact extends IRegionReact {
 
   sizeProp: ComputedRef<NoteSizeProp>;
 
-  autoWidth: ComputedRef<boolean>;
-  domWidth: ComputedRef<string>;
-  targetWidth: ComputedRef<string>;
+  width: {
+    auto: ComputedRef<boolean>;
+    dom: ComputedRef<string>;
+    target: ComputedRef<string>;
+  };
+
+  height: {
+    head: ComputedRef<string>;
+    body: ComputedRef<string>;
+    container: ComputedRef<string>;
+  };
 
   topSection: ComputedRef<NoteSection>;
   bottomSection: ComputedRef<NoteSection>;
@@ -165,29 +173,38 @@ export class PageNote extends PageRegion {
         this.react.collapsed ? 'collapsed' : 'expanded'
       ),
 
-      autoWidth: computed(() => {
-        // Returns false if has fixed width parent with stretched vertical children
+      width: {
+        auto: computed(() => {
+          // Returns false if has fixed width parent with stretched vertical children
 
-        if (
-          this.react.parent != null &&
-          !this.react.parent.react.autoWidth &&
-          !this.react.parent.collab.container.horizontal &&
-          this.react.parent.collab.container.stretchChildren
-        )
-          return false;
+          if (
+            this.react.parent != null &&
+            !this.react.parent.react.width.auto &&
+            !this.react.parent.collab.container.horizontal &&
+            this.react.parent.collab.container.stretchChildren
+          )
+            return false;
 
-        // Returns false if has fixed width itself
+          // Returns false if has fixed width itself
 
-        if (this.collab.width[this.react.sizeProp].endsWith('px')) return false;
+          if (this.collab.width[this.react.sizeProp].endsWith('px'))
+            return false;
 
-        return true;
-      }),
-      targetWidth: computed(() => {
-        return this.react.autoWidth ? 'auto' : '0px';
-      }),
-      domWidth: computed(() => {
-        return 'test';
-      }),
+          return true;
+        }),
+        dom: computed(() => {
+          return 'auto';
+        }),
+        target: computed(() => {
+          return this.react.width.auto ? 'auto' : '0px';
+        }),
+      },
+
+      height: {
+        head: computed(() => 'auto'),
+        body: computed(() => 'auto'),
+        container: computed(() => 'auto'),
+      },
 
       topSection: computed(() => {
         if (this.collab.head.enabled) {

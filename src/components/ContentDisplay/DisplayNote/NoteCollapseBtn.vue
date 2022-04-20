@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="note.react.collapsing.enabled && note.react.topSection === section"
+    v-if="note.collab.collapsing.enabled && note.react.topSection === section"
     style="flex: none"
   >
     <q-btn
@@ -11,11 +11,7 @@
       @dblclick.left.stop
     >
       <q-icon
-        :name="
-          note.react.collapsing.collapsed
-            ? 'mdi-chevron-down'
-            : 'mdi-chevron-up'
-        "
+        :name="note.react.collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'"
       />
     </q-btn>
   </div>

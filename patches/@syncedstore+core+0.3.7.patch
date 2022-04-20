@@ -1,0 +1,13 @@
+diff --git a/node_modules/@syncedstore/core/dist/syncedstore.js b/node_modules/@syncedstore/core/dist/syncedstore.js
+index cb7e6a3..1be796e 100644
+--- a/node_modules/@syncedstore/core/dist/syncedstore.js
++++ b/node_modules/@syncedstore/core/dist/syncedstore.js
+@@ -452,7 +452,7 @@ function validateRootTypeDescription(typeDescription) {
+         throw new Error("Root Array initializer must always be empty array");
+       }
+     } else if (val && typeof val === "object") {
+-      if (Object.keys(val).length !== 0 || Object.getPrototypeOf(val) !== Object.prototype) {
++      if (Object.keys(val).length !== 0) {
+         throw new Error("Root Object initializer must always be {}");
+       }
+     } else if (val !== "xml" && val !== "text") {

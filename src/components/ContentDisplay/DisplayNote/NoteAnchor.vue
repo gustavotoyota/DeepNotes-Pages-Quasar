@@ -5,8 +5,8 @@
     :class="{ absolute: note.parentId == null }"
     :style="{
       position: note.parentId == null ? 'absolute' : 'relative',
-      left: note.parentId == null ? `${note.react.pos.x}px` : undefined,
-      top: note.parentId == null ? `${note.react.pos.y}px` : undefined,
+      left: note.parentId == null ? `${note.collab.pos.x}px` : undefined,
+      top: note.parentId == null ? `${note.collab.pos.y}px` : undefined,
       'z-index': note.parentId == null ? note.collab.zIndex : undefined,
     }"
   >

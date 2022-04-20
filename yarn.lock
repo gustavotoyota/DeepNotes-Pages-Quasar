@@ -4571,7 +4571,14 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lib0@^0.2.31, lib0@^0.2.35, lib0@^0.2.42, lib0@^0.2.49:
+lib0@^0.2.31, lib0@^0.2.42:
+  version "0.2.51"
+  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.51.tgz#23b1271a26f39120a4d0f86b9dfb44577f5ce98c"
+  integrity sha512-05Erb3465CxJa38LQlMz4EbetNvRna1S3BzqEjC0/pmp5cQuQSfNNmeS0722Wev1dRlMUp2Cql0gQ55krSXf2Q==
+  dependencies:
+    isomorphic.js "^0.2.4"
+
+lib0@^0.2.35, lib0@^0.2.49:
   version "0.2.49"
   resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.49.tgz#7addb5075063d66ea2c55749e5aeaa48e36278c8"
   integrity sha512-ziwYLe/pmI9bjHsAehm4ApuVfZ+q+sbC+vO6Z5+KM+0Fe0MrTLwZSDkJ+cElnhFNQ0P6z/wVkRmc5+vTmImJ9A==
@@ -6926,9 +6933,9 @@ y-quill@^0.1.4:
     y-protocols "^1.0.0"
 
 y-websocket@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/y-websocket/-/y-websocket-1.4.0.tgz#349a4d8cefd8cb7c3bc81effc4b2815f73a77768"
-  integrity sha512-NqG71oGJQBR2/cH4FLa/JmJdDK7DqLDnzrkQrLlxkwUXf5Gbo2jFrHl8lAIppu9V+YEjCR5YpkFKVU3gAHy2LQ==
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/y-websocket/-/y-websocket-1.4.1.tgz#69abbe7c2d18882cb5d2abed0d4daf43187f11ee"
+  integrity sha512-Wagfx30R/+8XF3/zdvASAeBgJwrvqIQf4K45hhHTTE4xu1f8311hXVQ6JQ4kiPtkgqOK226+npoAEf7FLtp+aA==
   dependencies:
     lib0 "^0.2.42"
     lodash.debounce "^4.0.8"

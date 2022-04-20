@@ -1,17 +1,18 @@
 <template>
   <div
-    v-if="note.react[section].enabled"
+    v-if="note.collab[section].enabled"
     :class="`note-${section}-section`"
     style="display: flex; min-height: 36.453px"
-    :style="{ height: 'auto' }"
+    :style="{ height: note.react.height[section] }"
   >
     <div
       style="flex: 1"
-      :style="{ width: note.react.targetWidth }"
+      :style="{ width: note.react.width.target }"
+      @dblclick.left="page.editing.start(note, section)"
     >
       <NoteEditor
         :section="section"
-        :wrap="note.react[section].wrap"
+        :wrap="note.collab[section].wrap"
       />
     </div>
 

@@ -37,8 +37,8 @@ export class PageNotes {
     });
   }
 
-  fromId(noteId: string): PageNote | null {
-    return this.react.map[noteId] ?? null;
+  fromId(noteId: string | null): PageNote | null {
+    return this.react.map[noteId ?? ''] ?? null;
   }
   toId(note: PageNote): string {
     return note.id;
@@ -100,9 +100,9 @@ export class PageNotes {
 
     const note = this.page.notes.react.map[noteId];
 
-    //note.collab.pos = new Vec2(Number.MAX_VALUE, Number.MAX_VALUE);
-
     note.collab.pos = this.page.pos.clientToWorld(clientPos);
+
+    this.page.editing.start(note);
 
     // setTimeout(() => {
     //   const worldPos = this.page.pos.clientToWorld(clientPos)

@@ -17,6 +17,12 @@ import { inject } from 'vue';
 const page = inject<AppPage>('page')!;
 
 function onPointerDown(event: PointerEvent) {
+  page.editing.stop();
+
+  if (!event.ctrlKey && !event.shiftKey) {
+    page.selection.clear(null);
+  }
+
   page.boxSelection.start(event);
 }
 

@@ -1,0 +1,35 @@
+diff --git a/node_modules/quill/dist/quill.js b/node_modules/quill/dist/quill.js
+index 811b3d0..0e3f8bc 100644
+--- a/node_modules/quill/dist/quill.js
++++ b/node_modules/quill/dist/quill.js
+@@ -9795,7 +9795,15 @@ var Tooltip = function () {
+ 
+     this.quill = quill;
+     this.boundsContainer = boundsContainer || document.body;
+-    this.root = quill.addContainer('ql-tooltip');
++
++    const bubble = document.createElement('div')
++    bubble.classList.add('ql-bubble')
++    document.body.appendChild(bubble)
++    
++    this.root = document.createElement('div')
++    this.root.classList.add('ql-tooltip')
++    bubble.appendChild(this.root)
++
+     this.root.innerHTML = this.constructor.TEMPLATE;
+     if (this.quill.root === this.quill.scrollingContainer) {
+       this.quill.root.addEventListener('scroll', function () {
+@@ -9813,9 +9821,11 @@ var Tooltip = function () {
+   }, {
+     key: 'position',
+     value: function position(reference) {
+-      var left = reference.left + reference.width / 2 - this.root.offsetWidth / 2;
++      const clientRect = this.quill.root.getBoundingClientRect()
++
++      var left = clientRect.x + reference.left + reference.width / 2 - this.root.offsetWidth / 2;
+       // root.scrollTop should be 0 if scrollContainer !== root
+-      var top = reference.bottom + this.quill.root.scrollTop;
++      var top = clientRect.y + reference.bottom + this.quill.root.scrollTop;
+       this.root.style.left = left + 'px';
+       this.root.style.top = top + 'px';
+       this.root.classList.remove('ql-flip');

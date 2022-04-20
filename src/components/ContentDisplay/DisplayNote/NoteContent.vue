@@ -6,6 +6,7 @@
         note.collab.link == null || note.react.selected ? undefined : 'pointer',
       'background-color': backgroundColor,
     }"
+    @pointerdown.left.stop="onPointerDown"
   >
     <slot />
   </div>
@@ -16,8 +17,11 @@
   lang="ts"
 >
 import { PageNote } from 'src/boot/app/page/notes/note';
+import { AppPage } from 'src/boot/app/page/page';
+import { isMouseOverScrollbar } from 'src/boot/static/dom';
 import { computed, inject } from 'vue';
 
+const page = inject<AppPage>('page')!;
 const note = inject<PageNote>('note')!;
 
 const backgroundColor = computed(() => {
@@ -29,6 +33,18 @@ const backgroundColor = computed(() => {
     return '#424242';
   }
 });
+
+function onPointerDown(event: PointerEvent) {
+  if (isMouseOverScrollbar(event)) {
+    return;
+  }
+
+  page.clickSelection.perform(note, event);
+
+  // if (event.button === 0
+  // && note.react.selected)
+  //   page.dragging.start(event)
+}
 </script>
 
 <style scoped>

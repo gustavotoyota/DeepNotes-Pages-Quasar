@@ -31,13 +31,17 @@ export class PageClickSelection {
     // Clear selection if not holding Ctrl or Shift
     // And the clicked element is not selected
 
-    if (!event.ctrlKey && !event.shiftKey && !elem.react.selected)
+    if (!event.ctrlKey && !event.shiftKey && !elem.react.selected) {
       this.page.selection.clear(elem.parentId);
+    }
 
     // Remove element if selected and holding Ctrl
     // Else, just change the active element
 
-    if (event.ctrlKey && elem.react.selected) this.page.selection.remove(elem);
-    else this.page.activeElem.set(elem);
+    if (event.ctrlKey && elem.react.selected) {
+      this.page.selection.remove(elem);
+    } else {
+      this.page.activeElem.set(elem);
+    }
   }
 }

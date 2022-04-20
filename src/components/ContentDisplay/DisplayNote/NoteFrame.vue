@@ -3,14 +3,13 @@
     class="note-frame"
     ref="frameElem"
     :style="{
-      //'min-width': note.minWidth,
-      width: note.react.domWidth,
+      width: note.react.width.dom,
 
       position: note.parentId == null ? 'absolute' : 'relative',
       transform:
         note.parentId == null
           ? `translate(` +
-            `${-note.react.anchor.x * 100}%, ${-note.react.anchor.y * 100}%)`
+            `${-note.collab.anchor.x * 100}%, ${-note.collab.anchor.y * 100}%)`
           : undefined,
 
       opacity: note.react.dragging ? '0.7' : undefined,

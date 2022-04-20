@@ -12,10 +12,12 @@ import { Op } from '../static/quill';
 
 // Arrow
 
-export const ISerialArrowEndpoint = z.object({
-  noteIndex: z.number().nullable().default(null),
-  pos: IVec2.default({ x: 0, y: 0 }),
-});
+export const ISerialArrowEndpoint = z
+  .object({
+    noteIndex: z.number().nullable().default(null),
+    pos: IVec2.default({ x: 0, y: 0 }),
+  })
+  .default({});
 export type ISerialArrowEndpoint = z.infer<typeof ISerialArrowEndpoint>;
 
 export const ISerialArrow = z.object({
@@ -30,10 +32,12 @@ export const ISerialTextSection = z.object({
   enabled: z.boolean(),
   value: Op.array().default([{ insert: '\n' }]),
   wrap: z.boolean().default(true),
-  height: z.object({
-    expanded: z.string().default('auto'),
-    collapsed: z.string().default('auto'),
-  }),
+  height: z
+    .object({
+      expanded: z.string().default('auto'),
+      collapsed: z.string().default('auto'),
+    })
+    .default({}),
 });
 export type ISerialTextSection = z.infer<typeof ISerialTextSection>;
 

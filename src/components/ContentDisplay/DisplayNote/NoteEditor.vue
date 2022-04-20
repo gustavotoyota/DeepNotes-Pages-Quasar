@@ -14,12 +14,11 @@
   setup
   lang="ts"
 >
-import { SyncedText } from '@syncedstore/core';
 import { Quill } from 'quill';
 import { NoteTextSection, PageNote } from 'src/boot/app/page/notes/note';
 import { AppPage } from 'src/boot/app/page/page';
 import { quillOptions } from 'src/boot/static/quill';
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { QuillBinding } from 'y-quill';
 
 const props = defineProps<{
@@ -32,19 +31,21 @@ const note = inject<PageNote>('note')!;
 
 // Quill setup
 
-const text = computed(() => note.collab[props.section].value as SyncedText);
-
 const editor = ref<Element>();
+
+const text = computed(() => note.collab[props.section].value);
 
 let quill: Quill;
 let quillBinding: QuillBinding | null = null;
 
+let unwatch: () => void;
+
 onMounted(async () => {
   const Quill = await import('quill');
 
-  quill = new Quill.default(editor.value ?? '', quillOptions);
+  quill = new Quill.default(editor.value!, quillOptions);
 
-  note.react[props.section].quill = quill;
+  note.react[`${props.section}Quill`] = quill;
 
   quill.enable(note.react.editing);
 
@@ -53,14 +54,39 @@ onMounted(async () => {
     quill,
     page.collab.websocketProvider.awareness
   );
+
+  unwatch = watch(
+    () => note.react.editing,
+    () => {
+      quill.enable(note.react.editing);
+
+      if (!note.react.editing) {
+        return;
+      }
+
+      // @ts-ignore
+      quill.history.clear();
+
+      if (page.editing.react.section !== props.section) {
+        return;
+      }
+
+      quill.focus();
+      quill.setSelection(0, 0);
+      quill.setSelection(0, Infinity, 'user');
+    },
+    { immediate: true }
+  );
 });
 
 onBeforeUnmount(() => {
+  unwatch();
+
   if (quillBinding != null) {
     quillBinding.destroy();
   }
 
-  note.react[props.section].quill = null;
+  note.react[`${props.section}Quill`] = null;
 
   // @ts-ignore
   document.body.removeChild(quill.theme.tooltip.root.parentNode);
@@ -69,7 +95,8 @@ onBeforeUnmount(() => {
 // Padding fix
 
 const paddingFix = computed(
-  () => note.react.collapsing.enabled && props.section === note.react.topSection
+  () =>
+    note.collab.collapsing.enabled && props.section === note.react.topSection
 );
 </script>
 
@@ -87,7 +114,9 @@ const paddingFix = computed(
 .note-editor :deep(.ql-editor) {
   padding: 9px !important;
 
-  min-width: 100%;
+  box-sizing: content-box;
+
+  min-width: max(1px, 100%);
   max-width: 100%;
 
   min-height: 100%;
