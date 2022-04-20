@@ -41,9 +41,9 @@ function onPointerDown(event: PointerEvent) {
 
   page.clickSelection.perform(note, event);
 
-  // if (event.button === 0
-  // && note.react.selected)
-  //   page.dragging.start(event)
+  if (note.react.selected) {
+    page.dragging.start(event);
+  }
 }
 </script>
 

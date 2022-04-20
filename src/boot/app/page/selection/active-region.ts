@@ -27,7 +27,7 @@ export class PageActiveRegion {
   constructor(page: AppPage) {
     this.page = page;
 
-    this.react = refProp(this, 'react', {
+    this.react = refProp<IActiveRegionReact>(this, 'react', {
       id: null,
 
       region: computed(() => {

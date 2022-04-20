@@ -22,6 +22,7 @@ import { PageElems } from './elems/elems';
 import { encodeStateAsUpdateV2 } from 'yjs';
 import { PageEditing } from './notes/editing';
 import { PageClickSelection } from './selection/click-selection';
+import { PageDragging } from './notes/dragging';
 
 export interface IPageReference {
   id: string;
@@ -54,11 +55,13 @@ export class AppPage extends PageRegion {
 
   readonly collab: PageCollab;
 
-  readonly notes: PageNotes;
-  readonly editing: PageEditing;
+  readonly pos: PagePos;
+  readonly rects: PageRects;
+  readonly sizes: PageSizes;
 
-  readonly arrows: PageArrows;
-  readonly elems: PageElems;
+  readonly camera: PageCamera;
+  readonly panning: PagePanning;
+  readonly zooming: PageZooming;
 
   readonly selection: PageSelection;
   readonly activeElem: PageActiveElem;
@@ -66,13 +69,13 @@ export class AppPage extends PageRegion {
   readonly clickSelection: PageClickSelection;
   readonly boxSelection: PageBoxSelection;
 
-  readonly camera: PageCamera;
-  readonly panning: PagePanning;
-  readonly zooming: PageZooming;
+  readonly elems: PageElems;
 
-  readonly pos: PagePos;
-  readonly rects: PageRects;
-  readonly sizes: PageSizes;
+  readonly notes: PageNotes;
+  readonly editing: PageEditing;
+  readonly dragging: PageDragging;
+
+  readonly arrows: PageArrows;
 
   constructor(factory: Factory, app: DeepNotesApp, id: string) {
     super(null as any, id, ElemType.PAGE, null);
@@ -108,11 +111,13 @@ export class AppPage extends PageRegion {
 
     this.collab = factory.makeCollab(this);
 
-    this.notes = factory.makeNotes(this);
-    this.editing = factory.makeEditing(this);
+    this.pos = factory.makePos(this);
+    this.rects = factory.makeRects(this);
+    this.sizes = factory.makeSizes(this);
 
-    this.arrows = factory.makeArrows(this);
-    this.elems = factory.makeElems(this);
+    this.camera = factory.makeCamera(this);
+    this.panning = factory.makePanning(this);
+    this.zooming = factory.makeZooming(this);
 
     this.selection = factory.makeSelection(this);
     this.activeElem = factory.makeActiveElem(this);
@@ -120,13 +125,13 @@ export class AppPage extends PageRegion {
     this.clickSelection = factory.makeClickSelection(this);
     this.boxSelection = factory.makeBoxSelection(this);
 
-    this.camera = factory.makeCamera(this);
-    this.panning = factory.makePanning(this);
-    this.zooming = factory.makeZooming(this);
+    this.elems = factory.makeElems(this);
 
-    this.pos = factory.makePos(this);
-    this.rects = factory.makeRects(this);
-    this.sizes = factory.makeSizes(this);
+    this.notes = factory.makeNotes(this);
+    this.editing = factory.makeEditing(this);
+    this.dragging = factory.makeDragging(this);
+
+    this.arrows = factory.makeArrows(this);
   }
 
   postSync() {

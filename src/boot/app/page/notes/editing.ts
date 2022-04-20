@@ -18,7 +18,7 @@ export class PageEditing {
   constructor(page: AppPage) {
     this.page = page;
 
-    this.react = refProp(this, 'react', {
+    this.react = refProp<IEditingReact>(this, 'react', {
       noteId: null,
 
       note: computed(() => this.page.notes.fromId(this.react.noteId)),
