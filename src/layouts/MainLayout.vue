@@ -3,10 +3,12 @@
     view="lHr lpR fFf"
     v-show="mainStore.mounted"
   >
-    <MainToolbar />
+    <template v-if="mainStore.currentPage != null">
+      <MainToolbar />
 
-    <LeftSidebar />
-    <RightSidebar />
+      <LeftSidebar />
+      <RightSidebar />
+    </template>
 
     <q-page-container>
       <router-view />
@@ -38,7 +40,8 @@ const mainStore = useMainStore();
   user-select: none;
 }
 
-html {
+html,
+body {
   overflow: hidden;
 }
 

@@ -2,7 +2,7 @@
   <div
     v-if="note.collab[section].enabled"
     :class="`note-${section}-section`"
-    style="display: flex; min-height: 36.453px"
+    style="display: flex"
     :style="{ height: note.react.height[section] }"
   >
     <div

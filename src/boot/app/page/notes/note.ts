@@ -99,7 +99,7 @@ export interface INoteReact extends IRegionReact {
   headQuill: Quill | null;
   bodyQuill: Quill | null;
 
-  collapsed: ComputedRef<boolean>;
+  collapsed: WritableComputedRef<boolean>;
   locallyCollapsed: boolean;
 
   sizeProp: ComputedRef<NoteSizeProp>;
@@ -162,16 +162,25 @@ export class PageNote extends PageRegion {
       headQuill: null,
       bodyQuill: null,
 
-      collapsed: computed(() => {
-        if (!this.collab.collapsing.enabled) {
-          return false;
-        }
+      collapsed: computed({
+        get: () => {
+          if (!this.collab.collapsing.enabled) {
+            return false;
+          }
 
-        if (this.collab.collapsing.localCollapsing) {
-          return this.react.locallyCollapsed;
-        }
+          if (this.collab.collapsing.localCollapsing) {
+            return this.react.locallyCollapsed;
+          }
 
-        return this.collab.collapsing.collapsed;
+          return this.collab.collapsing.collapsed;
+        },
+        set: (val) => {
+          if (this.collab.collapsing.localCollapsing) {
+            this.react.locallyCollapsed = val;
+          } else {
+            this.collab.collapsing.collapsed = val;
+          }
+        },
       }),
       locallyCollapsed: false,
 
@@ -207,9 +216,11 @@ export class PageNote extends PageRegion {
       },
 
       height: {
-        head: computed(() => 'auto'),
-        body: computed(() => 'auto'),
-        container: computed(() => 'auto'),
+        head: computed(() => 'max-content'),
+        body: computed(() => {
+          return 'max-content';
+        }),
+        container: computed(() => 'max-content'),
       },
 
       topSection: computed(() => {

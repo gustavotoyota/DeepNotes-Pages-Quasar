@@ -3,6 +3,11 @@
     <NoteFrame>
       <NoteContent>
         <NoteTextSection section="head" />
+
+        <q-separator
+          v-if="note.collab.head.enabled && note.react.bottomSection !== 'head'"
+        />
+
         <NoteTextSection section="body" />
       </NoteContent>
     </NoteFrame>
