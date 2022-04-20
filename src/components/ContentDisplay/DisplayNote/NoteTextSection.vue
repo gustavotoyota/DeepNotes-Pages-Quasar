@@ -1,15 +1,15 @@
 <template>
   <div
     v-if="note.collab[section].enabled"
-    :class="`note-${section}-section`"
     :style="{
-      height: collapsed ? '0px' : undefined,
-      overflow: collapsed ? 'hidden' : undefined,
+      height: note.react[section].visible ? undefined : '0px',
+      overflow: note.react[section].visible ? undefined : 'hidden',
     }"
   >
     <div
+      :class="`note-${section}-section`"
       style="display: flex"
-      :style="{ height: note.react.height[section] }"
+      :style="{ height: note.react[section].height }"
     >
       <div
         style="flex: 1"
@@ -36,7 +36,6 @@ import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';
 import NoteEditor from './NoteEditor.vue';
 import NoteCollapseBtn from './NoteCollapseBtn.vue';
-import { computed } from '@vue/reactivity';
 
 const props = defineProps<{
   section: NoteTextSection;
@@ -44,8 +43,4 @@ const props = defineProps<{
 
 const page = inject<AppPage>('page')!;
 const note = inject<PageNote>('note')!;
-
-const collapsed = computed(
-  () => note.react.collapsed && props.section !== note.react.topSection
-);
 </script>

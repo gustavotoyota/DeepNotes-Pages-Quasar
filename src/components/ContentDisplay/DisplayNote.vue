@@ -5,10 +5,19 @@
         <NoteTextSection section="head" />
 
         <q-separator
-          v-if="note.collab.head.enabled && note.react.bottomSection !== 'head'"
+          v-if="note.react.head.visible && note.react.bottomSection !== 'head'"
         />
 
         <NoteTextSection section="body" />
+
+        <q-separator
+          v-if="
+            note.react.container.visible &&
+            note.react.topSection !== 'container'
+          "
+        />
+
+        <NoteContainerSection />
       </NoteContent>
     </NoteFrame>
   </NoteAnchor>
@@ -24,6 +33,7 @@ import NoteAnchor from './DisplayNote/NoteAnchor.vue';
 import NoteFrame from './DisplayNote/NoteFrame.vue';
 import NoteContent from './DisplayNote/NoteContent.vue';
 import NoteTextSection from './DisplayNote/NoteTextSection.vue';
+import NoteContainerSection from './DisplayNote/NoteContainerSection.vue';
 
 const props = defineProps<{
   note: PageNote;

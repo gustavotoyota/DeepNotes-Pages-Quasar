@@ -96,24 +96,32 @@ export interface INoteReact extends IRegionReact {
   editing: boolean;
   dragging: boolean;
 
-  headQuill: Quill | null;
-  bodyQuill: Quill | null;
+  head: {
+    quill: Quill | null;
+    visible: ComputedRef<boolean>;
+    height: ComputedRef<string | undefined>;
+  };
+  body: {
+    quill: Quill | null;
+    visible: ComputedRef<boolean>;
+    height: ComputedRef<string | undefined>;
+  };
+  container: {
+    visible: ComputedRef<boolean>;
+    height: ComputedRef<string | undefined>;
+  };
 
-  collapsed: WritableComputedRef<boolean>;
-  locallyCollapsed: boolean;
+  collapsing: {
+    collapsed: WritableComputedRef<boolean>;
+    locallyCollapsed: boolean;
+  };
 
   sizeProp: ComputedRef<NoteSizeProp>;
 
   width: {
-    auto: ComputedRef<boolean>;
-    dom: ComputedRef<string>;
-    target: ComputedRef<string>;
-  };
-
-  height: {
-    head: ComputedRef<string>;
-    body: ComputedRef<string>;
-    container: ComputedRef<string>;
+    controlled: ComputedRef<boolean>;
+    dom: ComputedRef<string | undefined>;
+    target: ComputedRef<string | undefined>;
   };
 
   topSection: ComputedRef<NoteSection>;
@@ -159,68 +167,84 @@ export class PageNote extends PageRegion {
       editing: false,
       dragging: false,
 
-      headQuill: null,
-      bodyQuill: null,
+      head: {
+        quill: null,
+        visible: computed(() => this.collab.head.enabled),
+        height: computed(() => undefined),
+      },
+      body: {
+        quill: null,
+        visible: computed(
+          () =>
+            this.collab.body.enabled &&
+            (!this.react.collapsing.collapsed ||
+              this.react.topSection === 'body')
+        ),
+        height: computed(() => undefined),
+      },
+      container: {
+        visible: computed(
+          () =>
+            this.collab.container.enabled &&
+            (!this.react.collapsing.collapsed ||
+              this.react.topSection === 'container')
+        ),
+        height: computed(() => undefined),
+      },
 
-      collapsed: computed({
-        get: () => {
-          if (!this.collab.collapsing.enabled) {
-            return false;
-          }
+      collapsing: {
+        collapsed: computed({
+          get: () => {
+            if (!this.collab.collapsing.enabled) {
+              return false;
+            }
 
-          if (this.collab.collapsing.localCollapsing) {
-            return this.react.locallyCollapsed;
-          }
+            if (this.collab.collapsing.localCollapsing) {
+              return this.react.collapsing.locallyCollapsed;
+            }
 
-          return this.collab.collapsing.collapsed;
-        },
-        set: (val) => {
-          if (this.collab.collapsing.localCollapsing) {
-            this.react.locallyCollapsed = val;
-          } else {
-            this.collab.collapsing.collapsed = val;
-          }
-        },
-      }),
-      locallyCollapsed: false,
+            return this.collab.collapsing.collapsed;
+          },
+          set: (val) => {
+            if (this.collab.collapsing.localCollapsing) {
+              this.react.collapsing.locallyCollapsed = val;
+            } else {
+              this.collab.collapsing.collapsed = val;
+            }
+          },
+        }),
+        locallyCollapsed: false,
+      },
 
       sizeProp: computed(() =>
-        this.react.collapsed ? 'collapsed' : 'expanded'
+        this.react.collapsing.collapsed ? 'collapsed' : 'expanded'
       ),
 
       width: {
-        auto: computed(() => {
-          // Returns false if has fixed width parent with stretched vertical children
+        controlled: computed(() => {
+          // Returns true if has controlled width parent with stretched vertical children
 
           if (
             this.react.parent != null &&
-            !this.react.parent.react.width.auto &&
+            this.react.parent.react.width.controlled &&
             !this.react.parent.collab.container.horizontal &&
             this.react.parent.collab.container.stretchChildren
           )
-            return false;
+            return true;
 
-          // Returns false if has fixed width itself
+          // Returns true if has controlled width itself
 
           if (this.collab.width[this.react.sizeProp].endsWith('px'))
-            return false;
+            return true;
 
-          return true;
+          return false;
         }),
         dom: computed(() => {
-          return 'auto';
+          return undefined;
         }),
         target: computed(() => {
-          return this.react.width.auto ? 'auto' : '0px';
+          return this.react.width.controlled ? '0px' : undefined;
         }),
-      },
-
-      height: {
-        head: computed(() => 'max-content'),
-        body: computed(() => {
-          return 'max-content';
-        }),
-        container: computed(() => 'max-content'),
       },
 
       topSection: computed(() => {
@@ -235,7 +259,7 @@ export class PageNote extends PageRegion {
         }
       }),
       bottomSection: computed(() => {
-        if (this.react.collapsed) {
+        if (this.react.collapsing.collapsed) {
           return this.react.topSection;
         } else if (this.collab.container.enabled) {
           return 'container';

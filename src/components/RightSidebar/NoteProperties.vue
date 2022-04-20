@@ -49,7 +49,13 @@
       <div style="display: flex">
         <q-checkbox
           label="Head"
-          v-model="note.collab.head.enabled"
+          :model-value="note.collab.head.enabled"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.head.enabled = value;
+              note.collab.body.enabled ||= note.react.numSections === 0;
+            })
+          "
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
@@ -57,7 +63,13 @@
 
         <q-checkbox
           label="Body"
-          v-model="note.collab.body.enabled"
+          :model-value="note.collab.body.enabled"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.body.enabled = value;
+              note.collab.head.enabled ||= note.react.numSections === 0;
+            })
+          "
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
       </div>
@@ -99,7 +111,12 @@
       <div style="flex: 1">
         <q-select
           label="X anchor"
-          v-model="note.collab.anchor.x"
+          :model-value="note.collab.anchor.x"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.anchor.x = value;
+            })
+          "
           :options="[
             { label: 'Left', value: 0 },
             { label: 'Center', value: 0.5 },
@@ -117,7 +134,12 @@
       <div style="flex: 1">
         <q-select
           label="Y anchor"
-          v-model="note.collab.anchor.y"
+          :model-value="note.collab.anchor.y"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.anchor.y = value;
+            })
+          "
           :options="[
             { label: 'Top', value: 0 },
             { label: 'Center', value: 0.5 },
@@ -144,7 +166,12 @@
       <div style="display: flex">
         <q-checkbox
           label="Collapsible"
-          v-model="note.collab.collapsing.enabled"
+          :model-value="note.collab.collapsing.enabled"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.collapsing.enabled = value;
+            })
+          "
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
@@ -152,7 +179,12 @@
 
         <q-checkbox
           label="Collapsed"
-          v-model="note.collab.collapsing.collapsed"
+          :model-value="note.collab.collapsing.collapsed"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.collapsing.collapsed = value;
+            })
+          "
           :disable="!note.collab.collapsing.enabled"
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
@@ -163,7 +195,12 @@
       <div style="display: flex">
         <q-checkbox
           label="Local collapsing"
-          v-model="note.collab.collapsing.localCollapsing"
+          :model-value="note.collab.collapsing.localCollapsing"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.collapsing.localCollapsing = value;
+            })
+          "
           :disable="!note.collab.collapsing.enabled"
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
@@ -172,7 +209,12 @@
 
         <q-checkbox
           label="Locally collapsed"
-          v-model="note.react.locallyCollapsed"
+          :model-value="note.react.collapsing.locallyCollapsed"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.react.collapsing.locallyCollapsed = value;
+            })
+          "
           :disable="
             !note.collab.collapsing.enabled ||
             !note.collab.collapsing.localCollapsing
@@ -195,7 +237,13 @@
       <div style="display: flex">
         <q-checkbox
           label="Container"
-          v-model="note.collab.container.enabled"
+          :model-value="note.collab.container.enabled"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.container.enabled = value;
+              note.collab.body.enabled ||= note.react.numSections === 0;
+            })
+          "
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
@@ -203,7 +251,12 @@
 
         <q-checkbox
           label="Horizontal"
-          v-model="note.collab.container.horizontal"
+          :model-value="note.collab.container.horizontal"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.container.horizontal = value;
+            })
+          "
           :disable="!note.collab.container.enabled"
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
@@ -214,7 +267,12 @@
       <div style="display: flex">
         <q-checkbox
           label="Stretch children"
-          v-model="note.collab.container.stretchChildren"
+          :model-value="note.collab.container.stretchChildren"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.container.stretchChildren = value;
+            })
+          "
           :disable="!note.collab.container.enabled"
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
@@ -223,7 +281,12 @@
 
         <q-checkbox
           label="Wrap children"
-          v-model="note.collab.container.wrapChildren"
+          :model-value="note.collab.container.wrapChildren"
+          @update:model-value="
+            changeProp($event, (note, value) => {
+              note.collab.container.wrapChildren = value;
+            })
+          "
           :disable="!note.collab.container.enabled"
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
@@ -250,4 +313,12 @@ const mainStore = useMainStore();
 
 const page = toRef(mainStore, 'currentPage');
 const note = page.value.activeElem.react.elem as PageNote;
+
+function changeProp(value: any, func: (note: PageNote, value: any) => void) {
+  page.value.collab.doc.transact(() => {
+    for (const note of page.value.selection.react.notes) {
+      func(note as PageNote, value);
+    }
+  });
+}
 </script>

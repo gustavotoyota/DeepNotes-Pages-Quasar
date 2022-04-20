@@ -7,12 +7,18 @@
       class="note-collapse-button"
       flat
       :style="{ height: note.react.numSections === 1 ? '36.45px' : '100%' }"
-      @click.left.stop="note.react.collapsed = !note.react.collapsed"
+      @click.left.stop="
+        note.react.collapsing.collapsed = !note.react.collapsing.collapsed
+      "
       @pointerdown.left.stop
       @dblclick.left.stop
     >
       <q-icon
-        :name="note.react.collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'"
+        :name="
+          note.react.collapsing.collapsed
+            ? 'mdi-chevron-down'
+            : 'mdi-chevron-up'
+        "
       />
     </q-btn>
   </div>
@@ -38,5 +44,8 @@ const note = inject<PageNote>('note')!;
 .note-collapse-button {
   min-width: 0 !important;
   width: 32px;
+
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 </style>

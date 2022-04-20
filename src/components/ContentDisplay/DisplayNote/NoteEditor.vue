@@ -46,7 +46,7 @@ onMounted(async () => {
 
   quill = new Quill.default(editor.value!, getQuillOptions(page.id));
 
-  note.react[`${props.section}Quill`] = quill;
+  note.react[props.section].quill = quill;
 
   quill.enable(note.react.editing);
 
@@ -88,7 +88,7 @@ onBeforeUnmount(() => {
     quillBinding.destroy();
   }
 
-  note.react[`${props.section}Quill`] = null;
+  note.react[props.section].quill = null;
 
   // @ts-ignore
   document.body.removeChild(quill.theme.tooltip.root.parentNode);
