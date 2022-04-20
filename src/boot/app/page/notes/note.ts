@@ -1,12 +1,13 @@
 import { SyncedText } from '@syncedstore/core';
+import 'src/boot/external/highlight';
+import Quill from 'quill';
+import { Rect } from 'src/boot/static/rect';
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { computed, ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
 import { z } from 'zod';
 import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
-import { Quill } from 'quill';
 import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
-import { Rect } from 'src/boot/static/rect';
 
 export const INoteCollabSize = z
   .object({

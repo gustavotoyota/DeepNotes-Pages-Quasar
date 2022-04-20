@@ -1,3 +1,4 @@
+import 'src/boot/external/highlight';
 import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
 import 'quill/dist/quill.bubble.css'; // for bubble theme

@@ -7,5 +7,3 @@ declare global {
 }
 
 globalThis.hljs = hljs;
-
-console.log('hljs', hljs);

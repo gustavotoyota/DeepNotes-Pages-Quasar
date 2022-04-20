@@ -8,7 +8,7 @@
       [`border-bottom-${side}-radius`]: 0,
     }"
     class="bg-grey-9"
-    @click="uiStore[`toggle${capitalize(side)}Sidebar`]()"
+    @click="uiStore[`toggle${upperFirst(side)}Sidebar`]()"
   >
     <q-icon
       :name="
@@ -26,7 +26,7 @@
   setup
   lang="ts"
 >
-import { capitalize } from 'src/boot/static/string';
+import { upperFirst } from 'lodash';
 import { useUIStore } from 'src/stores/ui-store';
 
 const props = defineProps<{

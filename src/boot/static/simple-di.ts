@@ -1,3 +1,4 @@
+import { upperFirst } from 'lodash';
 import { createDeferrer } from './defer';
 
 export type Factory<Dependency> = (...args: any) => Dependency;
@@ -33,7 +34,7 @@ export class Container<Regs extends Registrations> {
 
     for (const key of Object.keys(registrations)) {
       // @ts-ignore
-      this.factory[`make${capitalize(key)}`] = (...args: any) => {
+      this.factory[`make${upperFirst(key)}`] = (...args: any) => {
         if (key in deferrer) return deferrer[key];
 
         deferrer[key];
@@ -48,8 +49,4 @@ export class Container<Regs extends Registrations> {
       };
     }
   }
-}
-
-function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
 }

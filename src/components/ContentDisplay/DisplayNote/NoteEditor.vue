@@ -14,10 +14,11 @@
   setup
   lang="ts"
 >
-import { Quill } from 'quill';
+import 'src/boot/external/highlight';
+import Quill from 'quill';
 import { NoteTextSection, PageNote } from 'src/boot/app/page/notes/note';
 import { AppPage } from 'src/boot/app/page/page';
-import { quillOptions } from 'src/boot/static/quill';
+import { getQuillOptions } from 'src/boot/static/quill';
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { QuillBinding } from 'y-quill';
 
@@ -43,7 +44,7 @@ let unwatch: () => void;
 onMounted(async () => {
   const Quill = await import('quill');
 
-  quill = new Quill.default(editor.value!, quillOptions);
+  quill = new Quill.default(editor.value!, getQuillOptions(page.id));
 
   note.react[`${props.section}Quill`] = quill;
 
@@ -60,20 +61,21 @@ onMounted(async () => {
     () => {
       quill.enable(note.react.editing);
 
-      if (!note.react.editing) {
-        return;
+      if (note.react.editing) {
+        // @ts-ignore
+        quill.history.clear();
+
+        if (page.editing.react.section === props.section) {
+          quill.focus();
+          quill.setSelection(0, 0);
+          quill.setSelection(0, Infinity, 'user');
+        }
+      } else {
+        quill.enable(false);
+        quill.setSelection(null as any);
+        // @ts-ignore
+        quill.theme.tooltip.hide();
       }
-
-      // @ts-ignore
-      quill.history.clear();
-
-      if (page.editing.react.section !== props.section) {
-        return;
-      }
-
-      quill.focus();
-      quill.setSelection(0, 0);
-      quill.setSelection(0, Infinity, 'user');
     },
     { immediate: true }
   );
@@ -239,6 +241,8 @@ $note-padding: 9px;
   width: fit-content;
 
   white-space: pre;
+
+  tab-size: 2;
 }
 
 .note-editor.wrap :deep(pre.ql-syntax) {

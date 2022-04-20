@@ -1,6 +1,6 @@
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
-import { computed, UnwrapRef, WritableComputedRef } from 'vue';
+import { computed, UnwrapRef, watchEffect, WritableComputedRef } from 'vue';
 import { AppPage } from '../page';
 
 export interface IPageCameraReact {
@@ -36,6 +36,14 @@ export class PageCamera {
 
       lockPos: false,
       lockZoom: false,
+    });
+
+    watchEffect(() => {
+      if (!(this.page.id in __DEEP_NOTES__.pages)) {
+        __DEEP_NOTES__.pages[this.page.id] = {};
+      }
+
+      __DEEP_NOTES__.pages[this.page.id].zoom = this.react.zoom;
     });
   }
 

@@ -33,10 +33,12 @@ export class PageCollab {
     ) as IAppCollabStore;
 
     this.doc = getYjsValue(this.store) as Y.Doc;
+  }
 
+  reset(pageName = '') {
     this.doc.transact(() => {
       Object.assign(this.store.page, {
-        name: '',
+        name: pageName,
 
         noteIds: [],
         arrowIds: [],

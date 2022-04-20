@@ -130,6 +130,10 @@ export class AppPage extends PageRegion {
   }
 
   postSync() {
+    if (this.collab.store.page.name == null) {
+      this.collab.reset();
+    }
+
     this.elems.setup();
 
     this.react.size = encodeStateAsUpdateV2(this.collab.doc).byteLength;

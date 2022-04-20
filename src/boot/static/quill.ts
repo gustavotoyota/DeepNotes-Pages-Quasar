@@ -1,3 +1,6 @@
+import 'src/boot/external/highlight';
+import type { QuillOptionsStatic } from 'quill';
+import IQuillCursorsOptions from 'quill-cursors/dist/quill-cursors/i-quill-cursors-options';
 import * as QuillDelta from 'quill-delta';
 import { z } from 'zod';
 
@@ -14,7 +17,7 @@ export const Op: z.ZodType<QuillDelta.Op> = z.object({
   attributes: AttributeMap.optional(),
 });
 
-export const quillOptions = {
+export const getQuillOptions = (pageId: string): QuillOptionsStatic => ({
   theme: 'bubble',
 
   placeholder: '',
@@ -40,9 +43,11 @@ export const quillOptions = {
   ],
 
   modules: {
-    //syntax: true,
+    syntax: true,
 
-    cursors: true,
+    cursors: {
+      pageId: pageId,
+    } as IQuillCursorsOptions,
 
     keyboard: {
       bindings: {
@@ -83,4 +88,4 @@ export const quillOptions = {
       ],
     ],
   },
-};
+});

@@ -26,7 +26,7 @@
 >
 import { PageNote } from 'src/boot/app/page/notes/note';
 import { Vec2 } from 'src/boot/static/vec2';
-import { inject, onMounted, onUnmounted, ref } from 'vue';
+import { inject, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const note = inject<PageNote>('note')!;
 
@@ -45,7 +45,7 @@ const resizeObserver = new ResizeObserver((entries) => {
 onMounted(() => {
   resizeObserver.observe(frameElem.value!);
 });
-onUnmounted(() => {
+onBeforeUnmount(() => {
   resizeObserver.unobserve(frameElem.value!);
 });
 </script>

@@ -4,12 +4,14 @@
     @wheel="onWheel"
     @pointerdown.middle.prevent="onMiddlePointerDown"
   >
-    <DisplayBackground />
-    <DisplayNotes />
-    <DisplayBoxSelection />
-    <DisplayBtns />
+    <template v-if="page.react.loaded">
+      <DisplayBackground />
+      <DisplayNotes />
+      <DisplayBoxSelection />
+      <DisplayBtns />
+    </template>
 
-    <LoadingOverlay v-if="!page.react.loaded" />
+    <LoadingOverlay v-else />
   </div>
 </template>
 
