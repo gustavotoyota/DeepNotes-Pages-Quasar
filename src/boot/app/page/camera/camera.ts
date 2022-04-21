@@ -2,6 +2,7 @@ import { IVec2, Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
 import { computed, UnwrapRef, watchEffect, WritableComputedRef } from 'vue';
 import { AppPage } from '../page';
+import { IRegionCollab } from '../regions/region';
 
 export interface IPageCameraReact {
   pos: IVec2;
@@ -48,10 +49,39 @@ export class PageCamera {
   }
 
   resetZoom() {
-    this.react._zoom = 1;
+    this.react.zoom = 1;
   }
 
   fitToScreen() {
-    //
+    let regionCollab: IRegionCollab;
+
+    if (this.page.selection.react.notes.length > 0) {
+      regionCollab = this.page.selection.react;
+    } else {
+      regionCollab = this.page.react;
+    }
+
+    if (regionCollab.noteIds.length === 0) {
+      this.react.pos = new Vec2(0, 0);
+      this.resetZoom();
+      return;
+    }
+
+    const worldRect = this.page.regions.getWorldRect(regionCollab);
+
+    if (!this.react.lockPos) {
+      this.react.pos = worldRect.center;
+    }
+
+    const displayRect = this.page.rects.fromDisplay();
+
+    this.react.zoom = Math.min(
+      (Math.min(70, displayRect.size.x / 4) - displayRect.size.x / 2) /
+        (worldRect.topLeft.x - this.react.pos.x),
+      (Math.min(35, displayRect.size.y / 4) - displayRect.size.y / 2) /
+        (worldRect.topLeft.y - this.react.pos.y)
+    );
+
+    this.react.zoom = Math.min(this.react.zoom, 1);
   }
 }

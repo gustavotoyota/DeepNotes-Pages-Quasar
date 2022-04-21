@@ -7,7 +7,10 @@
 
     <SpaceGap style="height: 4px" />
 
-    <DisplayBtn icon="mdi-image-filter-center-focus-weak" />
+    <DisplayBtn
+      icon="mdi-image-filter-center-focus-weak"
+      @click="page.camera.fitToScreen()"
+    />
   </div>
 </template>
 

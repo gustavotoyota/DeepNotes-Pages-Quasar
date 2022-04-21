@@ -1,4 +1,3 @@
-import { Rect } from 'src/boot/static/rect';
 import { refProp } from 'src/boot/static/vue';
 import { computed, ComputedRef, UnwrapRef } from 'vue';
 import { PageArrow } from '../arrows/arrow';
@@ -16,8 +15,6 @@ export interface IPageSelectionReact {
   notes: ComputedRef<PageNote[]>;
   arrows: ComputedRef<PageArrow[]>;
   elems: ComputedRef<PageElem[]>;
-
-  worldRect: ComputedRef<Rect>;
 }
 
 export class PageSelection {
@@ -40,8 +37,6 @@ export class PageSelection {
       elems: computed(() =>
         (this.react.notes as PageElem[]).concat(this.react.arrows)
       ),
-
-      worldRect: computed(() => this.page.regions.getWorldRect(this.react)),
     });
   }
 
