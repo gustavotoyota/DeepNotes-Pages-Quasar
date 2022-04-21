@@ -4,7 +4,7 @@ import { DeepNotesApp } from './app';
 import { INoteCollab } from './page/notes/note';
 import { IRegionCollab } from './page/regions/region';
 import { cloneDeep, pull } from 'lodash';
-import { createText } from '../static/synced-store';
+import { createSyncedText } from '../static/synced-store';
 import { v4 } from 'uuid';
 import { IArrowCollab } from './page/arrows/arrow';
 import { useMainStore } from 'src/stores/main-store';
@@ -181,13 +181,13 @@ export class AppSerialization {
 
         noteCollab.head = {
           enabled: serialNote.head.enabled,
-          value: createText(serialNote.head.value),
+          value: createSyncedText(serialNote.head.value),
           wrap: serialNote.head.wrap,
           height: cloneDeep(serialNote.head.height),
         };
         noteCollab.body = {
           enabled: serialNote.body.enabled,
-          value: createText(serialNote.body.value),
+          value: createSyncedText(serialNote.body.value),
           wrap: serialNote.body.wrap,
           height: cloneDeep(serialNote.body.height),
         };

@@ -82,6 +82,11 @@
           color="primary"
           dense
           style="flex: 1"
+          @click="
+            changeProp(note, (note, value) => {
+              swapSyncedTexts(note.collab.head.value, note.collab.body.value);
+            })
+          "
         />
 
         <SpaceGap style="width: 16px" />
@@ -91,6 +96,13 @@
           color="primary"
           dense
           style="flex: 1"
+          @click="
+            changeProp(note, (note, value) => {
+              if (note.collab.head.value.length <= 1) {
+                swapSyncedTexts(note.collab.head.value, note.collab.body.value);
+              }
+            })
+          "
         />
       </div>
     </div>
@@ -302,6 +314,7 @@
   lang="ts"
 >
 import { PageNote } from 'src/boot/app/page/notes/note';
+import { swapSyncedTexts } from 'src/boot/static/synced-store';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { toRef } from 'vue';
