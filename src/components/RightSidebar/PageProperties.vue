@@ -21,7 +21,38 @@
     </q-item>
   </q-list>
 
-  <div></div>
+  <div v-else>
+    <!-- Page name -->
+
+    <div style="padding: 20px">
+      <q-input
+        label="Page name"
+        v-model="page.react.name"
+        dense
+        filled
+      />
+    </div>
+
+    <q-separator />
+
+    <!-- Lock position and zoom -->
+
+    <div style="padding: 20px; display: flex">
+      <q-checkbox
+        label="Lock position"
+        v-model="page.camera.react.lockPos"
+        style="flex: 1; margin-left: -10px; margin-top: -10px"
+      />
+
+      <space-gap style="width: 16px" />
+
+      <q-checkbox
+        label="Body"
+        v-model="page.camera.react.lockZoom"
+        style="flex: 1; margin-left: -10px; margin-top: -10px"
+      />
+    </div>
+  </div>
 </template>
 
 <script
@@ -32,6 +63,7 @@ import { AppPage } from 'src/boot/app/page/page';
 import { negateProp } from 'src/boot/static/utils';
 import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref } from 'vue';
+import SpaceGap from '../misc/SpaceGap.vue';
 
 const uiStore = useUIStore();
 
