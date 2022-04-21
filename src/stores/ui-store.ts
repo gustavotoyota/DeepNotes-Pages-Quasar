@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { negateProp } from 'src/boot/static/utils';
 
 export const useUIStore = defineStore('ui-store', {
   state: () => ({
@@ -10,10 +11,10 @@ export const useUIStore = defineStore('ui-store', {
 
   actions: {
     toggleLeftSidebar() {
-      this.leftSidebarMini = !this.leftSidebarMini;
+      negateProp(this, 'leftSidebarMini');
     },
     toggleRightSidebar() {
-      this.rightSidebarMini = !this.rightSidebarMini;
+      negateProp(this, 'rightSidebarMini');
     },
   },
 });

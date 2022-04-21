@@ -7,9 +7,7 @@
       class="note-collapse-button"
       flat
       :style="{ height: note.react.numSections === 1 ? '36.45px' : '100%' }"
-      @click.left.stop="
-        note.react.collapsing.collapsed = !note.react.collapsing.collapsed
-      "
+      @click.left.stop="negateProp(note.collab.collapsing, 'collapsed')"
       @pointerdown.left.stop
       @dblclick.left.stop
     >
@@ -29,14 +27,13 @@
   lang="ts"
 >
 import { NoteSection, PageNote } from 'src/boot/app/page/notes/note';
-import { AppPage } from 'src/boot/app/page/page';
+import { negateProp } from 'src/boot/static/utils';
 import { inject } from 'vue';
 
 defineProps<{
   section: NoteSection;
 }>();
 
-const page = inject<AppPage>('page')!;
 const note = inject<PageNote>('note')!;
 </script>
 
