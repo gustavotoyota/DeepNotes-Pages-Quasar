@@ -50,4 +50,8 @@ export class PageCamera {
   resetZoom() {
     this.react._zoom = 1;
   }
+
+  fitToScreen() {
+    //
+  }
 }

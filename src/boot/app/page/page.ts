@@ -23,6 +23,7 @@ import { encodeStateAsUpdateV2 } from 'yjs';
 import { PageEditing } from './notes/editing';
 import { PageClickSelection } from './selection/click-selection';
 import { PageDragging } from './notes/dragging';
+import { PageRegions } from './regions/regions';
 
 export interface IPageReference {
   id: string;
@@ -68,6 +69,8 @@ export class AppPage extends PageRegion {
   readonly activeRegion: PageActiveRegion;
   readonly clickSelection: PageClickSelection;
   readonly boxSelection: PageBoxSelection;
+
+  readonly regions: PageRegions;
 
   readonly elems: PageElems;
 
@@ -124,6 +127,8 @@ export class AppPage extends PageRegion {
     this.activeRegion = factory.makeActiveRegion(this);
     this.clickSelection = factory.makeClickSelection(this);
     this.boxSelection = factory.makeBoxSelection(this);
+
+    this.regions = factory.makeRegions(this);
 
     this.elems = factory.makeElems(this);
 

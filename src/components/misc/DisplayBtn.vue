@@ -4,6 +4,7 @@
     :icon="icon"
     color="grey-9"
     dense
+    @click="$emit('click', $event)"
   />
 </template>
 

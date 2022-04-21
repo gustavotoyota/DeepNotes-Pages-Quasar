@@ -21,6 +21,7 @@ import { IArrowCollab, PageArrow } from '../app/page/arrows/arrow';
 import { PageEditing } from '../app/page/notes/editing';
 import { PageClickSelection } from '../app/page/selection/click-selection';
 import { PageDragging } from '../app/page/notes/dragging';
+import { PageRegions } from '../app/page/regions/regions';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
@@ -32,9 +33,21 @@ export const container = new Container({
 
   collab: () => (page: AppPage) => new PageCollab(page),
 
+  pos: () => (page: AppPage) => new PagePos(page),
+  rects: () => (page: AppPage) => new PageRects(page),
+  sizes: () => (page: AppPage) => new PageSizes(page),
+
   camera: () => (page: AppPage) => new PageCamera(page),
   panning: () => (page: AppPage) => new PagePanning(page),
   zooming: () => (page: AppPage) => new PageZooming(page),
+
+  selection: () => (page: AppPage) => new PageSelection(page),
+  activeElem: () => (page: AppPage) => new PageActiveElem(page),
+  activeRegion: () => (page: AppPage) => new PageActiveRegion(page),
+  clickSelection: () => (page: AppPage) => new PageClickSelection(page),
+  boxSelection: () => (page: AppPage) => new PageBoxSelection(page),
+
+  regions: () => (page: AppPage) => new PageRegions(page),
 
   elems: () => (page: AppPage) => new PageElems(page),
 
@@ -56,16 +69,6 @@ export const container = new Container({
       collab: IArrowCollab
     ) =>
       new PageArrow(page, id, parentId, collab),
-
-  selection: () => (page: AppPage) => new PageSelection(page),
-  activeElem: () => (page: AppPage) => new PageActiveElem(page),
-  activeRegion: () => (page: AppPage) => new PageActiveRegion(page),
-  clickSelection: () => (page: AppPage) => new PageClickSelection(page),
-  boxSelection: () => (page: AppPage) => new PageBoxSelection(page),
-
-  pos: () => (page: AppPage) => new PagePos(page),
-  rects: () => (page: AppPage) => new PageRects(page),
-  sizes: () => (page: AppPage) => new PageSizes(page),
 });
 
 export const factory = container.factory;
