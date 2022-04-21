@@ -29,12 +29,11 @@ export class PagePanning {
 
     const clientPos = this.page.pos.eventToClient(event);
 
-    this.page.camera.react.pos.x -=
-      (clientPos.x - this.currentPos.x) / this.page.camera.react.zoom;
-    this.page.camera.react.pos.y -=
-      (clientPos.y - this.currentPos.y) / this.page.camera.react.zoom;
+    this.page.camera.react.pos = this.page.camera.react.pos.sub(
+      clientPos.sub(this.currentPos).divScalar(this.page.camera.react.zoom)
+    );
 
-    this.currentPos = new Vec2(clientPos);
+    this.currentPos = clientPos;
   }.bind(this);
 
   cancel = function (this: PagePanning) {

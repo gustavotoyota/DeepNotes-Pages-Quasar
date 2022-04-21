@@ -35,8 +35,8 @@ export class PageElem {
     this.parentId = parentId;
 
     this.react = refProp<IElemReact>(this, 'react', {
-      active: false,
-      selected: false,
+      active: this.page && this.page.activeElem.is(this.id),
+      selected: this.page && this.page.selection.has(this),
     });
   }
 }

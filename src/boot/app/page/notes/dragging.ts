@@ -1,7 +1,7 @@
 import { listenPointerEvents } from 'src/boot/static/dom';
 import { Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
-import { UnwrapRef } from 'vue';
+import { nextTick, UnwrapRef } from 'vue';
 import { AppPage } from '../page';
 import { PageNote } from './note';
 
@@ -57,7 +57,6 @@ export class PageDragging {
 
   private _update = function (this: PageDragging, event: PointerEvent) {
     const clientPos = this.page.pos.eventToClient(event);
-    //const worldPos = this.page.pos.clientToWorld(clientPos);
 
     if (!this.react.active) {
       const dist = clientPos.sub(this.react.startPos).length();
@@ -72,6 +71,10 @@ export class PageDragging {
 
       for (const selectedNote of this.page.selection.react.notes) {
         selectedNote.react.dragging = true;
+      }
+
+      if (this.page.activeRegion.react.id != null) {
+        this._dragOut(clientPos);
       }
     }
 
@@ -95,14 +98,70 @@ export class PageDragging {
     this.react.currentPos = clientPos;
   }.bind(this);
 
+  private _dragOut(clientPos: Vec2) {
+    const worldPos = this.page.pos.clientToWorld(clientPos);
+
+    // Store note positions
+
+    this.page.collab.doc.transact(() => {
+      for (const selectedNote of this.page.selection.react.notes) {
+        const worldRect = selectedNote.getWorldRect('note-frame');
+
+        selectedNote.collab.pos.x =
+          worldRect.topLeft.x + worldRect.size.x * selectedNote.collab.anchor.x;
+        selectedNote.collab.pos.y =
+          worldRect.topLeft.y + worldRect.size.y * selectedNote.collab.anchor.y;
+      }
+    });
+
+    // Move notes to page region
+
+    const selectedNotes = this.page.selection.react.notes.slice();
+
+    selectedNotes.sort(
+      (a: PageNote, b: PageNote) => b.react.index - a.react.index
+    );
+
+    this.page.collab.doc.transact(() => {
+      for (const selectedNote of selectedNotes) {
+        selectedNote.removeFromRegion();
+
+        this.page.react.collab.noteIds.push(selectedNote.id);
+
+        selectedNote.parentId = null;
+      }
+    });
+
+    this.page.activeRegion.react.id = null;
+
+    // Adjust note positions and sizes
+    // With mouse in the center of the active element
+
+    nextTick(() => {
+      if (this.page.activeElem.react.note == null) {
+        return;
+      }
+
+      const activeWorldRect =
+        this.page.activeElem.react.note.getWorldRect('note-frame');
+
+      const mouseOffset = worldPos.sub(activeWorldRect.center);
+
+      this.page.collab.doc.transact(() => {
+        for (const selectedNote of this.page.selection.react.notes) {
+          selectedNote.collab.pos.x += mouseOffset.x;
+          selectedNote.collab.pos.y += mouseOffset.y;
+        }
+      });
+    });
+  }
+
   private _finish = function (this: PageDragging) {
     this.react.active = false;
 
     for (const selectedNote of this.page.selection.react.notes) {
       selectedNote.react.dragging = false;
     }
-
-    //this.page.undoRedo.resetCapturing()
   }.bind(this);
 
   cancel = () => {

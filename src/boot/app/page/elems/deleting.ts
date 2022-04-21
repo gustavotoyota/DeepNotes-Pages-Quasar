@@ -1,4 +1,3 @@
-import { PageArrow } from '../arrows/arrow';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 
@@ -9,7 +8,7 @@ export class PageDeleting {
     this.page = page;
   }
 
-  private _performAux(notes: PageNote[], arrows: PageArrow[] = []) {
+  private _performAux(notes: PageNote[]) {
     // Delete arrows
 
     // const arrowSet = new Set<PageArrow>(arrows)
@@ -38,7 +37,7 @@ export class PageDeleting {
     for (const note of notes) {
       this._performAux(note.react.notes);
 
-      this.page.activeRegion.react.noteIds.splice(note.react.index, 1);
+      note.removeFromRegion();
 
       delete this.page.collab.store.notes[note.id];
     }
@@ -46,13 +45,11 @@ export class PageDeleting {
   perform() {
     this.page.collab.doc.transact(() => {
       this._performAux(
-        this.page.selection.react.notes,
-        this.page.selection.react.arrows
+        this.page.selection.react.notes
+        //this.page.selection.react.arrows
       );
     });
 
     this.page.selection.clear();
-
-    //this.page.undoRedo.resetCapturing();
   }
 }

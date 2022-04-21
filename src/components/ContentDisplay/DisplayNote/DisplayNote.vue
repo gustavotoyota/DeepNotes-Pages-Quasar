@@ -1,5 +1,7 @@
 <template>
   <NoteAnchor>
+    <NoteDropZones />
+
     <NoteFrame>
       <NoteContent>
         <NoteTextSection section="head" />
@@ -34,6 +36,7 @@ import NoteFrame from './NoteFrame.vue';
 import NoteContent from './NoteContent.vue';
 import NoteTextSection from './NoteTextSection.vue';
 import NoteContainerSection from './NoteContainerSection.vue';
+import NoteDropZones from './NoteDropZones/NoteDropZones.vue';
 
 const props = defineProps<{
   note: PageNote;

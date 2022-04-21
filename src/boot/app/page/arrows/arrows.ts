@@ -73,9 +73,11 @@ export class PageArrows {
     (getYjsValue(this.react.collab) as SyncedMap<IArrowCollab>).observe(
       (event) => {
         for (const [arrowId, change] of event.changes.keys) {
-          if (change.action !== 'delete') continue;
+          if (change.action !== 'delete') {
+            continue;
+          }
 
-          const arrow = this.react.map[arrowId];
+          //const arrow = this.react.map[arrowId];
 
           const startNoteId = change.oldValue._map
             .get('start')

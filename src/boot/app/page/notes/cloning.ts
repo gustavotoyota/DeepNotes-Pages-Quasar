@@ -1,7 +1,6 @@
 import { nextTick } from 'vue';
 import { PageElem } from '../elems/elem';
 import { AppPage } from '../page';
-import { PageNote } from './note';
 
 export class PageCloning {
   page: AppPage;
@@ -45,17 +44,11 @@ export class PageCloning {
       });
     }
 
-    // Reset undo-redo capturing
-
-    //this.page.undoRedo.resetCapturing()
-
     // Scroll into view
 
     if (this.page.selection.react.notes.length > 0) {
       nextTick(() => {
-        const lastSelectedNote = this.page.selection.react.notes.at(
-          -1
-        ) as PageNote;
+        const lastSelectedNote = this.page.selection.react.notes.at(-1)!;
 
         lastSelectedNote.scrollIntoView();
       });

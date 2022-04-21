@@ -93,6 +93,7 @@ export interface INoteTextSectionReact extends INoteSectionReact {
 
 export interface INoteReact extends IRegionReact {
   parent: WritableComputedRef<PageNote | null>;
+  region: ComputedRef<PageRegion>;
 
   editing: boolean;
   dragging: boolean;
@@ -158,15 +159,22 @@ export class PageNote extends PageRegion {
     const react: Omit<INoteReact, keyof IElemReact> = {
       parent: computed({
         get: () => {
-          return this._parent;
+          return this.page.notes.fromId(parentId) ?? this._parent;
         },
         set: (val) => {
           this._parent = val;
         },
       }),
+      region: computed(() => {
+        if (this.react.parent == null) {
+          return this.page;
+        } else {
+          return this.react.parent;
+        }
+      }),
 
       editing: false,
-      dragging: false,
+      dragging: page.dragging.react.active && this.react.selected,
 
       head: {
         quill: null,
@@ -355,5 +363,23 @@ export class PageNote extends PageRegion {
       behavior: 'smooth',
       block: 'nearest',
     });
+  }
+
+  getClientRect(part: string) {
+    const node = this.getNode(part);
+
+    const domClientRect = node.getBoundingClientRect();
+
+    return this.page.rects.fromDOM(domClientRect);
+  }
+  getDisplayRect(part: string) {
+    return this.page.rects.clientToDisplay(this.getClientRect(part));
+  }
+  getWorldRect(part: string) {
+    return this.page.rects.clientToWorld(this.getClientRect(part));
+  }
+
+  removeFromRegion() {
+    this.react.region.react.noteIds.splice(this.react.index, 1);
   }
 }

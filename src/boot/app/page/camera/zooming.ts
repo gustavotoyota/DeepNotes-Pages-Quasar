@@ -16,7 +16,9 @@ export class PageZooming {
       let node = event.target as Node | null;
 
       while (node != null) {
-        if (hasVertScrollbar(node as HTMLElement)) return;
+        if (hasVertScrollbar(node as HTMLElement)) {
+          return;
+        }
 
         node = node.parentNode;
       }

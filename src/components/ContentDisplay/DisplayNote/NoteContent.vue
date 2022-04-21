@@ -39,6 +39,12 @@ function onPointerDown(event: PointerEvent) {
     return;
   }
 
+  if (note.react.editing) {
+    return;
+  }
+
+  page.editing.stop();
+
   page.clickSelection.perform(note, event);
 
   if (note.react.selected) {

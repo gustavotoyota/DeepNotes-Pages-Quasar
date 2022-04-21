@@ -37,7 +37,7 @@ import { inject } from 'vue';
 import NoteEditor from './NoteEditor.vue';
 import NoteCollapseBtn from './NoteCollapseBtn.vue';
 
-const props = defineProps<{
+defineProps<{
   section: NoteTextSection;
 }>();
 

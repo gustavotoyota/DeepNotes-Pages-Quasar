@@ -1,11 +1,11 @@
-import { IVec2, Vec2 } from 'src/boot/static/vec2';
+import { Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
 import { computed, UnwrapRef, watchEffect, WritableComputedRef } from 'vue';
 import { AppPage } from '../page';
 import { IRegionCollab } from '../regions/region';
 
 export interface IPageCameraReact {
-  pos: IVec2;
+  pos: Vec2;
 
   _zoom: number;
   zoom: WritableComputedRef<number>;
