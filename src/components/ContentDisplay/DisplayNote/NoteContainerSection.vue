@@ -104,7 +104,7 @@ const note = inject<PageNote>('note')!;
 .note-container-section {
   display: flex;
 
-  min-height: 50.45px;
+  min-height: 52.45px;
 }
 
 .note-container-content {

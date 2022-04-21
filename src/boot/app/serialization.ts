@@ -68,8 +68,8 @@ export const ISerialNote = z.lazy(() =>
 // Region
 
 export interface ISerialRegion {
-  notes?: ISerialNote[];
-  arrows?: ISerialArrow[];
+  notes: ISerialNote[];
+  arrows: ISerialArrow[];
 }
 export const ISerialRegion = z.lazy(() =>
   z.object({
@@ -86,17 +86,16 @@ export class AppSerialization {
   }
 
   serialize(container: IRegionCollab): ISerialRegion {
-    const serialRegion: ISerialRegion = {};
+    const serialRegion: ISerialRegion = {
+      notes: [],
+      arrows: [],
+    };
 
-    const mainStore = useMainStore();
-
-    const page = mainStore.page;
+    const page = useMainStore().page;
 
     // Serialize notes
 
     const noteMap = new Map<string, number>();
-
-    serialRegion.notes = [];
 
     for (const note of page.notes.fromIds(container.noteIds)) {
       // Children
@@ -132,13 +131,7 @@ export class AppSerialization {
       serialRegion.notes.push(serialNote as ISerialNote);
     }
 
-    if (serialRegion.notes.length === 0) {
-      delete serialRegion.notes;
-    }
-
     // Serialize arrows
-
-    serialRegion.arrows = [];
 
     for (const arrow of page.arrows.fromIds(container.arrowIds)) {
       const serialArrow: ISerialArrow = {
@@ -155,17 +148,11 @@ export class AppSerialization {
       serialRegion.arrows.push(serialArrow);
     }
 
-    if (serialRegion.arrows.length === 0) {
-      delete serialRegion.arrows;
-    }
-
     return serialRegion;
   }
 
   private _deserializeAux(serialRegion: ISerialRegion): IRegionCollab {
-    const mainStore = useMainStore();
-
-    const page = mainStore.page;
+    const page = useMainStore().page;
 
     const noteMap = new Map<number, string>();
 

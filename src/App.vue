@@ -78,13 +78,13 @@ function onKeyDown(event: KeyboardEvent) {
   }
 
   if (event.ctrlKey && event.code === 'KeyC') {
-    //page.value.clipboard.copy()
+    page.value.clipboard.copy();
   }
   if (event.ctrlKey && event.code === 'KeyV' && window.clipboardData) {
-    //page.value.clipboard.paste()
+    page.value.clipboard.paste();
   }
   if (event.ctrlKey && event.code === 'KeyX') {
-    //page.value.clipboard.cut()
+    page.value.clipboard.cut();
   }
 
   if (event.ctrlKey && event.code === 'KeyZ') {
@@ -130,6 +130,29 @@ function onKeyPress(event: KeyboardEvent) {
 onBeforeUnmount(() => {
   document.removeEventListener('keypress', onKeyPress);
   document.removeEventListener('keydown', onKeyDown);
+});
+
+// Clipboard pasting
+
+onMounted(() => {
+  document.addEventListener('paste', onPaste);
+});
+
+function onPaste(event: ClipboardEvent) {
+  if (
+    (event.target as HTMLElement).nodeName === 'INPUT' ||
+    (event.target as HTMLElement).nodeName === 'TEXTAREA' ||
+    (event.target as HTMLElement).isContentEditable
+  )
+    return;
+
+  const text = (event.clipboardData || window.clipboardData).getData('text');
+
+  page.value.clipboard.paste(text);
+}
+
+onBeforeUnmount(() => {
+  document.removeEventListener('paste', onPaste);
 });
 
 // Mark app as mounted

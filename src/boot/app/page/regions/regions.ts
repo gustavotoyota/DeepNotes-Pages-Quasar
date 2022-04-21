@@ -16,13 +16,13 @@ export class PageRegions {
       new Vec2(-Infinity, -Infinity)
     );
 
-    for (const noteId of collab.noteIds) {
-      const note = this.page.notes.fromId(noteId);
+    const notes = this.page.notes.fromIds(collab.noteIds);
 
-      if (note == null) {
-        continue;
-      }
+    if (notes.length === 0) {
+      return new Rect(this.page.camera.react.pos, this.page.camera.react.pos);
+    }
 
+    for (const note of notes) {
       worldRect.topLeft.x = Math.min(
         worldRect.topLeft.x,
         note.react.worldRect.topLeft.x
