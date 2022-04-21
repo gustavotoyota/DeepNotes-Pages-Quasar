@@ -37,7 +37,7 @@ export class DeepNotesApp {
 export default boot((params) => {
   const app = factory.makeApp();
 
-  params.app.config.globalProperties.$app = factory.makeApp();
+  params.app.config.globalProperties.$dn = app;
   params.app.config.globalProperties.console = console;
 
   params.app.provide('app', app);

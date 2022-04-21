@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
 import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
+import { hasVertScrollbar } from 'src/boot/static/dom';
 
 export const INoteCollabSize = z
   .object({
@@ -327,5 +328,32 @@ export class PageNote extends PageRegion {
     }
 
     this.collab.zIndex = this.page.react.collab.nextZIndex++;
+  }
+
+  getNode(part: string | null): Element {
+    if (part == null)
+      return document.getElementById(`note-${this.id}`) as Element;
+    else return document.querySelector(`#note-${this.id} .${part}`) as Element;
+  }
+
+  scrollIntoView() {
+    if (this.parentId == null) return;
+
+    const frameNode = this.getNode('note-frame');
+
+    let auxNode = frameNode as Node;
+
+    while (auxNode != null) {
+      if (hasVertScrollbar(auxNode as HTMLElement)) break;
+
+      auxNode = auxNode.parentNode as Node;
+    }
+
+    if (auxNode == null) return;
+
+    frameNode.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+    });
   }
 }

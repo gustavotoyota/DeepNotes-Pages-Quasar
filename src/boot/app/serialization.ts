@@ -181,13 +181,13 @@ export class AppSerialization {
 
         noteCollab.head = {
           enabled: serialNote.head.enabled,
-          value: createText(serialNote.head),
+          value: createText(serialNote.head.value),
           wrap: serialNote.head.wrap,
           height: cloneDeep(serialNote.head.height),
         };
         noteCollab.body = {
           enabled: serialNote.body.enabled,
-          value: createText(serialNote.body),
+          value: createText(serialNote.body.value),
           wrap: serialNote.body.wrap,
           height: cloneDeep(serialNote.body.height),
         };

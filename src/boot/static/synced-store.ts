@@ -1,6 +1,7 @@
 import { SyncedText } from '@syncedstore/core';
+import { Op } from './quill';
 
-export function createText(delta: object) {
+export function createText(delta: Op[]) {
   const clone = new SyncedText();
 
   clone.applyDelta(delta);

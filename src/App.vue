@@ -3,7 +3,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted } from 'vue';
+import { defineComponent, onBeforeUnmount, onMounted, toRef } from 'vue';
+import { PageNote } from './boot/app/page/notes/note';
 import { useMainStore } from './stores/main-store';
 
 export default defineComponent({
@@ -21,6 +22,10 @@ export default defineComponent({
   setup
   lang="ts"
 >
+const mainStore = useMainStore();
+
+const page = toRef(mainStore, 'currentPage');
+
 // Release pointer down for touchscreen
 
 onMounted(() => {
@@ -31,6 +36,100 @@ function onPointerDownCapture(event: PointerEvent) {
 }
 onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', onPointerDownCapture, true);
+});
+
+// Shortcuts
+
+onMounted(() => {
+  document.addEventListener('keydown', onKeyDown);
+  document.addEventListener('keypress', onKeyPress);
+});
+
+function onKeyDown(event: KeyboardEvent) {
+  if (
+    (event.target as HTMLElement).isContentEditable &&
+    event.code === 'Escape'
+  ) {
+    page.value.editing.stop();
+  }
+
+  if (event.ctrlKey && event.code === 'KeyD') {
+    event.preventDefault();
+  }
+
+  if (
+    (event.target as HTMLElement).nodeName === 'INPUT' ||
+    (event.target as HTMLElement).nodeName === 'TEXTAREA' ||
+    (event.target as HTMLElement).isContentEditable
+  ) {
+    return;
+  }
+
+  if (event.code === 'Delete') {
+    //page.value.deleting.perform()
+  }
+
+  if (event.ctrlKey && event.code === 'KeyA') {
+    page.value.selection.selectAll();
+  }
+
+  if (event.ctrlKey && event.code === 'KeyD') {
+    page.value.cloning.perform();
+  }
+
+  if (event.ctrlKey && event.code === 'KeyC') {
+    //page.value.clipboard.copy()
+  }
+  if (event.ctrlKey && event.code === 'KeyV' && window.clipboardData) {
+    //page.value.clipboard.paste()
+  }
+  if (event.ctrlKey && event.code === 'KeyX') {
+    //page.value.clipboard.cut()
+  }
+
+  if (event.ctrlKey && event.code === 'KeyZ') {
+    //page.value.undoRedo.undo()
+  }
+  if (event.ctrlKey && event.code === 'KeyY') {
+    //page.value.undoRedo.redo()
+  }
+
+  if (
+    event.code === 'F2' &&
+    page.value.activeElem.react.elem instanceof PageNote
+  ) {
+    page.value.editing.start(page.value.activeElem.react.elem);
+  }
+
+  if (event.code === 'ArrowLeft') {
+    page.value.selection.shift(-1, 0);
+  }
+  if (event.code === 'ArrowRight') {
+    page.value.selection.shift(1, 0);
+  }
+  if (event.code === 'ArrowUp') {
+    page.value.selection.shift(0, -1);
+  }
+  if (event.code === 'ArrowDown') {
+    page.value.selection.shift(0, 1);
+  }
+}
+function onKeyPress(event: KeyboardEvent) {
+  if (
+    (event.target as HTMLElement).nodeName === 'INPUT' ||
+    (event.target as HTMLElement).nodeName === 'TEXTAREA' ||
+    (event.target as HTMLElement).isContentEditable
+  )
+    return;
+
+  if (page.value.activeElem.react.elem instanceof PageNote) {
+    page.value.editing.start(page.value.activeElem.react.elem);
+  }
+}
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keypress', onKeyPress);
+  document.removeEventListener('keydown', onKeyDown);
 });
 
 // Mark app as mounted
