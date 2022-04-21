@@ -45,16 +45,16 @@
 import { ElemType } from 'src/boot/app/page/elems/elem';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
-import { provide, toRef } from 'vue';
 import NoteProperties from './NoteProperties.vue';
 import ArrowProperties from './ArrowProperties.vue';
 import PageProperties from './PageProperties.vue';
+import { provide, toRef } from 'vue';
 
 const uiStore = useUIStore();
 
 const mainStore = useMainStore();
 
-const page = toRef(mainStore, 'currentPage');
+const page = toRef(mainStore, 'page');
 
 provide('page', page);
 </script>

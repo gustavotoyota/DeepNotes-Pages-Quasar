@@ -24,7 +24,7 @@ export default defineComponent({
 >
 const mainStore = useMainStore();
 
-const page = toRef(mainStore, 'currentPage');
+const page = toRef(mainStore, 'page');
 
 // Release pointer down for touchscreen
 

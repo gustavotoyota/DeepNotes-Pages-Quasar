@@ -5,7 +5,7 @@ import { refProp } from 'src/boot/static/vue';
 import { UnwrapRef } from 'vue';
 import { AppPage } from '../page';
 
-export interface IPageBoxSelectionReact {
+export interface IBoxSelectionReact {
   active: boolean;
 
   displayStart: Vec2;
@@ -17,14 +17,14 @@ export class PageBoxSelection {
 
   readonly page: AppPage;
 
-  react: UnwrapRef<IPageBoxSelectionReact>;
+  react: UnwrapRef<IBoxSelectionReact>;
 
   downEvent!: PointerEvent;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    this.react = refProp<IPageBoxSelectionReact>(this, 'react', {
+    this.react = refProp<IBoxSelectionReact>(this, 'react', {
       active: false,
 
       displayStart: new Vec2(),

@@ -5,7 +5,7 @@ import { ElemType, PageElem } from '../elems/elem';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 
-export interface IPageSelectionReact {
+export interface ISelectionReact {
   noteSet: Record<string, boolean>;
   arrowSet: Record<string, boolean>;
 
@@ -20,12 +20,12 @@ export interface IPageSelectionReact {
 export class PageSelection {
   readonly page: AppPage;
 
-  react: UnwrapRef<IPageSelectionReact>;
+  react: UnwrapRef<ISelectionReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    this.react = refProp<IPageSelectionReact>(this, 'react', {
+    this.react = refProp<ISelectionReact>(this, 'react', {
       noteSet: {},
       arrowSet: {},
 

@@ -3,7 +3,7 @@
     view="lHr lpR fFf"
     v-show="mainStore.mounted"
   >
-    <template v-if="mainStore.currentPage != null">
+    <template v-if="mainStore.page != null">
       <MainToolbar />
 
       <LeftSidebar />

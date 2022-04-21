@@ -314,18 +314,17 @@
   lang="ts"
 >
 import { PageNote } from 'src/boot/app/page/notes/note';
+import { AppPage } from 'src/boot/app/page/page';
 import { swapSyncedTexts } from 'src/boot/static/synced-store';
-import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
-import { toRef } from 'vue';
+import { inject, Ref, toRef } from 'vue';
 import SpaceGap from '../misc/SpaceGap.vue';
 
 const uiStore = useUIStore();
 
-const mainStore = useMainStore();
+const page = inject<Ref<AppPage>>('page')!;
 
-const page = toRef(mainStore, 'currentPage');
-const note = page.value.activeElem.react.elem as PageNote;
+const note = toRef(page.value.activeElem.react, 'note');
 
 function changeProp(value: any, func: (note: PageNote, value: any) => void) {
   page.value.collab.doc.transact(() => {

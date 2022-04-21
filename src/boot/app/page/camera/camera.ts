@@ -4,7 +4,7 @@ import { computed, UnwrapRef, watchEffect, WritableComputedRef } from 'vue';
 import { AppPage } from '../page';
 import { IRegionCollab } from '../regions/region';
 
-export interface IPageCameraReact {
+export interface ICameraReact {
   pos: Vec2;
 
   _zoom: number;
@@ -17,12 +17,12 @@ export interface IPageCameraReact {
 export class PageCamera {
   readonly page: AppPage;
 
-  react: UnwrapRef<IPageCameraReact>;
+  react: UnwrapRef<ICameraReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    this.react = refProp<IPageCameraReact>(this, 'react', {
+    this.react = refProp<ICameraReact>(this, 'react', {
       pos: new Vec2(),
 
       _zoom: 1,

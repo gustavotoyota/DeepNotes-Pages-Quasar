@@ -5,7 +5,7 @@ import { ElemType, PageElem } from '../elems/elem';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
 
-export interface IPageActiveElemReact {
+export interface IActiveElemReact {
   id: string | null;
   type: ElemType;
 
@@ -20,12 +20,12 @@ export interface IPageActiveElemReact {
 export class PageActiveElem {
   readonly page: AppPage;
 
-  react: UnwrapRef<IPageActiveElemReact>;
+  react: UnwrapRef<IActiveElemReact>;
 
   constructor(page: AppPage) {
     this.page = page;
 
-    this.react = refProp<IPageActiveElemReact>(this, 'react', {
+    this.react = refProp<IActiveElemReact>(this, 'react', {
       id: null,
       type: ElemType.PAGE,
 

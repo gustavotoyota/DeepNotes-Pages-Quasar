@@ -90,13 +90,15 @@ export class AppSerialization {
 
     const mainStore = useMainStore();
 
+    const page = mainStore.page;
+
     // Serialize notes
 
     const noteMap = new Map<string, number>();
 
     serialRegion.notes = [];
 
-    for (const note of mainStore.currentPage.notes.fromIds(container.noteIds)) {
+    for (const note of page.notes.fromIds(container.noteIds)) {
       // Children
 
       const serialNote: Partial<ISerialNote> = this.serialize(note.collab);
@@ -138,9 +140,7 @@ export class AppSerialization {
 
     serialRegion.arrows = [];
 
-    for (const arrow of mainStore.currentPage.arrows.fromIds(
-      container.arrowIds
-    )) {
+    for (const arrow of page.arrows.fromIds(container.arrowIds)) {
       const serialArrow: ISerialArrow = {
         start: {
           noteIndex: noteMap.get(arrow.collab.start.noteId ?? '') ?? null,
@@ -164,6 +164,8 @@ export class AppSerialization {
 
   private _deserializeAux(serialRegion: ISerialRegion): IRegionCollab {
     const mainStore = useMainStore();
+
+    const page = mainStore.page;
 
     const noteMap = new Map<number, string>();
 
@@ -202,7 +204,7 @@ export class AppSerialization {
           noteCollab[collabKey] = cloneDeep(serialNote[collabKey]);
         }
 
-        noteCollab.zIndex = mainStore.currentPage.react.collab.nextZIndex++;
+        noteCollab.zIndex = page.react.collab.nextZIndex++;
 
         // Children
 
@@ -215,8 +217,7 @@ export class AppSerialization {
 
         const noteId = v4();
 
-        mainStore.currentPage.notes.react.collab[noteId] =
-          noteCollab as INoteCollab;
+        page.notes.react.collab[noteId] = noteCollab as INoteCollab;
 
         noteMap.set(i, noteId);
 
@@ -243,8 +244,7 @@ export class AppSerialization {
 
         const arrowId = v4();
 
-        mainStore.currentPage.arrows.react.collab[arrowId] =
-          arrowCollab as IArrowCollab;
+        page.arrows.react.collab[arrowId] = arrowCollab as IArrowCollab;
 
         arrowIds.push(arrowId);
       }
@@ -263,7 +263,7 @@ export class AppSerialization {
 
     const mainStore = useMainStore();
 
-    mainStore.currentPage.collab.doc.transact(() => {
+    mainStore.page.collab.doc.transact(() => {
       result = this._deserializeAux(serialRegion);
 
       destIndex = destIndex ?? destRegion.noteIds.length;

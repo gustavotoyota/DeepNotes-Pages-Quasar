@@ -22,8 +22,8 @@ export const usePageCache = defineStore('page-cache', () => {
       return;
     }
 
-    if (mainStore.currentPageId == null) {
-      mainStore.currentPageId = page.id;
+    if (mainStore.pageId == null) {
+      mainStore.pageId = page.id;
     }
 
     state.cache.push(shallowReactive(page));

@@ -9,7 +9,7 @@ export const useMainStore = defineStore('main-store', () => {
   const state = reactive({
     mounted: false,
 
-    currentPageId: null as string | null,
+    pageId: null as string | null,
 
     pathPages: [] as IPageReference[],
     recentPages: [] as IPageReference[],
@@ -17,11 +17,11 @@ export const useMainStore = defineStore('main-store', () => {
 
   // Getters
 
-  const currentPage = computed(() => {
+  const page = computed(() => {
     const pageCache = usePageCache();
 
     return pageCache.cache.find((page) => {
-      return page.id === state.currentPageId;
+      return page.id === state.pageId;
     }) as AppPage;
   });
 
@@ -34,7 +34,7 @@ export const useMainStore = defineStore('main-store', () => {
   return {
     ...toRefs(state),
 
-    currentPage,
+    page,
 
     fetchData,
   };
