@@ -25,6 +25,7 @@ import { PageClickSelection } from './selection/click-selection';
 import { PageDragging } from './notes/dragging';
 import { PageRegions } from './regions/regions';
 import { PageCloning } from './notes/cloning';
+import { PageDeleting } from './elems/deleting';
 
 export interface IPageReference {
   id: string;
@@ -74,6 +75,7 @@ export class AppPage extends PageRegion {
   readonly regions: PageRegions;
 
   readonly elems: PageElems;
+  readonly deleting: PageDeleting;
 
   readonly notes: PageNotes;
   readonly editing: PageEditing;
@@ -133,6 +135,7 @@ export class AppPage extends PageRegion {
     this.regions = factory.makeRegions(this);
 
     this.elems = factory.makeElems(this);
+    this.deleting = factory.makeDeleting(this);
 
     this.notes = factory.makeNotes(this);
     this.editing = factory.makeEditing(this);

@@ -66,7 +66,7 @@ function onKeyDown(event: KeyboardEvent) {
   }
 
   if (event.code === 'Delete') {
-    //page.value.deleting.perform()
+    page.value.deleting.perform();
   }
 
   if (event.ctrlKey && event.code === 'KeyA') {

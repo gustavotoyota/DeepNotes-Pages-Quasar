@@ -23,6 +23,7 @@ import { PageClickSelection } from '../app/page/selection/click-selection';
 import { PageDragging } from '../app/page/notes/dragging';
 import { PageRegions } from '../app/page/regions/regions';
 import { PageCloning } from '../app/page/notes/cloning';
+import { PageDeleting } from '../app/page/elems/deleting';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
@@ -51,6 +52,7 @@ export const container = new Container({
   regions: () => (page: AppPage) => new PageRegions(page),
 
   elems: () => (page: AppPage) => new PageElems(page),
+  deleting: () => (page: AppPage) => new PageDeleting(page),
 
   notes: (factory: any) => (page: AppPage) => new PageNotes(factory, page),
   note:
