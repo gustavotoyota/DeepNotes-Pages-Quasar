@@ -122,6 +122,7 @@ export interface INoteReact extends IRegionReact {
 
   width: {
     controlled: ComputedRef<boolean>;
+    min: ComputedRef<string | undefined>;
     dom: ComputedRef<string | undefined>;
     target: ComputedRef<string | undefined>;
   };
@@ -247,6 +248,17 @@ export class PageNote extends PageRegion {
             return true;
 
           return false;
+        }),
+        min: computed(() => {
+          if (
+            !this.react.width.controlled &&
+            this.collab.container.enabled &&
+            this.react.notes.length === 0
+          ) {
+            return '130px';
+          } else {
+            return undefined;
+          }
         }),
         dom: computed(() => {
           return undefined;
