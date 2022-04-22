@@ -28,6 +28,7 @@ import { PageCloning } from './notes/cloning';
 import { PageDeleting } from './elems/deleting';
 import { PageDropping } from './notes/dropping';
 import { PageClipboard } from './elems/clipboard';
+import { PageResizing } from './notes/resizing';
 
 export interface IPageReference {
   id: string;
@@ -85,6 +86,7 @@ export class AppPage extends PageRegion {
   readonly dragging: PageDragging;
   readonly dropping: PageDropping;
   readonly cloning: PageCloning;
+  readonly resizing: PageResizing;
 
   readonly arrows: PageArrows;
 
@@ -147,6 +149,7 @@ export class AppPage extends PageRegion {
     this.dragging = factory.makeDragging(this);
     this.dropping = factory.makeDropping(this);
     this.cloning = factory.makeCloning(this);
+    this.resizing = factory.makeResizing(this);
 
     this.arrows = factory.makeArrows(this);
   }

@@ -1,4 +1,3 @@
-import 'src/boot/external/highlight';
 import type { QuillOptionsStatic } from 'quill';
 import IQuillCursorsOptions from 'quill-cursors/dist/quill-cursors/i-quill-cursors-options';
 import * as QuillDelta from 'quill-delta';

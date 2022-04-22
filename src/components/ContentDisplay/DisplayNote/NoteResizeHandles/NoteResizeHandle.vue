@@ -41,8 +41,8 @@ const top = computed(() => {
   else return '50%';
 });
 
-function onPointerDown(/* event: PointerEvent */) {
-  // page.resizing.start(event, props.note, props.side, props.section);
+function onPointerDown(event: PointerEvent) {
+  page.resizing.start(event, note, props.side, props.section);
 }
 </script>
 

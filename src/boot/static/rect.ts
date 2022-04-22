@@ -12,13 +12,13 @@ export class Rect {
   topLeft: Vec2;
   bottomRight: Vec2;
 
-  constructor(topLeft: Vec2 | IRect, bottomRight?: Vec2) {
+  constructor(topLeft?: Vec2 | IRect, bottomRight?: Vec2) {
     if (topLeft instanceof Vec2) {
       this.topLeft = new Vec2(topLeft);
       this.bottomRight = new Vec2(bottomRight ?? topLeft);
     } else {
-      this.topLeft = new Vec2(topLeft.topLeft);
-      this.bottomRight = new Vec2(topLeft.bottomRight);
+      this.topLeft = new Vec2(topLeft?.topLeft);
+      this.bottomRight = new Vec2(topLeft?.bottomRight);
     }
   }
 

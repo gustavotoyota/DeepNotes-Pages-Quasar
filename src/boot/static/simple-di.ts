@@ -35,7 +35,9 @@ export class Container<Regs extends Registrations> {
     for (const key of Object.keys(registrations)) {
       // @ts-ignore
       this.factory[`make${upperFirst(key)}`] = (...args: any) => {
-        if (key in deferrer) return deferrer[key];
+        if (key in deferrer) {
+          return deferrer[key];
+        }
 
         deferrer[key];
 

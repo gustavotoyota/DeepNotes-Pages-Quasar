@@ -26,6 +26,7 @@ import { PageCloning } from '../app/page/notes/cloning';
 import { PageDeleting } from '../app/page/elems/deleting';
 import { PageDropping } from '../app/page/notes/dropping';
 import { PageClipboard } from '../app/page/elems/clipboard';
+import { PageResizing } from '../app/page/notes/resizing';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
@@ -66,6 +67,7 @@ export const container = new Container({
   dragging: () => (page: AppPage) => new PageDragging(page),
   dropping: () => (page: AppPage) => new PageDropping(page),
   cloning: () => (page: AppPage) => new PageCloning(page),
+  resizing: () => (page: AppPage) => new PageResizing(page),
 
   arrows: (factory: any) => (page: AppPage) => new PageArrows(factory, page),
   arrow:

@@ -62,7 +62,7 @@ export class PageCamera {
     }
 
     if (regionCollab.noteIds.length === 0) {
-      this.react.pos = new Vec2(0, 0);
+      this.react.pos = new Vec2();
       this.resetZoom();
       return;
     }

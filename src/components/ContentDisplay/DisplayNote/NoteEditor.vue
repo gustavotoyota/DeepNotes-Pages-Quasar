@@ -34,8 +34,6 @@ const note = inject<PageNote>('note')!;
 
 const editor = ref<Element>();
 
-const text = computed(() => note.collab[props.section].value);
-
 let quill: Quill;
 let quillBinding: QuillBinding | null = null;
 
@@ -51,7 +49,7 @@ onMounted(async () => {
   quill.enable(note.react.editing);
 
   quillBinding = new QuillBinding(
-    text.value,
+    note.collab[props.section].value,
     quill,
     page.collab.websocketProvider.awareness
   );

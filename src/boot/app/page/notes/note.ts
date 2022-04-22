@@ -1,5 +1,4 @@
 import { SyncedText } from '@syncedstore/core';
-import 'src/boot/external/highlight';
 import Quill from 'quill';
 import { Rect } from 'src/boot/static/rect';
 import { IVec2, Vec2 } from 'src/boot/static/vec2';
@@ -9,6 +8,7 @@ import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
 import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
 import { hasVertScrollbar } from 'src/boot/static/dom';
+import { createSyncedText } from 'src/boot/static/synced-store';
 
 export const INoteCollabSize = z
   .object({
@@ -25,7 +25,11 @@ export type INoteCollabSection = z.infer<typeof INoteCollabSection>;
 
 export const INoteCollabTextSection = INoteCollabSection.extend({
   enabled: z.boolean(),
-  value: z.any() as z.ZodType<SyncedText>,
+  value: z
+    .any()
+    .default(() =>
+      createSyncedText([{ insert: '\n' }])
+    ) as z.ZodType<SyncedText>,
   wrap: z.boolean().default(true),
 });
 export type INoteCollabTextSection = z.infer<typeof INoteCollabTextSection>;
@@ -38,8 +42,12 @@ export const INoteCollab = IRegionCollab.extend({
 
   width: INoteCollabSize,
 
-  head: INoteCollabTextSection,
-  body: INoteCollabTextSection,
+  head: INoteCollabTextSection.default(
+    INoteCollabTextSection.parse({ enabled: false })
+  ),
+  body: INoteCollabTextSection.default(
+    INoteCollabTextSection.parse({ enabled: true })
+  ),
 
   container: INoteCollabSection.extend({
     enabled: z.boolean().default(false),
@@ -63,7 +71,7 @@ export const INoteCollab = IRegionCollab.extend({
   resizable: z.boolean().default(true),
   readOnly: z.boolean().default(false),
 
-  zIndex: z.number(),
+  zIndex: z.number().default(-1),
 });
 export type INoteCollab = z.infer<typeof INoteCollab>;
 
@@ -121,7 +129,10 @@ export interface INoteReact extends IRegionReact {
   sizeProp: ComputedRef<NoteSizeProp>;
 
   width: {
-    controlled: ComputedRef<boolean>;
+    parentPinned: ComputedRef<boolean>;
+    selfPinned: ComputedRef<boolean>;
+    pinned: ComputedRef<boolean>;
+
     min: ComputedRef<string | undefined>;
     dom: ComputedRef<string | undefined>;
     target: ComputedRef<string | undefined>;
@@ -167,13 +178,13 @@ export class PageNote extends PageRegion {
           return '0px';
         }
 
-        return undefined;
+        return this.collab[section].height[this.react.sizeProp];
       });
 
     const react: Omit<INoteReact, keyof IElemReact> = {
       parent: computed({
         get: () => {
-          return this.page.notes.fromId(parentId) ?? this._parent;
+          return page?.notes.fromId(parentId) ?? this._parent;
         },
         set: (val) => {
           this._parent = val;
@@ -181,14 +192,14 @@ export class PageNote extends PageRegion {
       }),
       region: computed(() => {
         if (this.react.parent == null) {
-          return this.page;
+          return page;
         } else {
           return this.react.parent;
         }
       }),
 
       editing: false,
-      dragging: page.dragging.react.active && this.react.selected,
+      dragging: page?.dragging.react.active && this.react.selected,
 
       head: {
         quill: null,
@@ -244,27 +255,25 @@ export class PageNote extends PageRegion {
       ),
 
       width: {
-        controlled: computed(() => {
-          // Returns true if has controlled width parent with stretched vertical children
-
-          if (
+        parentPinned: computed(() => {
+          return (
             this.react.parent != null &&
-            this.react.parent.react.width.controlled &&
+            this.react.parent.react.width.pinned &&
             !this.react.parent.collab.container.horizontal &&
             this.react.parent.collab.container.stretchChildren
-          )
-            return true;
-
-          // Returns true if has controlled width itself
-
-          if (this.collab.width[this.react.sizeProp].endsWith('px'))
-            return true;
-
-          return false;
+          );
         }),
+        selfPinned: computed(() => {
+          return this.collab.width[this.react.sizeProp].endsWith('px');
+        }),
+        pinned: computed(() => {
+          return this.react.width.parentPinned || this.react.width.selfPinned;
+        }),
+
         min: computed(() => {
           if (
-            !this.react.width.controlled &&
+            // is empty container with unpinned width:
+            !this.react.width.pinned &&
             this.collab.container.enabled &&
             this.react.notes.length === 0
           ) {
@@ -274,10 +283,22 @@ export class PageNote extends PageRegion {
           }
         }),
         dom: computed(() => {
-          return undefined;
+          if (this.react.width.parentPinned) {
+            return undefined;
+          }
+
+          if (this.react.width.selfPinned) {
+            return this.collab.width[this.react.sizeProp];
+          }
+
+          if (this.react.parent == null) {
+            return 'max-content';
+          } else {
+            return undefined;
+          }
         }),
         target: computed(() => {
-          return this.react.width.controlled ? '0px' : undefined;
+          return this.react.width.pinned ? '0px' : undefined;
         }),
       },
 
@@ -323,7 +344,7 @@ export class PageNote extends PageRegion {
 
       index: -1,
 
-      worldSize: new Vec2(0, 0),
+      worldSize: new Vec2(),
       worldRect: computed(
         () =>
           new Rect(
@@ -338,18 +359,16 @@ export class PageNote extends PageRegion {
           )
       ),
 
-      clientSize: computed(() =>
-        this.page.pos.worldToClient(this.react.worldSize)
-      ),
+      clientSize: computed(() => page.pos.worldToClient(this.react.worldSize)),
       clientRect: computed(() =>
-        this.page.rects.worldToClient(this.react.worldRect)
+        page.rects.worldToClient(this.react.worldRect)
       ),
 
       noteIds: computed(() => this.collab.noteIds),
       arrowIds: computed(() => this.collab.arrowIds),
 
-      notes: computed(() => this.page.notes.fromIds(this.react.noteIds)),
-      arrows: computed(() => this.page.arrows.fromIds(this.react.arrowIds)),
+      notes: computed(() => page.notes.fromIds(this.react.noteIds)),
+      arrows: computed(() => page.arrows.fromIds(this.react.arrowIds)),
     };
 
     Object.assign(this.react, react);
