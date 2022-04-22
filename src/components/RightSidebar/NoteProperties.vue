@@ -53,7 +53,7 @@
           @update:model-value="
             changeProp($event, (note, value) => {
               note.collab.head.enabled = value;
-              note.collab.body.enabled ||= note.react.numSections === 0;
+              note.collab.body.enabled ||= note.react.numEnabledSections === 0;
             })
           "
           style="flex: 1; margin-left: -10px; margin-top: -10px"
@@ -67,7 +67,7 @@
           @update:model-value="
             changeProp($event, (note, value) => {
               note.collab.body.enabled = value;
-              note.collab.head.enabled ||= note.react.numSections === 0;
+              note.collab.head.enabled ||= note.react.numEnabledSections === 0;
             })
           "
           style="flex: 1; margin-left: -10px; margin-top: -10px"
@@ -265,7 +265,7 @@
           @update:model-value="
             changeProp($event, (note, value) => {
               note.collab.container.enabled = value;
-              note.collab.body.enabled ||= note.react.numSections === 0;
+              note.collab.body.enabled ||= note.react.numEnabledSections === 0;
             })
           "
           style="flex: 1; margin-left: -10px; margin-top: -10px"

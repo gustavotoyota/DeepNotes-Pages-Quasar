@@ -8,7 +8,7 @@
   >
     <div
       :class="`note-${section}-section`"
-      style="display: flex"
+      style="display: flex; min-height: 36.45px"
       :style="{ height: note.react[section].height }"
     >
       <div

@@ -6,7 +6,9 @@
     <q-btn
       class="note-collapse-button"
       flat
-      :style="{ height: note.react.numSections === 1 ? '36.45px' : '100%' }"
+      :style="{
+        height: note.react.numEnabledSections === 1 ? '36.45px' : '100%',
+      }"
       @click.left.stop="negateProp(note.collab.collapsing, 'collapsed')"
       @pointerdown.left.stop
       @dblclick.left.stop

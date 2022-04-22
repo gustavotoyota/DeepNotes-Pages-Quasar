@@ -129,7 +129,7 @@ export interface INoteReact extends IRegionReact {
 
   topSection: ComputedRef<NoteSection>;
   bottomSection: ComputedRef<NoteSection>;
-  numSections: ComputedRef<number>;
+  numEnabledSections: ComputedRef<number>;
 
   index: number;
 
@@ -157,6 +157,19 @@ export class PageNote extends PageRegion {
 
     this.collab = collab;
 
+    const makeSectionHeight = (section: NoteSection) =>
+      computed(() => {
+        if (
+          this.react.collapsing.collapsed &&
+          this.react.numEnabledSections === 1 &&
+          this.collab[section].height.collapsed === 'auto'
+        ) {
+          return '0px';
+        }
+
+        return undefined;
+      });
+
     const react: Omit<INoteReact, keyof IElemReact> = {
       parent: computed({
         get: () => {
@@ -180,7 +193,7 @@ export class PageNote extends PageRegion {
       head: {
         quill: null,
         visible: computed(() => this.collab.head.enabled),
-        height: computed(() => undefined),
+        height: makeSectionHeight('head'),
       },
       body: {
         quill: null,
@@ -190,7 +203,7 @@ export class PageNote extends PageRegion {
             (!this.react.collapsing.collapsed ||
               this.react.topSection === 'body')
         ),
-        height: computed(() => undefined),
+        height: makeSectionHeight('body'),
       },
       container: {
         visible: computed(
@@ -199,7 +212,7 @@ export class PageNote extends PageRegion {
             (!this.react.collapsing.collapsed ||
               this.react.topSection === 'container')
         ),
-        height: computed(() => undefined),
+        height: makeSectionHeight('container'),
       },
 
       collapsing: {
@@ -292,7 +305,7 @@ export class PageNote extends PageRegion {
           throw new Error('No sections enabled');
         }
       }),
-      numSections: computed(() => {
+      numEnabledSections: computed(() => {
         let numSections = 0;
 
         if (this.collab.head.enabled) {
