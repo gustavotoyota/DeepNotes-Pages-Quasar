@@ -103,13 +103,5 @@ export class PageNotes {
     note.collab.pos = this.page.pos.clientToWorld(clientPos);
 
     this.page.editing.start(note);
-
-    // setTimeout(() => {
-    //   const worldPos = this.page.pos.clientToWorld(clientPos)
-
-    //   note.collab.pos = note.worldSize.mul(new Vec2(note.collab.anchor).subScalar(0.5)).add(worldPos)
-
-    //   this.page.editing.start(note, note.topSection)
-    // }, 0)
   }
 }

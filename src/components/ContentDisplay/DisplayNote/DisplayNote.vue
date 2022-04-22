@@ -3,21 +3,16 @@
     <NoteDropZones />
 
     <NoteFrame>
+      <NoteResizeHandles />
+
       <NoteContent>
         <NoteTextSection section="head" />
 
-        <q-separator
-          v-if="note.react.head.visible && note.react.bottomSection !== 'head'"
-        />
+        <NoteDivider section="head" />
 
         <NoteTextSection section="body" />
 
-        <q-separator
-          v-if="
-            note.react.container.visible &&
-            note.react.topSection !== 'container'
-          "
-        />
+        <NoteDivider section="body" />
 
         <NoteContainerSection />
       </NoteContent>
@@ -37,6 +32,8 @@ import NoteContent from './NoteContent.vue';
 import NoteTextSection from './NoteTextSection.vue';
 import NoteContainerSection from './NoteContainerSection.vue';
 import NoteDropZones from './NoteDropZones/NoteDropZones.vue';
+import NoteResizeHandles from './NoteResizeHandles/NoteResizeHandles.vue';
+import NoteDivider from './NoteDivider.vue';
 
 const props = defineProps<{
   note: PageNote;

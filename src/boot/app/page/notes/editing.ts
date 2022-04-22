@@ -38,6 +38,8 @@ export class PageEditing {
       return;
     }
 
+    note.react.editing = true;
+
     this.react.noteId = note.id;
 
     if (section != null) {
@@ -46,7 +48,7 @@ export class PageEditing {
       this.react.section = note.react.topSection;
     }
 
-    note.react.editing = true;
+    this.page.selection.set(note);
   }
 
   stop() {
