@@ -31,6 +31,7 @@
           <NoteDropZone
             :parent-note="note"
             :index="0"
+            :always-visible="true"
             style="top: 0; bottom: 0"
           />
         </div>
@@ -123,8 +124,10 @@ const note = inject<PageNote>('note')!;
 .note-container-placeholder {
   position: relative;
 
-  width: 100%;
-  height: 100%;
+  margin: 3px;
+
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
 
   border-radius: 4px;
 
