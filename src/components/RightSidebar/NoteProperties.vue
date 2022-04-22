@@ -109,6 +109,8 @@
 
     <q-separator />
 
+    <!-- Template -->
+
     <div style="padding: 20px; display: flex; flex-direction: column">
       <q-btn
         label="Save as template"
@@ -119,6 +121,8 @@
 
     <q-separator />
 
+    <!-- Anchor -->
+
     <div style="padding: 20px; display: flex">
       <div style="flex: 1">
         <q-select
@@ -126,6 +130,8 @@
           :model-value="note.collab.anchor.x"
           @update:model-value="
             changeProp($event, (note, value) => {
+              note.collab.pos.x +=
+                (value - note.collab.anchor.x) * note.react.worldSize.x;
               note.collab.anchor.x = value;
             })
           "
@@ -149,6 +155,8 @@
           :model-value="note.collab.anchor.y"
           @update:model-value="
             changeProp($event, (note, value) => {
+              note.collab.pos.y +=
+                (value - note.collab.anchor.y) * note.react.worldSize.y;
               note.collab.anchor.y = value;
             })
           "
@@ -166,6 +174,8 @@
     </div>
 
     <q-separator />
+
+    <!-- Collapsing -->
 
     <div
       style="
@@ -237,6 +247,8 @@
     </div>
 
     <q-separator />
+
+    <!-- Container -->
 
     <div
       style="
