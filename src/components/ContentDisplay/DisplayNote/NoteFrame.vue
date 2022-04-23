@@ -4,7 +4,7 @@
     ref="frameElem"
     :style="{
       'min-width': note.react.width.min,
-      width: note.react.width.dom,
+      width: note.react.width.final,
 
       position: note.parentId == null ? 'absolute' : 'relative',
       transform:

@@ -15,13 +15,13 @@ describe('DOM width', () => {
   });
 
   it('returns "max-content" if not pinned', () => {
-    expect(note.react.width.dom).toBe('max-content');
+    expect(note.react.width.final).toBe('max-content');
   });
 
   it('returns pixels if self pinned', () => {
     note.collab.width.expanded = '100px';
 
-    expect(note.react.width.dom).toBe('100px');
+    expect(note.react.width.final).toBe('100px');
   });
 
   it('returns undefined if pinned by its parent', () => {
@@ -35,7 +35,16 @@ describe('DOM width', () => {
       } as INoteCollab)
     );
 
-    expect(note.react.width.dom).toBe(undefined);
+    expect(note.react.width.final).toBe(undefined);
+  });
+
+  it('returns expanded version if collapsed and width.collapsed is "auto"', () => {
+    note.collab.width.expanded = '100px';
+
+    note.collab.collapsing.enabled = true;
+    note.collab.collapsing.collapsed = true;
+
+    expect(note.react.width.final).toBe('100px');
   });
 });
 

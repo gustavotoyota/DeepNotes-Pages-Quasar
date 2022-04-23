@@ -11,8 +11,8 @@ export interface IActiveElemReact {
 
   elem: ComputedRef<PageElem | null>;
 
-  note: ComputedRef<PageNote | null>;
-  arrow: ComputedRef<PageArrow | null>;
+  note: ComputedRef<PageNote>;
+  arrow: ComputedRef<PageArrow>;
 
   exists: ComputedRef<boolean>;
 }
@@ -47,18 +47,10 @@ export class PageActiveElem {
       }),
 
       note: computed(() => {
-        if (this.react.elem instanceof PageNote) {
-          return this.react.elem;
-        } else {
-          return null;
-        }
+        return this.react.elem as PageNote;
       }),
       arrow: computed(() => {
-        if (this.react.elem instanceof PageArrow) {
-          return this.react.elem;
-        } else {
-          return null;
-        }
+        return this.react.elem as PageArrow;
       }),
 
       exists: computed(() => this.react.elem != null),

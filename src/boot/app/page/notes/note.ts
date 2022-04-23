@@ -139,7 +139,8 @@ export interface INoteReact extends IRegionReact {
     pinned: ComputedRef<boolean>;
 
     min: ComputedRef<string | undefined>;
-    dom: ComputedRef<string | undefined>;
+    self: ComputedRef<string>;
+    final: ComputedRef<string | undefined>;
     target: ComputedRef<string | undefined>;
   };
 
@@ -276,7 +277,7 @@ export class PageNote extends PageRegion {
           );
         }),
         selfPinned: computed(() => {
-          return this.collab.width[this.react.sizeProp].endsWith('px');
+          return this.react.width.self.endsWith('px');
         }),
         pinned: computed(() => {
           return this.react.width.parentPinned || this.react.width.selfPinned;
@@ -294,13 +295,25 @@ export class PageNote extends PageRegion {
             return undefined;
           }
         }),
-        dom: computed(() => {
+        self: computed(() => {
+          if (
+            this.react.collapsing.collapsed &&
+            this.collab.width.collapsed === 'auto'
+          ) {
+            return this.collab.width.expanded;
+          }
+
+          return this.collab.width[this.react.sizeProp];
+        }),
+        final: computed(() => {
           if (this.react.width.parentPinned) {
             return undefined;
           }
 
-          if (this.react.width.selfPinned) {
-            return this.collab.width[this.react.sizeProp];
+          const self = this.react.width.self;
+
+          if (self.endsWith('px')) {
+            return self;
           }
 
           if (this.react.parent == null) {
