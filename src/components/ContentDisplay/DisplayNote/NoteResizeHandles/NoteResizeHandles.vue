@@ -20,7 +20,7 @@
       <NoteResizeHandle side="w" />
     </template>
 
-    <template v-if="!note.react.width.uncontrolled">
+    <template v-if="!note.react.width.stretched">
       <NoteResizeHandle side="e" />
       <NoteResizeHandle
         side="se"

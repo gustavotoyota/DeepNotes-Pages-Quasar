@@ -133,7 +133,7 @@ export interface INoteReact extends IRegionReact {
   sizeProp: ComputedRef<NoteSizeProp>;
 
   width: {
-    uncontrolled: ComputedRef<boolean>;
+    stretched: ComputedRef<boolean>;
     parentPinned: ComputedRef<boolean>;
     selfPinned: ComputedRef<boolean>;
     pinned: ComputedRef<boolean>;
@@ -262,7 +262,7 @@ export class PageNote extends PageRegion {
       ),
 
       width: {
-        uncontrolled: computed(() => {
+        stretched: computed(() => {
           return (
             this.react.parent != null &&
             !this.react.parent.collab.container.horizontal &&
@@ -273,7 +273,7 @@ export class PageNote extends PageRegion {
           return (
             this.react.parent != null &&
             this.react.parent.react.width.pinned &&
-            this.react.width.uncontrolled
+            this.react.width.stretched
           );
         }),
         selfPinned: computed(() => {
@@ -306,21 +306,15 @@ export class PageNote extends PageRegion {
           return this.collab.width[this.react.sizeProp];
         }),
         final: computed(() => {
-          if (this.react.width.parentPinned) {
+          if (this.react.width.stretched) {
             return undefined;
           }
 
-          const self = this.react.width.self;
-
-          if (self.endsWith('px')) {
-            return self;
+          if (this.react.width.self.endsWith('px')) {
+            return this.react.width.self;
           }
 
-          if (this.react.parent == null) {
-            return 'max-content';
-          } else {
-            return undefined;
-          }
+          return 'max-content';
         }),
         target: computed(() => {
           return this.react.width.pinned ? '0px' : undefined;
