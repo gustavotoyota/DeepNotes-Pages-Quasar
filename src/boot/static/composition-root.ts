@@ -67,7 +67,8 @@ export const container = new Container({
   dragging: () => (page: AppPage) => new PageDragging(page),
   dropping: () => (page: AppPage) => new PageDropping(page),
   cloning: () => (page: AppPage) => new PageCloning(page),
-  resizing: () => (page: AppPage) => new PageResizing(page),
+  resizing: (factory: any) => (page: AppPage) =>
+    new PageResizing(factory, page),
 
   arrows: (factory: any) => (page: AppPage) => new PageArrows(factory, page),
   arrow:

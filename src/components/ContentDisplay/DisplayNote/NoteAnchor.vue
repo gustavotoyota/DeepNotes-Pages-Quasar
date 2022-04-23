@@ -8,6 +8,7 @@
       left: note.parentId == null ? `${note.collab.pos.x}px` : undefined,
       top: note.parentId == null ? `${note.collab.pos.y}px` : undefined,
       'z-index': note.parentId == null ? note.collab.zIndex : undefined,
+      visibility: note.react.resizing ? 'hidden' : undefined,
     }"
   >
     <slot />

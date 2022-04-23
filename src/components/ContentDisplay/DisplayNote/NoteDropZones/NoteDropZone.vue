@@ -24,7 +24,7 @@ import { inject } from 'vue';
 
 const props = defineProps<{
   parentNote: PageNote;
-  index: number;
+  index?: number;
   alwaysVisible?: boolean;
 }>();
 
@@ -55,7 +55,7 @@ function onPointerUp(event: PointerEvent) {
 
   event.stopPropagation();
 
-  page.dropping.perform(props.parentNote, props.index);
+  page.dropping.perform(props.parentNote, props.index ?? 0);
 }
 </script>
 

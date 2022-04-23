@@ -1,29 +1,33 @@
 <template>
   <div v-if="note.collab.resizable && note.react.selected">
-    <NoteResizeHandle
-      side="nw"
-      :section="note.react.topSection"
-    />
-    <NoteResizeHandle
-      side="n"
-      :section="note.react.topSection"
-    />
-    <NoteResizeHandle
-      side="ne"
-      :section="note.react.topSection"
-    />
+    <template v-if="note.parentId == null">
+      <NoteResizeHandle
+        side="nw"
+        :section="note.react.topSection"
+      />
+      <NoteResizeHandle
+        side="n"
+        :section="note.react.topSection"
+      />
+      <NoteResizeHandle
+        side="ne"
+        :section="note.react.topSection"
+      />
+      <NoteResizeHandle
+        side="sw"
+        :section="note.react.bottomSection"
+      />
+      <NoteResizeHandle side="w" />
+    </template>
 
-    <NoteResizeHandle side="w" />
-    <NoteResizeHandle side="e" />
+    <template v-if="!note.react.width.uncontrolled">
+      <NoteResizeHandle side="e" />
+      <NoteResizeHandle
+        side="se"
+        :section="note.react.bottomSection"
+      />
+    </template>
 
-    <NoteResizeHandle
-      side="sw"
-      :section="note.react.bottomSection"
-    />
-    <NoteResizeHandle
-      side="se"
-      :section="note.react.bottomSection"
-    />
     <NoteResizeHandle
       side="s"
       :section="note.react.bottomSection"

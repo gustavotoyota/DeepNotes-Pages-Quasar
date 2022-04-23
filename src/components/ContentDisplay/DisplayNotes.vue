@@ -21,6 +21,15 @@
         :note="note"
         :index="index"
       />
+
+      <template v-if="page.resizing.react.active">
+        <DisplayNote
+          v-for="ghost in page.resizing.react.ghosts"
+          :key="ghost.id"
+          :note="ghost"
+          style="opacity: 0.7"
+        />
+      </template>
     </div>
   </div>
 </template>

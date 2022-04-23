@@ -1,12 +1,13 @@
 <template>
-  <div style="position: relative">
-    <q-separator
-      v-if="
-        !note.react.collapsing.collapsed &&
-        note.react[section].visible &&
-        note.react.bottomSection !== section
-      "
-    />
+  <div
+    v-if="
+      !note.react.collapsing.collapsed &&
+      note.react[section].visible &&
+      note.react.bottomSection !== section
+    "
+    style="position: relative"
+  >
+    <q-separator />
 
     <NoteResizeHandle
       side="s"

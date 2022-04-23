@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { lerp } from './math';
 
 export const IVec2 = z.object({
   x: z.number(),
@@ -85,5 +86,8 @@ export class Vec2 {
 
   lerp(vec: Vec2, t: number): Vec2 {
     return this.add(vec.sub(this).mulScalar(t));
+  }
+  vecLerp(vec: Vec2, t: Vec2): Vec2 {
+    return new Vec2(lerp(this.x, vec.x, t.x), lerp(this.y, vec.y, t.y));
   }
 }

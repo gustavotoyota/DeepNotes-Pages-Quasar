@@ -37,13 +37,13 @@ import NoteDivider from './NoteDivider.vue';
 
 const props = defineProps<{
   note: PageNote;
-  index: number;
+  index?: number;
 }>();
 
 provide('note', props.note);
 
 watchEffect(() => {
   // eslint-disable-next-line vue/no-mutating-props
-  props.note.react.index = props.index;
+  props.note.react.index = props.index ?? 0;
 });
 </script>

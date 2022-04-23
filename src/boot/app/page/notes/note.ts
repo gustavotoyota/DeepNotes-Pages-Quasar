@@ -10,6 +10,8 @@ import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
 import { hasVertScrollbar } from 'src/boot/static/dom';
 import { createSyncedText } from 'src/boot/static/synced-store';
 
+export type NoteSide = 'nw' | 'n' | 'ne' | 'w' | 'e' | 'sw' | 's' | 'se';
+
 export const INoteCollabSize = z
   .object({
     expanded: z.string().default('auto'),
@@ -105,6 +107,8 @@ export interface INoteReact extends IRegionReact {
 
   editing: boolean;
   dragging: boolean;
+  resizing: boolean;
+  ghost: boolean;
 
   head: {
     quill: Quill | null;
@@ -129,6 +133,7 @@ export interface INoteReact extends IRegionReact {
   sizeProp: ComputedRef<NoteSizeProp>;
 
   width: {
+    uncontrolled: ComputedRef<boolean>;
     parentPinned: ComputedRef<boolean>;
     selfPinned: ComputedRef<boolean>;
     pinned: ComputedRef<boolean>;
@@ -147,7 +152,6 @@ export interface INoteReact extends IRegionReact {
   worldSize: Vec2;
   worldRect: ComputedRef<Rect>;
 
-  clientSize: ComputedRef<Vec2>;
   clientRect: ComputedRef<Rect>;
 }
 
@@ -200,6 +204,8 @@ export class PageNote extends PageRegion {
 
       editing: false,
       dragging: page?.dragging.react.active && this.react.selected,
+      resizing: false,
+      ghost: false,
 
       head: {
         quill: null,
@@ -255,12 +261,18 @@ export class PageNote extends PageRegion {
       ),
 
       width: {
+        uncontrolled: computed(() => {
+          return (
+            this.react.parent != null &&
+            !this.react.parent.collab.container.horizontal &&
+            this.react.parent.collab.container.stretchChildren
+          );
+        }),
         parentPinned: computed(() => {
           return (
             this.react.parent != null &&
             this.react.parent.react.width.pinned &&
-            !this.react.parent.collab.container.horizontal &&
-            this.react.parent.collab.container.stretchChildren
+            this.react.width.uncontrolled
           );
         }),
         selfPinned: computed(() => {
@@ -359,7 +371,6 @@ export class PageNote extends PageRegion {
           )
       ),
 
-      clientSize: computed(() => page.pos.worldToClient(this.react.worldSize)),
       clientRect: computed(() =>
         page.rects.worldToClient(this.react.worldRect)
       ),

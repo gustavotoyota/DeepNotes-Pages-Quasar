@@ -30,7 +30,6 @@
 
           <NoteDropZone
             :parent-note="note"
-            :index="0"
             :always-visible="true"
             style="top: 0; bottom: 0"
           />

@@ -341,7 +341,7 @@ const note = toRef(page.value.activeElem.react, 'note');
 function changeProp(value: any, func: (note: PageNote, value: any) => void) {
   page.value.collab.doc.transact(() => {
     for (const note of page.value.selection.react.notes) {
-      func(note as PageNote, value);
+      func(note, value);
     }
   });
 }

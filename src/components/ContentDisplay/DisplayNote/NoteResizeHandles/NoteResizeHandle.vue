@@ -18,12 +18,12 @@
   lang="ts"
 >
 import { computed } from '@vue/reactivity';
-import { NoteSection, PageNote } from 'src/boot/app/page/notes/note';
+import { NoteSide, NoteSection, PageNote } from 'src/boot/app/page/notes/note';
 import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';
 
 const props = defineProps<{
-  side: string;
+  side: NoteSide;
   section?: NoteSection;
 }>();
 

@@ -21,6 +21,8 @@ import { AppPage } from 'src/boot/app/page/page';
 import { getQuillOptions } from 'src/boot/static/quill';
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { QuillBinding } from 'y-quill';
+import { SyncedText } from '@syncedstore/core';
+import Delta from 'quill-delta';
 
 const props = defineProps<{
   section: NoteTextSection;
@@ -47,6 +49,13 @@ onMounted(async () => {
   note.react[props.section].quill = quill;
 
   quill.enable(note.react.editing);
+
+  if (!(note.collab[props.section].value instanceof SyncedText)) {
+    quill.setContents(
+      new Delta(note.collab[props.section].value as any) as any
+    );
+    return;
+  }
 
   quillBinding = new QuillBinding(
     note.collab[props.section].value,
@@ -80,7 +89,9 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  unwatch();
+  if (unwatch != null) {
+    unwatch();
+  }
 
   if (quillBinding != null) {
     quillBinding.destroy();
@@ -88,8 +99,10 @@ onBeforeUnmount(() => {
 
   note.react[props.section].quill = null;
 
-  // @ts-ignore
-  document.body.removeChild(quill.theme.tooltip.root.parentNode);
+  if (quill != null) {
+    // @ts-ignore
+    document.body.removeChild(quill.theme.tooltip.root.parentNode);
+  }
 });
 
 // Padding fix
