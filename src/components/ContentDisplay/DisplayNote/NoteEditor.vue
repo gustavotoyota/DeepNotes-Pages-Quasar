@@ -10,12 +10,18 @@
   </div>
 </template>
 
+<script lang="ts">
+let QuillImport: Promise<any>;
+
+if (process.env.CLIENT) {
+  QuillImport = import('quill');
+}
+</script>
+
 <script
   setup
   lang="ts"
 >
-import 'src/boot/external/highlight';
-import Quill from 'quill';
 import { NoteTextSection, PageNote } from 'src/boot/app/page/notes/note';
 import { AppPage } from 'src/boot/app/page/page';
 import { getQuillOptions } from 'src/boot/static/quill';
@@ -23,6 +29,7 @@ import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { QuillBinding } from 'y-quill';
 import { SyncedText } from '@syncedstore/core';
 import Delta from 'quill-delta';
+import Quill from 'quill';
 
 const props = defineProps<{
   section: NoteTextSection;
@@ -42,9 +49,10 @@ let quillBinding: QuillBinding | null = null;
 let unwatch: () => void;
 
 onMounted(async () => {
-  const Quill = await import('quill');
-
-  quill = new Quill.default(editor.value!, getQuillOptions(page.id));
+  quill = new (await QuillImport).default(
+    editor.value!,
+    getQuillOptions(page.id)
+  );
 
   note.react[props.section].quill = quill;
 
