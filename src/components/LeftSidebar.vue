@@ -48,14 +48,14 @@
         mini: uiStore.leftSidebarMini,
       }"
     >
-      <SidebarPage
+      <MiniSidebarPage
         name="Main pagesdf sdh fkjhsdkf hshdkjfh kjsdhf ksjdh fkjsjkd fjks hdkfh"
         :active="true"
       />
 
-      <SidebarPage name="Another page" />
+      <MiniSidebarPage name="Another page" />
 
-      <SidebarPage name="Another page" />
+      <MiniSidebarPage name="Another page" />
     </q-list>
   </q-drawer>
 </template>
@@ -65,7 +65,7 @@
   lang="ts"
 >
 import { useUIStore } from 'src/stores/ui-store';
-import SidebarPage from './misc/SidebarPage.vue';
+import MiniSidebarPage from './misc/MiniSidebarPage.vue';
 
 const uiStore = useUIStore();
 </script>

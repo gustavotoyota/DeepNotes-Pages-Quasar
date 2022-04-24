@@ -1,23 +1,81 @@
 <template>
   <q-list v-if="uiStore.rightSidebarMini">
-    <q-item
-      clickable
-      v-ripple
-    >
-      Hello
-    </q-item>
-    <q-item
-      clickable
-      v-ripple
-    >
-      Hello
-    </q-item>
-    <q-item
-      clickable
-      v-ripple
-    >
-      Hello
-    </q-item>
+    <MiniSidebarBtn
+      name="Head"
+      icon="mdi-page-layout-header"
+      :active="note.collab.head.enabled"
+      @click="
+        changeProp(!note.collab.head.enabled, (note, value) => {
+          note.collab.head.enabled = value;
+          note.collab.body.enabled ||= note.react.numEnabledSections === 0;
+        })
+      "
+    />
+
+    <MiniSidebarBtn
+      name="Swap head and body"
+      icon="mdi-swap-vertical"
+      @click="
+        changeProp(true, (note, value) => {
+          swapSyncedTexts(note.collab.head.value, note.collab.body.value);
+        })
+      "
+    />
+
+    <MiniSidebarBtn
+      name="Body"
+      icon="mdi-page-layout-body"
+      :active="note.collab.body.enabled"
+      @click="
+        changeProp(!note.collab.body.enabled, (note, value) => {
+          note.collab.body.enabled = value;
+          note.collab.head.enabled ||= note.react.numEnabledSections === 0;
+        })
+      "
+    />
+
+    <q-separator />
+
+    <MiniSidebarBtn
+      name="Container"
+      icon="mdi-page-layout-footer"
+      :active="note.collab.container.enabled"
+      @click="
+        changeProp(!note.collab.container.enabled, (note, value) => {
+          note.collab.container.enabled = value;
+          note.collab.body.enabled ||= note.react.numEnabledSections === 0;
+        })
+      "
+    />
+
+    <q-separator />
+
+    <MiniSidebarBtn
+      name="Collapsible"
+      icon="mdi-minus-box"
+      :active="note.collab.collapsing.enabled"
+      @click="
+        changeProp(!note.collab.collapsing.enabled, (note, value) => {
+          note.collab.collapsing.enabled = value;
+        })
+      "
+    />
+
+    <MiniSidebarBtn
+      :name="note.react.collapsing.collapsed ? 'Expand' : 'Collapse'"
+      :icon="
+        note.react.collapsing.collapsed
+          ? 'mdi-chevron-down-box-outline'
+          : 'mdi-chevron-up-box-outline'
+      "
+      :active="note.react.collapsing.collapsed"
+      :disabled="!note.collab.collapsing.enabled"
+      @click="
+        changeProp(!note.react.collapsing.collapsed, (note, value) => {
+          note.react.collapsing.collapsed = value;
+        })
+      "
+    />
   </q-list>
 
   <div v-else>
@@ -331,6 +389,7 @@ import { swapSyncedTexts } from 'src/boot/static/synced-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref, toRef } from 'vue';
 import SpaceGap from '../misc/SpaceGap.vue';
+import MiniSidebarBtn from '../misc/MiniSidebarBtn.vue';
 
 const uiStore = useUIStore();
 

@@ -8,6 +8,7 @@
     <q-item-section avatar>
       <q-icon name="mdi-note" />
     </q-item-section>
+
     <q-item-section>
       {{ name }}
     </q-item-section>
