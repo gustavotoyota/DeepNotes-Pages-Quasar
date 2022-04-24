@@ -29,18 +29,25 @@
         <ToolbarBtn
           tooltip="Cut"
           icon="mdi-content-cut"
+          :disabled="!page.activeElem.react.exists"
+          @click="page.clipboard.cut()"
         />
         <ToolbarBtn
           tooltip="Copy"
           icon="mdi-content-copy"
+          :disabled="!page.activeElem.react.exists"
+          @click="page.clipboard.copy()"
         />
         <ToolbarBtn
           tooltip="Paste"
           icon="mdi-content-paste"
+          @click="page.clipboard.paste()"
         />
         <ToolbarBtn
           tooltip="Duplicate"
           icon="mdi-content-duplicate"
+          :disabled="!page.activeElem.react.exists"
+          @click="page.cloning.perform()"
         />
 
         <q-separator
@@ -66,11 +73,14 @@
           tooltip="Select all"
           icon="mdi-select-all"
           size="24px"
+          @click="page.selection.selectAll()"
         />
         <ToolbarBtn
           tooltip="Delete"
           icon="mdi-delete-outline"
           size="24px"
+          :disabled="!page.activeElem.react.exists"
+          @click="page.deleting.perform()"
         />
 
         <q-separator
@@ -82,21 +92,29 @@
           tooltip="Align left"
           icon="mdi-format-align-left"
           size="21px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('formatLine', 'align', '')"
         />
         <ToolbarBtn
           tooltip="Align center"
           icon="mdi-format-align-center"
           size="21px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('formatLine', 'align', 'center')"
         />
         <ToolbarBtn
           tooltip="Align right"
           icon="mdi-format-align-right"
           size="21px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('formatLine', 'align', 'right')"
         />
         <ToolbarBtn
           tooltip="Justify"
           icon="mdi-format-align-justify"
           size="21px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('formatLine', 'align', 'justify')"
         />
 
         <q-separator
@@ -108,11 +126,15 @@
           tooltip="Header 1"
           icon="mdi-format-header-1"
           size="24px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('formatLine', 'header', 1)"
         />
         <ToolbarBtn
           tooltip="Header 2"
           icon="mdi-format-header-2"
           size="24px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('formatLine', 'header', 2)"
         />
 
         <q-separator
@@ -124,6 +146,8 @@
           tooltip="Clear formatting"
           icon="mdi-format-clear"
           size="24px"
+          :disabled="!page.activeElem.react.exists"
+          @click="format('removeFormat')"
         />
 
         <SpaceGap style="width: 8px" />
@@ -156,11 +180,37 @@
   setup
   lang="ts"
 >
+import { NoteTextSection } from 'src/boot/app/page/notes/note';
 import SpaceGap from 'src/components/misc/SpaceGap.vue';
 import ToolbarBtn from 'src/components/misc/ToolbarBtn.vue';
+import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
+import { toRef } from 'vue';
 
 const uiStore = useUIStore();
+
+const mainStore = useMainStore();
+
+const page = toRef(mainStore, 'page');
+
+function format(funcName: 'formatLine' | 'removeFormat', ...args: any[]) {
+  page.value.collab.doc.transact(() => {
+    for (const selectedNote of page.value.selection.react.notes) {
+      for (const section of ['head', 'body'] as NoteTextSection[]) {
+        const quill = selectedNote.react[section].quill;
+
+        if (quill == null) continue;
+
+        const selection = quill.getSelection();
+
+        if (quill.isEnabled()) {
+          if (selection != null)
+            quill[funcName](selection.index, selection.length, ...args);
+        } else quill[funcName](0, Infinity, ...args);
+      }
+    }
+  });
+}
 </script>
 
 <style scoped>
