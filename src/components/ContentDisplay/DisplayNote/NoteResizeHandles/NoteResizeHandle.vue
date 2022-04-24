@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="note.collab.resizable && note.react.selected"
+    v-if="note.collab.resizable && note.react.selected && !note.react.ghost"
     class="note-handle"
     :style="{
       left: left,

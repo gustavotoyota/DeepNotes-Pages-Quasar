@@ -1,5 +1,5 @@
 <template>
-  <div v-if="note.collab.resizable && note.react.selected">
+  <div>
     <template v-if="note.parentId == null">
       <NoteResizeHandle
         side="nw"
