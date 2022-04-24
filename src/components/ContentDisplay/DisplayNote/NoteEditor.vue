@@ -164,6 +164,17 @@ $note-padding: 9px;
   cursor: inherit;
 }
 
+.note-editor :deep(h1) {
+  font-weight: bold;
+  line-height: unset;
+  letter-spacing: unset;
+}
+.note-editor :deep(h2) {
+  font-weight: bold;
+  line-height: unset;
+  letter-spacing: unset;
+}
+
 .note-editor.padding-fix :deep(.ql-editor) {
   padding-right: 0 !important;
 }

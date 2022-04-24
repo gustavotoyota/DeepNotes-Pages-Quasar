@@ -336,7 +336,7 @@ const uiStore = useUIStore();
 
 const page = inject<Ref<AppPage>>('page')!;
 
-const note = toRef(page.value.activeElem.react, 'note');
+const note = toRef(page.value.activeElem.react, 'elem') as Ref<PageNote>;
 
 function changeProp(value: any, func: (note: PageNote, value: any) => void) {
   page.value.collab.doc.transact(() => {

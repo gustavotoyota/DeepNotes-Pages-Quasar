@@ -118,46 +118,51 @@ export class PageResizing {
   }
 
   private _update = function (this: PageResizing, event: PointerEvent) {
+    if (!(this.page.activeElem.react.elem instanceof PageNote)) {
+      return;
+    }
+
     const worldPos = this.page.pos.eventToWorld(event);
 
-    const oldWorldRect = this._getWorldRect(this.activeGhost);
+    const oldSectionRect = this._getSectionRect(
+      this.page.activeElem.react.elem
+    );
 
-    const newWorldRect = new Rect(oldWorldRect);
+    const newSectionRect = new Rect(oldSectionRect);
 
     if (this.side.includes('w')) {
-      if (event.shiftKey) {
-        newWorldRect.bottomRight.x =
-          oldWorldRect.center.x + oldWorldRect.center.x - worldPos.x;
-      }
-
-      newWorldRect.topLeft.x = worldPos.x;
+      newSectionRect.topLeft.x = worldPos.x;
     }
     if (this.side.includes('n')) {
-      if (event.shiftKey) {
-        newWorldRect.bottomRight.y =
-          oldWorldRect.center.y + oldWorldRect.center.y - worldPos.y;
-      }
-
-      newWorldRect.topLeft.y = worldPos.y;
+      newSectionRect.topLeft.y = worldPos.y;
     }
     if (this.side.includes('e')) {
-      if (event.shiftKey) {
-        newWorldRect.topLeft.x =
-          oldWorldRect.center.x + oldWorldRect.center.x - worldPos.x;
-      }
-
-      newWorldRect.bottomRight.x = worldPos.x;
+      newSectionRect.bottomRight.x = worldPos.x;
     }
     if (this.side.includes('s')) {
-      if (event.shiftKey) {
-        newWorldRect.topLeft.y =
-          oldWorldRect.center.y + oldWorldRect.center.y - worldPos.y;
-      }
-
-      newWorldRect.bottomRight.y = worldPos.y;
+      newSectionRect.bottomRight.y = worldPos.y;
     }
 
-    const posDelta = newWorldRect.topLeft.sub(oldWorldRect.topLeft);
+    if (event.ctrlKey) {
+      if (this.side.includes('w')) {
+        newSectionRect.bottomRight.x =
+          oldSectionRect.center.x + oldSectionRect.center.x - worldPos.x;
+      }
+      if (this.side.includes('n')) {
+        newSectionRect.bottomRight.y =
+          oldSectionRect.center.y + oldSectionRect.center.y - worldPos.y;
+      }
+      if (this.side.includes('e')) {
+        newSectionRect.topLeft.x =
+          oldSectionRect.center.x + oldSectionRect.center.x - worldPos.x;
+      }
+      if (this.side.includes('s')) {
+        newSectionRect.topLeft.y =
+          oldSectionRect.center.y + oldSectionRect.center.y - worldPos.y;
+      }
+    }
+
+    const posDelta = newSectionRect.topLeft.sub(oldSectionRect.topLeft);
 
     for (const ghost of this.react.ghosts) {
       const note = this.page.notes.fromId(ghost.id);
@@ -166,23 +171,23 @@ export class PageResizing {
         continue;
       }
 
-      const worldRect = this._getWorldRect(note);
-
-      if (newWorldRect.size.x !== oldWorldRect.size.x) {
-        ghost.collab.width[ghost.react.sizeProp] = `${newWorldRect.size.x}px`;
+      if (newSectionRect.size.x !== oldSectionRect.size.x) {
+        ghost.collab.width[ghost.react.sizeProp] = `${newSectionRect.size.x}px`;
       }
 
-      if (this.section != null && newWorldRect.size.y !== oldWorldRect.size.y) {
+      if (
+        this.section != null &&
+        newSectionRect.size.y !== oldSectionRect.size.y
+      ) {
         ghost.collab[this.section].height[
           ghost.react.sizeProp
-        ] = `${newWorldRect.size.y}px`;
+        ] = `${newSectionRect.size.y}px`;
       }
 
-      ghost.collab.pos.x = worldRect.topLeft.x + posDelta.x;
+      const frameRect = note.getWorldRect('note-frame');
 
-      if (this.section === ghost.react.topSection) {
-        ghost.collab.pos.y = worldRect.topLeft.y + posDelta.y;
-      }
+      ghost.collab.pos.x = frameRect.topLeft.x + posDelta.x;
+      ghost.collab.pos.y = frameRect.topLeft.y + posDelta.y;
     }
   }.bind(this);
 
@@ -215,19 +220,19 @@ export class PageResizing {
     this.react.active = false;
   }.bind(this);
 
-  private _getWorldRect(note: PageNote) {
-    const noteFrame = note.getWorldRect('note-frame');
+  private _getSectionRect(note: PageNote) {
+    const frameRect = note.getWorldRect('note-frame');
 
     let verticalRect;
     if (this.section != null && note.collab[this.section].enabled) {
       verticalRect = note.getWorldRect(`note-${this.section}-section`);
     } else {
-      verticalRect = noteFrame;
+      verticalRect = frameRect;
     }
 
     return new Rect(
-      new Vec2(noteFrame.topLeft.x, verticalRect.topLeft.y),
-      new Vec2(noteFrame.bottomRight.x, verticalRect.bottomRight.y)
+      new Vec2(frameRect.topLeft.x, verticalRect.topLeft.y),
+      new Vec2(frameRect.bottomRight.x, verticalRect.bottomRight.y)
     );
   }
 }

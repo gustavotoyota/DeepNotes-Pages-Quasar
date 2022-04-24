@@ -1,6 +1,5 @@
 import { refProp } from 'src/boot/static/vue';
 import { computed, ComputedRef, UnwrapRef } from 'vue';
-import { PageArrow } from '../arrows/arrow';
 import { ElemType, PageElem } from '../elems/elem';
 import { PageNote } from '../notes/note';
 import { AppPage } from '../page';
@@ -10,9 +9,6 @@ export interface IActiveElemReact {
   type: ElemType;
 
   elem: ComputedRef<PageElem | null>;
-
-  note: ComputedRef<PageNote>;
-  arrow: ComputedRef<PageArrow>;
 
   exists: ComputedRef<boolean>;
 }
@@ -44,13 +40,6 @@ export class PageActiveElem {
           return null;
 
         return activeElem;
-      }),
-
-      note: computed(() => {
-        return this.react.elem as PageNote;
-      }),
-      arrow: computed(() => {
-        return this.react.elem as PageArrow;
       }),
 
       exists: computed(() => this.react.elem != null),

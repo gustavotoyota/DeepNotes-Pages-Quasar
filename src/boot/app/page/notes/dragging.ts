@@ -138,12 +138,12 @@ export class PageDragging {
     // With mouse in the center of the active element
 
     nextTick(() => {
-      if (this.page.activeElem.react.note == null) {
+      if (!(this.page.activeElem.react.elem instanceof PageNote)) {
         return;
       }
 
       const activeWorldRect =
-        this.page.activeElem.react.note.getWorldRect('note-frame');
+        this.page.activeElem.react.elem.getWorldRect('note-frame');
 
       const mouseOffset = worldPos.sub(activeWorldRect.center);
 
