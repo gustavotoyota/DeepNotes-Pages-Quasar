@@ -80,7 +80,7 @@ export class PageResizing {
 
       collab.width[note.react.sizeProp] = `${frameRect.size.x}px`;
 
-      if (section != null) {
+      if (section != null && collab[section].enabled) {
         const sectionRect = note.getWorldRect(`note-${section}-section`);
 
         collab[section].height[note.react.sizeProp] = `${sectionRect.size.y}px`;
@@ -219,10 +219,10 @@ export class PageResizing {
     const noteFrame = note.getWorldRect('note-frame');
 
     let verticalRect;
-    if (this.section == null) {
-      verticalRect = noteFrame;
-    } else {
+    if (this.section != null && note.collab[this.section].enabled) {
       verticalRect = note.getWorldRect(`note-${this.section}-section`);
+    } else {
+      verticalRect = noteFrame;
     }
 
     return new Rect(
