@@ -171,14 +171,9 @@ export class PageResizing {
         continue;
       }
 
-      if (newSectionRect.size.x !== oldSectionRect.size.x) {
-        ghost.collab.width[ghost.react.sizeProp] = `${newSectionRect.size.x}px`;
-      }
+      ghost.collab.width[ghost.react.sizeProp] = `${newSectionRect.size.x}px`;
 
-      if (
-        this.section != null &&
-        newSectionRect.size.y !== oldSectionRect.size.y
-      ) {
+      if (this.section != null) {
         ghost.collab[this.section].height[
           ghost.react.sizeProp
         ] = `${newSectionRect.size.y}px`;
@@ -199,10 +194,15 @@ export class PageResizing {
         continue;
       }
 
-      note.collab.width[note.react.sizeProp] =
-        ghost.collab.width[ghost.react.sizeProp];
+      if (this.side.includes('w') || this.side.includes('e')) {
+        note.collab.width[note.react.sizeProp] =
+          ghost.collab.width[ghost.react.sizeProp];
+      }
 
-      if (this.section != null) {
+      if (
+        this.section != null &&
+        (this.side.includes('n') || this.side.includes('s'))
+      ) {
         note.collab[this.section].height[note.react.sizeProp] =
           ghost.collab[this.section].height[ghost.react.sizeProp];
       }
