@@ -2,13 +2,13 @@ import { z } from 'zod';
 import { IVec2 } from '../static/vec2';
 import { DeepNotesApp } from './app';
 import { INoteCollab } from './page/notes/note';
-import { IRegionCollab } from './page/regions/region';
 import { cloneDeep, pull } from 'lodash';
 import { createSyncedText } from '../static/synced-store';
 import { v4 } from 'uuid';
 import { IArrowCollab } from './page/arrows/arrow';
 import { useMainStore } from 'src/stores/main-store';
 import { Op } from '../static/quill';
+import { IRegionCollab } from './page/regions/region';
 
 // Arrow
 
@@ -18,13 +18,11 @@ export const ISerialArrowEndpoint = z
     pos: IVec2.default({ x: 0, y: 0 }),
   })
   .default({});
-export type ISerialArrowEndpoint = z.infer<typeof ISerialArrowEndpoint>;
 
 export const ISerialArrow = z.object({
   start: ISerialArrowEndpoint,
   end: ISerialArrowEndpoint,
 });
-export type ISerialArrow = z.infer<typeof ISerialArrow>;
 
 // Note
 
@@ -39,14 +37,26 @@ export const ISerialTextSection = z.object({
     })
     .default({}),
 });
-export type ISerialTextSection = z.infer<typeof ISerialTextSection>;
 
-export interface ISerialNote
-  extends Omit<INoteCollab, 'head' | 'body' | keyof IRegionCollab | 'zIndex'>,
-    ISerialRegion {
-  head: ISerialTextSection;
-  body: ISerialTextSection;
+export interface ISerialNoteInput
+  extends Omit<
+      z.input<typeof INoteCollab>,
+      'head' | 'body' | keyof z.input<typeof IRegionCollab> | 'zIndex'
+    >,
+    ISerialRegionInput {
+  head?: z.input<typeof ISerialTextSection>;
+  body?: z.input<typeof ISerialTextSection>;
 }
+export interface ISerialNoteOutput
+  extends Omit<
+      z.output<typeof INoteCollab>,
+      'head' | 'body' | keyof z.output<typeof IRegionCollab> | 'zIndex'
+    >,
+    ISerialRegionOutput {
+  head: z.output<typeof ISerialTextSection>;
+  body: z.output<typeof ISerialTextSection>;
+}
+
 export const ISerialNote = z.lazy(() =>
   INoteCollab.omit({
     head: true,
@@ -63,20 +73,24 @@ export const ISerialNote = z.lazy(() =>
     notes: ISerialNote.array().default([]),
     arrows: ISerialArrow.array().default([]),
   })
-) as z.ZodType<ISerialNote>;
+) as z.ZodType<ISerialNoteOutput>;
 
 // Region
 
-export interface ISerialRegion {
-  notes: ISerialNote[];
-  arrows: ISerialArrow[];
+export interface ISerialRegionInput {
+  notes?: ISerialNoteInput[];
+  arrows?: z.input<typeof ISerialArrow>[];
+}
+export interface ISerialRegionOutput {
+  notes: ISerialNoteOutput[];
+  arrows: z.output<typeof ISerialArrow>[];
 }
 export const ISerialRegion = z.lazy(() =>
   z.object({
     notes: ISerialNote.array().default([]),
     arrows: ISerialArrow.array().default([]),
   })
-) as z.ZodType<ISerialRegion>;
+) as z.ZodType<ISerialRegionOutput, z.ZodTypeDef, ISerialRegionInput>;
 
 export class AppSerialization {
   readonly app: DeepNotesApp;
@@ -85,8 +99,8 @@ export class AppSerialization {
     this.app = app;
   }
 
-  serialize(container: IRegionCollab): ISerialRegion {
-    const serialRegion: ISerialRegion = {
+  serialize(container: z.output<typeof IRegionCollab>): ISerialRegionOutput {
+    const serialRegion: ISerialRegionOutput = {
       notes: [],
       arrows: [],
     };
@@ -100,7 +114,9 @@ export class AppSerialization {
     for (const note of page.notes.fromIds(container.noteIds)) {
       // Children
 
-      const serialNote: Partial<ISerialNote> = this.serialize(note.collab);
+      const serialNote: Partial<ISerialNoteOutput> = this.serialize(
+        note.collab
+      );
 
       // Head and body
 
@@ -128,13 +144,13 @@ export class AppSerialization {
 
       noteMap.set(note.id, serialRegion.notes.length);
 
-      serialRegion.notes.push(serialNote as ISerialNote);
+      serialRegion.notes.push(serialNote as ISerialNoteOutput);
     }
 
     // Serialize arrows
 
     for (const arrow of page.arrows.fromIds(container.arrowIds)) {
-      const serialArrow: ISerialArrow = {
+      const serialArrow: z.output<typeof ISerialArrow> = {
         start: {
           noteIndex: noteMap.get(arrow.collab.start.noteId ?? '') ?? null,
           pos: arrow.collab.start.pos,
@@ -151,7 +167,9 @@ export class AppSerialization {
     return serialRegion;
   }
 
-  private _deserializeAux(serialRegion: ISerialRegion): IRegionCollab {
+  private _deserializeAux(
+    serialRegion: ISerialRegionOutput
+  ): z.output<typeof IRegionCollab> {
     const page = useMainStore().page;
 
     const noteMap = new Map<number, string>();
@@ -164,7 +182,7 @@ export class AppSerialization {
       for (let i = 0; i < serialRegion.notes.length; i++) {
         const serialNote = serialRegion.notes[i];
 
-        const noteCollab = {} as Partial<INoteCollab>;
+        const noteCollab = {} as Partial<z.output<typeof INoteCollab>>;
 
         // Head and body
 
@@ -204,7 +222,9 @@ export class AppSerialization {
 
         const noteId = v4();
 
-        page.notes.react.collab[noteId] = noteCollab as INoteCollab;
+        page.notes.react.collab[noteId] = noteCollab as z.output<
+          typeof INoteCollab
+        >;
 
         noteMap.set(i, noteId);
 
@@ -240,18 +260,18 @@ export class AppSerialization {
     return { noteIds, arrowIds };
   }
   deserialize(
-    serialRegion: ISerialRegion,
-    destRegion: IRegionCollab,
+    serialRegion: ISerialRegionInput,
+    destRegion: z.output<typeof IRegionCollab>,
     destIndex?: number | null
-  ): IRegionCollab {
-    let result: IRegionCollab = { noteIds: [], arrowIds: [] };
+  ): z.output<typeof IRegionCollab> {
+    let result: z.output<typeof IRegionCollab> = { noteIds: [], arrowIds: [] };
 
-    serialRegion = ISerialRegion.parse(serialRegion);
+    const parsedSerialRegion = ISerialRegion.parse(serialRegion);
 
     const mainStore = useMainStore();
 
     mainStore.page.collab.doc.transact(() => {
-      result = this._deserializeAux(serialRegion);
+      result = this._deserializeAux(parsedSerialRegion);
 
       destIndex = destIndex ?? destRegion.noteIds.length;
       destRegion.noteIds.splice(destIndex, 0, ...result.noteIds);

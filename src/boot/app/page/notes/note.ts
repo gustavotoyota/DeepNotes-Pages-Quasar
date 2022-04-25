@@ -18,12 +18,12 @@ export const INoteCollabSize = z
     collapsed: z.string().default('auto'),
   })
   .default({});
-export type INoteCollabSize = z.infer<typeof INoteCollabSize>;
+export type INoteCollabSize = z.output<typeof INoteCollabSize>;
 
 export const INoteCollabSection = z.object({
   height: INoteCollabSize,
 });
-export type INoteCollabSection = z.infer<typeof INoteCollabSection>;
+export type INoteCollabSection = z.output<typeof INoteCollabSection>;
 
 export const INoteCollabTextSection = INoteCollabSection.extend({
   enabled: z.boolean(),
@@ -34,7 +34,7 @@ export const INoteCollabTextSection = INoteCollabSection.extend({
     ) as z.ZodType<SyncedText>,
   wrap: z.boolean().default(true),
 });
-export type INoteCollabTextSection = z.infer<typeof INoteCollabTextSection>;
+export type INoteCollabTextSection = z.output<typeof INoteCollabTextSection>;
 
 export const INoteCollab = IRegionCollab.extend({
   link: z.string().uuid().or(z.string().url()).nullable().default(null),
@@ -75,7 +75,6 @@ export const INoteCollab = IRegionCollab.extend({
 
   zIndex: z.number().default(-1),
 });
-export type INoteCollab = z.infer<typeof INoteCollab>;
 
 export type NoteSection = 'head' | 'body' | 'container';
 export type NoteTextSection = 'head' | 'body';
@@ -157,7 +156,7 @@ export interface INoteReact extends IRegionReact {
 }
 
 export class PageNote extends PageRegion {
-  collab: INoteCollab;
+  collab: z.output<typeof INoteCollab>;
 
   declare react: UnwrapRef<INoteReact>;
 
@@ -167,7 +166,7 @@ export class PageNote extends PageRegion {
     page: AppPage,
     id: string,
     parentId: string | null,
-    collab: INoteCollab
+    collab: z.output<typeof INoteCollab>
   ) {
     super(page, id, ElemType.NOTE, parentId);
 

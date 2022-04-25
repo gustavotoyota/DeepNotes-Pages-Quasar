@@ -6,7 +6,7 @@ export const IRect = z.object({
   bottomRight: IVec2,
 });
 
-export type IRect = z.infer<typeof IRect>;
+export type IRect = z.output<typeof IRect>;
 
 export class Rect {
   topLeft: Vec2;

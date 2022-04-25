@@ -2,13 +2,14 @@ import syncedStore, { getYjsValue, Y } from '@syncedstore/core';
 import { reactive } from 'vue';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { WebsocketProvider } from 'y-websocket';
+import { z } from 'zod';
 import { IArrowCollab } from './arrows/arrow';
 import { INoteCollab } from './notes/note';
 import { AppPage, IPageCollab } from './page';
 
 export interface IAppCollabStore {
   page: IPageCollab;
-  notes: { [key: string]: INoteCollab };
+  notes: { [key: string]: z.output<typeof INoteCollab> };
   arrows: { [key: string]: IArrowCollab };
 }
 

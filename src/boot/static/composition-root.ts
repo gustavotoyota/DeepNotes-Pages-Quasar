@@ -27,6 +27,7 @@ import { PageDeleting } from '../app/page/elems/deleting';
 import { PageDropping } from '../app/page/notes/dropping';
 import { PageClipboard } from '../app/page/elems/clipboard';
 import { PageResizing } from '../app/page/notes/resizing';
+import { z } from 'zod';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
@@ -61,7 +62,12 @@ export const container = new Container({
   notes: (factory: any) => (page: AppPage) => new PageNotes(factory, page),
   note:
     () =>
-    (page: AppPage, id: string, parentId: string | null, collab: INoteCollab) =>
+    (
+      page: AppPage,
+      id: string,
+      parentId: string | null,
+      collab: z.output<typeof INoteCollab>
+    ) =>
       new PageNote(page, id, parentId, collab),
   editing: () => (page: AppPage) => new PageEditing(page),
   dragging: () => (page: AppPage) => new PageDragging(page),

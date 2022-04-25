@@ -40,7 +40,7 @@ export const IPageCollab = IRegionCollab.extend({
 
   nextZIndex: z.number(),
 });
-export type IPageCollab = z.infer<typeof IPageCollab>;
+export type IPageCollab = z.output<typeof IPageCollab>;
 
 export interface IAppPageReact extends IRegionReact {
   name: string;

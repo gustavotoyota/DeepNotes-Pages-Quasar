@@ -122,7 +122,7 @@
   lang="ts"
 >
 import Gap from '../misc/Gap.vue';
-import { ITemplate } from 'src/stores/templates';
+import { ITemplate, useTemplates } from 'src/stores/templates';
 import { computed, reactive, ref } from 'vue';
 import { Notify } from 'quasar';
 import { remove } from 'lodash';
@@ -207,9 +207,17 @@ function deleteSelection() {
   selectedTemplates.clear();
 }
 
+async function save() {
+  const templatesStore = useTemplates();
+
+  templatesStore.list = templates.value;
+  templatesStore.defaultId = defaultTemplateId.value;
+}
+
 defineExpose({
   templates,
   defaultTemplateId,
   selectedTemplates,
+  save,
 });
 </script>

@@ -1,5 +1,6 @@
 import { Rect } from 'src/boot/static/rect';
 import { Vec2 } from 'src/boot/static/vec2';
+import { z } from 'zod';
 import { AppPage } from '../page';
 import { IRegionCollab } from './region';
 
@@ -10,7 +11,7 @@ export class PageRegions {
     this.page = page;
   }
 
-  getWorldRect(collab: IRegionCollab) {
+  getWorldRect(collab: z.output<typeof IRegionCollab>) {
     const worldRect = new Rect(
       new Vec2(Infinity, Infinity),
       new Vec2(-Infinity, -Infinity)

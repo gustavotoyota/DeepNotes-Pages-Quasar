@@ -76,6 +76,7 @@
           label="Ok"
           color="primary"
           v-close-popup
+          @click="save()"
         />
       </q-card-actions>
     </q-card>
@@ -122,4 +123,8 @@ onMounted(() => {
     { immediate: true }
   );
 });
+
+function save() {
+  templatesTab.value.save();
+}
 </script>

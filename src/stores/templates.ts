@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { ISerialNote } from 'src/boot/app/serialization';
+import { ISerialNoteInput } from 'src/boot/app/serialization';
 import { Vec2 } from 'src/boot/static/vec2';
 
 export interface ITemplate {
   id: string;
   name: string;
   visible: boolean;
-  data: ISerialNote;
+  data: ISerialNoteInput;
 }
 
 export const useTemplates = defineStore('templates', {
@@ -16,23 +16,23 @@ export const useTemplates = defineStore('templates', {
         id: 'head',
         name: 'Head',
         visible: true,
-        data: {
-          head: { enabled: true },
-          body: { enabled: false },
-        },
+        data: {},
       },
       {
         id: 'body',
         name: 'Body',
         visible: true,
-        data: {},
+        data: {
+          head: { enabled: false },
+          body: { enabled: true },
+        },
       },
       {
         id: 'head-and-body',
         name: 'Head and body',
         visible: true,
         data: {
-          head: { enabled: true },
+          body: { enabled: true },
         },
       },
       {
@@ -40,8 +40,6 @@ export const useTemplates = defineStore('templates', {
         name: 'Headed container',
         visible: true,
         data: {
-          head: { enabled: true },
-          body: { enabled: false },
           container: { enabled: true },
         },
       },

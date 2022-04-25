@@ -11,8 +11,9 @@ import {
   ShallowReactive,
   UnwrapRef,
 } from 'vue';
+import { z } from 'zod';
 import { AppPage } from '../page';
-import { INoteCollab, NoteSide, NoteSection, PageNote } from './note';
+import { NoteSide, NoteSection, PageNote, INoteCollab } from './note';
 
 export interface IResizingReact {
   active: boolean;
@@ -67,7 +68,7 @@ export class PageResizing {
 
       const collab = (
         getYjsValue(note.collab) as Y.Map<any>
-      ).toJSON() as INoteCollab;
+      ).toJSON() as z.output<typeof INoteCollab>;
 
       collab.head.value = note.collab.head.value.toDelta();
       collab.body.value = note.collab.body.value.toDelta();

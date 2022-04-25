@@ -8,7 +8,6 @@ export const IRegionCollab = z.object({
   noteIds: z.string().array().default([]),
   arrowIds: z.string().array().default([]),
 });
-export type IRegionCollab = z.infer<typeof IRegionCollab>;
 
 export interface IRegionReact extends IElemReact {
   noteIds: ComputedRef<string[]>;

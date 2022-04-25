@@ -10,13 +10,14 @@ import {
   ShallowReactive,
   UnwrapRef,
 } from 'vue';
+import { z } from 'zod';
 import { AppPage } from '../page';
 import { INoteCollab, PageNote } from './note';
 
 export interface INotesReact {
   map: ShallowReactive<Record<string, PageNote>>;
 
-  collab: ComputedRef<Record<string, INoteCollab>>;
+  collab: ComputedRef<Record<string, z.output<typeof INoteCollab>>>;
 }
 
 export class PageNotes {
@@ -78,15 +79,15 @@ export class PageNotes {
   }
 
   observeMap() {
-    (getYjsValue(this.react.collab) as SyncedMap<INoteCollab>).observe(
-      (event) => {
-        for (const [noteId, change] of event.changes.keys) {
-          if (change.action !== 'delete') continue;
+    (
+      getYjsValue(this.react.collab) as SyncedMap<z.output<typeof INoteCollab>>
+    ).observe((event) => {
+      for (const [noteId, change] of event.changes.keys) {
+        if (change.action !== 'delete') continue;
 
-          delete this.react.map[noteId];
-        }
+        delete this.react.map[noteId];
       }
-    );
+    });
   }
 
   createFromTemplate(template: ITemplate, clientPos: Vec2) {

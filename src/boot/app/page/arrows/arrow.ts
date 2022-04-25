@@ -7,13 +7,13 @@ export const IArrowEndpoint = z.object({
   noteId: z.string().nullable().default(null),
   pos: IVec2.default({ x: 0, y: 0 }),
 });
-export type IArrowEndpoint = z.infer<typeof IArrowEndpoint>;
+export type IArrowEndpoint = z.output<typeof IArrowEndpoint>;
 
 export const IArrowCollab = z.object({
   start: IArrowEndpoint,
   end: IArrowEndpoint,
 });
-export type IArrowCollab = z.infer<typeof IArrowCollab>;
+export type IArrowCollab = z.output<typeof IArrowCollab>;
 
 export class PageArrow extends PageElem {
   collab: IArrowCollab;

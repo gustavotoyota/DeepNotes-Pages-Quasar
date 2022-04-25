@@ -1,6 +1,7 @@
 import { Vec2 } from 'src/boot/static/vec2';
 import { refProp } from 'src/boot/static/vue';
 import { computed, UnwrapRef, watchEffect, WritableComputedRef } from 'vue';
+import { z } from 'zod';
 import { AppPage } from '../page';
 import { IRegionCollab } from '../regions/region';
 
@@ -29,7 +30,9 @@ export class PageCamera {
       zoom: computed({
         get: () => this.react._zoom,
         set: (value) => {
-          if (this.react.lockZoom) return;
+          if (this.react.lockZoom) {
+            return;
+          }
 
           this.react._zoom = value;
         },
@@ -53,7 +56,7 @@ export class PageCamera {
   }
 
   fitToScreen() {
-    let regionCollab: IRegionCollab;
+    let regionCollab: z.output<typeof IRegionCollab>;
 
     if (this.page.selection.react.notes.length > 0) {
       regionCollab = this.page.selection.react;
