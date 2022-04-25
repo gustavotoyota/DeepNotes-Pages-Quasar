@@ -1,19 +1,32 @@
 import { reactive } from 'vue';
 import { factory } from '../../../src/boot/static/composition-root';
 import { INoteCollab, PageNote } from '../../../src/boot/app/page/notes/note';
+import { z } from 'zod';
+
+let note: PageNote;
+
+beforeEach(() => {
+  note = factory.makeNote(
+    null as any,
+    '',
+    null,
+    reactive(INoteCollab.parse({}))
+  );
+});
+
+describe('DOM height', () => {
+  it('returns expanded version if collapsed and height.collapsed is "auto"', () => {
+    note.collab.head.height.collapsed = 'auto';
+    note.collab.head.height.expanded = '100px';
+
+    note.collab.collapsing.enabled = true;
+    note.collab.collapsing.collapsed = true;
+
+    expect(note.react.head.height).toBe('100px');
+  });
+});
 
 describe('DOM width', () => {
-  let note: PageNote;
-
-  beforeEach(() => {
-    note = factory.makeNote(
-      null as any,
-      '',
-      null,
-      reactive(INoteCollab.parse({}))
-    );
-  });
-
   it('returns "max-content" if not pinned', () => {
     expect(note.react.width.final).toBe('max-content');
   });
@@ -32,7 +45,7 @@ describe('DOM width', () => {
       INoteCollab.parse({
         width: { expanded: '200px' },
         container: { enabled: true },
-      } as INoteCollab)
+      } as z.input<typeof INoteCollab>)
     );
 
     expect(note.react.width.final).toBe(undefined);
@@ -80,7 +93,7 @@ describe('Target width', () => {
         null,
         INoteCollab.parse({
           container: { enabled: true },
-        } as INoteCollab)
+        } as z.input<typeof INoteCollab>)
       );
     });
 

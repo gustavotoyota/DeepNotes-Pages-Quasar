@@ -176,8 +176,15 @@ export class PageNote extends PageRegion {
       computed(() => {
         if (
           this.react.collapsing.collapsed &&
-          this.react.numEnabledSections === 1 &&
           this.collab[section].height.collapsed === 'auto'
+        ) {
+          return this.collab[section].height.expanded;
+        }
+
+        if (
+          this.react.collapsing.collapsed &&
+          this.react.numEnabledSections === 1 &&
+          this.collab[section].height.collapsed === 'min'
         ) {
           return '0px';
         }
