@@ -5,7 +5,7 @@
       @click="page.camera.resetZoom()"
     />
 
-    <SpaceGap style="height: 4px" />
+    <Gap style="height: 4px" />
 
     <DisplayBtn
       icon="mdi-image-filter-center-focus-weak"
@@ -18,7 +18,7 @@
   setup
   lang="ts"
 >
-import SpaceGap from '../misc/SpaceGap.vue';
+import Gap from '../misc/Gap.vue';
 import DisplayBtn from '../misc/DisplayBtn.vue';
 import { inject } from 'vue';
 import { AppPage } from 'src/boot/app/page/page';

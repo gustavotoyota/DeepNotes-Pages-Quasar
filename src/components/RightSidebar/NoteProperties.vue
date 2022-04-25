@@ -1,7 +1,7 @@
 <template>
   <q-list v-if="uiStore.rightSidebarMini">
     <MiniSidebarBtn
-      name="Head"
+      tooltip="Head"
       icon="mdi-page-layout-header"
       :active="note.collab.head.enabled"
       @click="
@@ -13,7 +13,7 @@
     />
 
     <MiniSidebarBtn
-      name="Swap head and body"
+      tooltip="Swap head and body"
       icon="mdi-swap-vertical"
       @click="
         changeProp(true, (note, value) => {
@@ -23,7 +23,7 @@
     />
 
     <MiniSidebarBtn
-      name="Body"
+      tooltip="Body"
       icon="mdi-page-layout-body"
       :active="note.collab.body.enabled"
       @click="
@@ -37,7 +37,7 @@
     <q-separator />
 
     <MiniSidebarBtn
-      name="Container"
+      tooltip="Container"
       icon="mdi-page-layout-footer"
       :active="note.collab.container.enabled"
       @click="
@@ -51,7 +51,7 @@
     <q-separator />
 
     <MiniSidebarBtn
-      name="Collapsible"
+      tooltip="Collapsible"
       icon="mdi-minus-box"
       :active="note.collab.collapsing.enabled"
       @click="
@@ -62,7 +62,7 @@
     />
 
     <MiniSidebarBtn
-      :name="note.react.collapsing.collapsed ? 'Expand' : 'Collapse'"
+      :tooltip="note.react.collapsing.collapsed ? 'Expand' : 'Collapse'"
       :icon="
         note.react.collapsing.collapsed
           ? 'mdi-chevron-down-box-outline'
@@ -90,7 +90,7 @@
         readonly
       />
 
-      <SpaceGap style="height: 16px" />
+      <Gap style="height: 16px" />
 
       <q-btn
         label="Modify"
@@ -117,7 +117,7 @@
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
-        <SpaceGap style="width: 16px" />
+        <Gap style="width: 16px" />
 
         <q-checkbox
           label="Body"
@@ -132,7 +132,7 @@
         />
       </div>
 
-      <SpaceGap style="height: 6px" />
+      <Gap style="height: 6px" />
 
       <div style="display: flex">
         <q-btn
@@ -147,7 +147,7 @@
           "
         />
 
-        <SpaceGap style="width: 16px" />
+        <Gap style="width: 16px" />
 
         <q-btn
           label="Float"
@@ -205,7 +205,7 @@
         />
       </div>
 
-      <SpaceGap style="width: 16px" />
+      <Gap style="width: 16px" />
 
       <div style="flex: 1">
         <q-select
@@ -255,7 +255,7 @@
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
-        <SpaceGap style="width: 16px" />
+        <Gap style="width: 16px" />
 
         <q-checkbox
           label="Collapsed"
@@ -270,7 +270,7 @@
         />
       </div>
 
-      <SpaceGap style="height: 12px" />
+      <Gap style="height: 12px" />
 
       <div style="display: flex">
         <q-checkbox
@@ -285,7 +285,7 @@
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
-        <SpaceGap style="width: 16px" />
+        <Gap style="width: 16px" />
 
         <q-checkbox
           label="Locally collapsed"
@@ -329,7 +329,7 @@
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
-        <SpaceGap style="width: 16px" />
+        <Gap style="width: 16px" />
 
         <q-checkbox
           label="Horizontal"
@@ -344,7 +344,7 @@
         />
       </div>
 
-      <SpaceGap style="height: 12px" />
+      <Gap style="height: 12px" />
 
       <div style="display: flex">
         <q-checkbox
@@ -359,7 +359,7 @@
           style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
-        <SpaceGap style="width: 16px" />
+        <Gap style="width: 16px" />
 
         <q-checkbox
           label="Wrap children"
@@ -388,7 +388,7 @@ import { AppPage } from 'src/boot/app/page/page';
 import { swapSyncedTexts } from 'src/boot/static/synced-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref, toRef } from 'vue';
-import SpaceGap from '../misc/SpaceGap.vue';
+import Gap from '../misc/Gap.vue';
 import MiniSidebarBtn from '../misc/MiniSidebarBtn.vue';
 
 const uiStore = useUIStore();

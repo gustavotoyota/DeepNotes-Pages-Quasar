@@ -2,7 +2,11 @@
   <q-btn
     dense
     flat
-    style="min-width: 28px; height: 28px; padding: 0"
+    :round="round"
+    style="height: 28px; padding: 0"
+    :style="{
+      'min-width': round ? undefined : '28px',
+    }"
   >
     <q-icon
       :size="size ?? '19px'"
@@ -27,5 +31,6 @@ defineProps<{
   icon: string;
   tooltip: string;
   size?: string;
+  round?: boolean;
 }>();
 </script>

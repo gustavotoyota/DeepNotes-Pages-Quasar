@@ -24,133 +24,165 @@
       </q-btn>
 
       <div style="flex: 1; width: 0; display: flex">
-        <SpaceGap style="width: 8px" />
+        <div
+          style="
+            flex: 1;
+            width: 0;
+            display: flex;
+            overflow: hidden;
+            align-items: center;
+          "
+        >
+          <Gap style="width: 8px" />
+
+          <ToolbarBtn
+            tooltip="Cut"
+            icon="mdi-content-cut"
+            :disabled="!page.activeElem.react.exists"
+            @click="page.clipboard.cut()"
+          />
+          <ToolbarBtn
+            tooltip="Copy"
+            icon="mdi-content-copy"
+            :disabled="!page.activeElem.react.exists"
+            @click="page.clipboard.copy()"
+          />
+          <ToolbarBtn
+            tooltip="Paste"
+            icon="mdi-content-paste"
+            @click="page.clipboard.paste()"
+          />
+          <ToolbarBtn
+            tooltip="Duplicate"
+            icon="mdi-content-duplicate"
+            :disabled="!page.activeElem.react.exists"
+            @click="page.cloning.perform()"
+          />
+
+          <q-separator
+            vertical
+            style="margin: 0 7px"
+          />
+
+          <ToolbarBtn
+            tooltip="Undo"
+            icon="mdi-undo"
+          />
+          <ToolbarBtn
+            tooltip="Redo"
+            icon="mdi-redo"
+          />
+
+          <q-separator
+            vertical
+            style="margin: 0 7px"
+          />
+
+          <ToolbarBtn
+            tooltip="Select all"
+            icon="mdi-select-all"
+            size="24px"
+            @click="page.selection.selectAll()"
+          />
+          <ToolbarBtn
+            tooltip="Delete"
+            icon="mdi-delete-outline"
+            size="24px"
+            :disabled="!page.activeElem.react.exists"
+            @click="page.deleting.perform()"
+          />
+
+          <q-separator
+            vertical
+            style="margin: 0 7px"
+          />
+
+          <ToolbarBtn
+            tooltip="Align left"
+            icon="mdi-format-align-left"
+            size="21px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('formatLine', 'align', '')"
+          />
+          <ToolbarBtn
+            tooltip="Align center"
+            icon="mdi-format-align-center"
+            size="21px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('formatLine', 'align', 'center')"
+          />
+          <ToolbarBtn
+            tooltip="Align right"
+            icon="mdi-format-align-right"
+            size="21px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('formatLine', 'align', 'right')"
+          />
+          <ToolbarBtn
+            tooltip="Justify"
+            icon="mdi-format-align-justify"
+            size="21px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('formatLine', 'align', 'justify')"
+          />
+
+          <q-separator
+            vertical
+            style="margin: 0 7px"
+          />
+
+          <ToolbarBtn
+            tooltip="Header 1"
+            icon="mdi-format-header-1"
+            size="24px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('formatLine', 'header', 1)"
+          />
+          <ToolbarBtn
+            tooltip="Header 2"
+            icon="mdi-format-header-2"
+            size="24px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('formatLine', 'header', 2)"
+          />
+
+          <q-separator
+            vertical
+            style="margin: 0 7px"
+          />
+
+          <ToolbarBtn
+            tooltip="Clear formatting"
+            icon="mdi-format-clear"
+            size="24px"
+            :disabled="!page.activeElem.react.exists"
+            @click="format('removeFormat')"
+          />
+        </div>
+
+        <Gap style="width: 6px" />
 
         <ToolbarBtn
-          tooltip="Cut"
-          icon="mdi-content-cut"
-          :disabled="!page.activeElem.react.exists"
-          @click="page.clipboard.cut()"
-        />
-        <ToolbarBtn
-          tooltip="Copy"
-          icon="mdi-content-copy"
-          :disabled="!page.activeElem.react.exists"
-          @click="page.clipboard.copy()"
-        />
-        <ToolbarBtn
-          tooltip="Paste"
-          icon="mdi-content-paste"
-          @click="page.clipboard.paste()"
-        />
-        <ToolbarBtn
-          tooltip="Duplicate"
-          icon="mdi-content-duplicate"
-          :disabled="!page.activeElem.react.exists"
-          @click="page.cloning.perform()"
+          tooltip="Home"
+          icon="mdi-home"
+          size="28px"
+          round
         />
 
-        <q-separator
-          vertical
-          style="margin: 0 7px"
-        />
+        <Gap style="width: 2px" />
+
+        <SettingsDialog />
+
+        <Gap style="width: 2px" />
 
         <ToolbarBtn
-          tooltip="Undo"
-          icon="mdi-undo"
-        />
-        <ToolbarBtn
-          tooltip="Redo"
-          icon="mdi-redo"
+          tooltip="Account"
+          icon="mdi-account-circle"
+          size="28px"
+          round
         />
 
-        <q-separator
-          vertical
-          style="margin: 0 7px"
-        />
-
-        <ToolbarBtn
-          tooltip="Select all"
-          icon="mdi-select-all"
-          size="24px"
-          @click="page.selection.selectAll()"
-        />
-        <ToolbarBtn
-          tooltip="Delete"
-          icon="mdi-delete-outline"
-          size="24px"
-          :disabled="!page.activeElem.react.exists"
-          @click="page.deleting.perform()"
-        />
-
-        <q-separator
-          vertical
-          style="margin: 0 7px"
-        />
-
-        <ToolbarBtn
-          tooltip="Align left"
-          icon="mdi-format-align-left"
-          size="21px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('formatLine', 'align', '')"
-        />
-        <ToolbarBtn
-          tooltip="Align center"
-          icon="mdi-format-align-center"
-          size="21px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('formatLine', 'align', 'center')"
-        />
-        <ToolbarBtn
-          tooltip="Align right"
-          icon="mdi-format-align-right"
-          size="21px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('formatLine', 'align', 'right')"
-        />
-        <ToolbarBtn
-          tooltip="Justify"
-          icon="mdi-format-align-justify"
-          size="21px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('formatLine', 'align', 'justify')"
-        />
-
-        <q-separator
-          vertical
-          style="margin: 0 7px"
-        />
-
-        <ToolbarBtn
-          tooltip="Header 1"
-          icon="mdi-format-header-1"
-          size="24px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('formatLine', 'header', 1)"
-        />
-        <ToolbarBtn
-          tooltip="Header 2"
-          icon="mdi-format-header-2"
-          size="24px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('formatLine', 'header', 2)"
-        />
-
-        <q-separator
-          vertical
-          style="margin: 0 7px"
-        />
-
-        <ToolbarBtn
-          tooltip="Clear formatting"
-          icon="mdi-format-clear"
-          size="24px"
-          :disabled="!page.activeElem.react.exists"
-          @click="format('removeFormat')"
-        />
-
-        <SpaceGap style="width: 8px" />
+        <Gap style="width: 10px" />
       </div>
 
       <q-btn
@@ -181,11 +213,12 @@
   lang="ts"
 >
 import { NoteTextSection } from 'src/boot/app/page/notes/note';
-import SpaceGap from 'src/components/misc/SpaceGap.vue';
+import Gap from 'src/components/misc/Gap.vue';
 import ToolbarBtn from 'src/components/misc/ToolbarBtn.vue';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { toRef } from 'vue';
+import SettingsDialog from './MainToolbar/SettingsDialog.vue';
 
 const uiStore = useUIStore();
 

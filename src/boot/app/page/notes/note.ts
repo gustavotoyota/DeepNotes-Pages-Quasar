@@ -45,10 +45,10 @@ export const INoteCollab = IRegionCollab.extend({
   width: INoteCollabSize,
 
   head: INoteCollabTextSection.default(
-    INoteCollabTextSection.parse({ enabled: false })
+    INoteCollabTextSection.parse({ enabled: true })
   ),
   body: INoteCollabTextSection.default(
-    INoteCollabTextSection.parse({ enabled: true })
+    INoteCollabTextSection.parse({ enabled: false })
   ),
 
   container: INoteCollabSection.extend({

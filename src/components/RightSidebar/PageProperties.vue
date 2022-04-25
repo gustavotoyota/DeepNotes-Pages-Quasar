@@ -44,7 +44,7 @@
         style="flex: 1; margin-left: -10px; margin-top: -10px"
       />
 
-      <space-gap style="width: 16px" />
+      <Gap style="width: 16px" />
 
       <q-checkbox
         label="Body"
@@ -63,7 +63,7 @@ import { AppPage } from 'src/boot/app/page/page';
 import { negateProp } from 'src/boot/static/utils';
 import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref } from 'vue';
-import SpaceGap from '../misc/SpaceGap.vue';
+import Gap from '../misc/Gap.vue';
 
 const uiStore = useUIStore();
 

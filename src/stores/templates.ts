@@ -13,22 +13,41 @@ export const useTemplates = defineStore('templates', {
   state: () => ({
     list: [
       {
-        id: 'default',
-        name: 'Default',
+        id: 'head',
+        name: 'Head',
         visible: true,
         data: {
-          head: {
-            enabled: false,
-            value: [{ insert: '\n' }],
-          },
-          body: {
-            enabled: true,
-            value: [{ insert: '\n' }],
-          },
+          head: { enabled: true },
+          body: { enabled: false },
+        },
+      },
+      {
+        id: 'body',
+        name: 'Body',
+        visible: true,
+        data: {},
+      },
+      {
+        id: 'head-and-body',
+        name: 'Head and body',
+        visible: true,
+        data: {
+          head: { enabled: true },
+        },
+      },
+      {
+        id: 'headed-container',
+        name: 'Headed container',
+        visible: true,
+        data: {
+          head: { enabled: true },
+          body: { enabled: false },
+          container: { enabled: true },
         },
       },
     ] as ITemplate[],
-    defaultId: 'default',
+
+    defaultId: 'head',
 
     popup: {
       visible: false,

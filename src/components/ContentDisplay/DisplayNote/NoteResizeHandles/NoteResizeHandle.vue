@@ -17,7 +17,7 @@
   setup
   lang="ts"
 >
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import { NoteSide, NoteSection, PageNote } from 'src/boot/app/page/notes/note';
 import { AppPage } from 'src/boot/app/page/page';
 import { inject } from 'vue';

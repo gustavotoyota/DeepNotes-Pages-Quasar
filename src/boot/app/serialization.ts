@@ -57,8 +57,8 @@ export const ISerialNote = z.lazy(() =>
 
     zIndex: true,
   }).extend({
-    head: ISerialTextSection,
-    body: ISerialTextSection,
+    head: ISerialTextSection.default({ enabled: true }),
+    body: ISerialTextSection.default({ enabled: false }),
 
     notes: ISerialNote.array().default([]),
     arrows: ISerialArrow.array().default([]),
