@@ -105,34 +105,32 @@
 
     <div style="padding: 20px; display: flex; flex-direction: column">
       <div style="display: flex">
-        <q-checkbox
+        <Checkbox
           label="Head"
-          :model-value="note.collab.head.enabled"
-          @update:model-value="
+          :value="note.collab.head.enabled"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.head.enabled = value;
               note.collab.body.enabled ||= note.react.numEnabledSections === 0;
             })
           "
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
         <Gap style="width: 16px" />
 
-        <q-checkbox
+        <Checkbox
           label="Body"
-          :model-value="note.collab.body.enabled"
-          @update:model-value="
+          :value="note.collab.body.enabled"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.body.enabled = value;
               note.collab.head.enabled ||= note.react.numEnabledSections === 0;
             })
           "
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
       </div>
 
-      <Gap style="height: 6px" />
+      <Gap style="height: 16px" />
 
       <div style="display: flex">
         <q-btn
@@ -235,62 +233,52 @@
 
     <!-- Collapsing -->
 
-    <div
-      style="
-        padding: 20px;
-        padding-bottom: 12px;
-        display: flex;
-        flex-direction: column;
-      "
-    >
+    <div style="padding: 20px; display: flex; flex-direction: column">
       <div style="display: flex">
-        <q-checkbox
+        <Checkbox
           label="Collapsible"
-          :model-value="note.collab.collapsing.enabled"
-          @update:model-value="
+          :value="note.collab.collapsing.enabled"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.collapsing.enabled = value;
             })
           "
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
         <Gap style="width: 16px" />
 
-        <q-checkbox
+        <Checkbox
           label="Collapsed"
-          :model-value="note.collab.collapsing.collapsed"
-          @update:model-value="
+          :value="note.collab.collapsing.collapsed"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.collapsing.collapsed = value;
             })
           "
           :disable="!note.collab.collapsing.enabled"
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
       </div>
 
-      <Gap style="height: 12px" />
+      <Gap style="height: 16px" />
 
       <div style="display: flex">
-        <q-checkbox
+        <Checkbox
           label="Local collapsing"
-          :model-value="note.collab.collapsing.localCollapsing"
-          @update:model-value="
+          :value="note.collab.collapsing.localCollapsing"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.collapsing.localCollapsing = value;
             })
           "
           :disable="!note.collab.collapsing.enabled"
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
         <Gap style="width: 16px" />
 
-        <q-checkbox
+        <Checkbox
           label="Locally collapsed"
-          :model-value="note.react.collapsing.locallyCollapsed"
-          @update:model-value="
+          :value="note.react.collapsing.locallyCollapsed"
+          @update="
             changeProp($event, (note, value) => {
               note.react.collapsing.locallyCollapsed = value;
             })
@@ -299,7 +287,6 @@
             !note.collab.collapsing.enabled ||
             !note.collab.collapsing.localCollapsing
           "
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
       </div>
     </div>
@@ -308,74 +295,105 @@
 
     <!-- Container -->
 
-    <div
-      style="
-        padding: 20px;
-        padding-bottom: 12px;
-        display: flex;
-        flex-direction: column;
-      "
-    >
+    <div style="padding: 20px; display: flex; flex-direction: column">
       <div style="display: flex">
-        <q-checkbox
+        <Checkbox
           label="Container"
-          :model-value="note.collab.container.enabled"
-          @update:model-value="
+          :value="note.collab.container.enabled"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.container.enabled = value;
               note.collab.body.enabled ||= note.react.numEnabledSections === 0;
             })
           "
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
         <Gap style="width: 16px" />
 
-        <q-checkbox
+        <Checkbox
           label="Horizontal"
-          :model-value="note.collab.container.horizontal"
-          @update:model-value="
+          :value="note.collab.container.horizontal"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.container.horizontal = value;
             })
           "
           :disable="!note.collab.container.enabled"
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
       </div>
 
-      <Gap style="height: 12px" />
+      <Gap style="height: 16px" />
 
       <div style="display: flex">
-        <q-checkbox
+        <Checkbox
           label="Stretch children"
-          :model-value="note.collab.container.stretchChildren"
-          @update:model-value="
+          :value="note.collab.container.stretchChildren"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.container.stretchChildren = value;
             })
           "
           :disable="!note.collab.container.enabled"
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
 
         <Gap style="width: 16px" />
 
-        <q-checkbox
+        <Checkbox
           label="Wrap children"
-          :model-value="note.collab.container.wrapChildren"
-          @update:model-value="
+          :value="note.collab.container.wrapChildren"
+          @update="
             changeProp($event, (note, value) => {
               note.collab.container.wrapChildren = value;
             })
           "
           :disable="!note.collab.container.enabled"
-          style="flex: 1; margin-left: -10px; margin-top: -10px"
         />
       </div>
     </div>
 
     <q-separator />
+
+    <div style="padding: 20px; display: flex">
+      <Checkbox
+        label="Movable"
+        :value="note.collab.movable"
+        @update="
+          changeProp($event, (note, value) => {
+            note.collab.movable = value;
+          })
+        "
+      />
+
+      <Gap style="width: 16px" />
+
+      <Checkbox
+        label="Resizable"
+        :value="note.collab.resizable"
+        @update="
+          changeProp($event, (note, value) => {
+            note.collab.resizable = value;
+          })
+        "
+      />
+    </div>
+
+    <q-separator />
+
+    <div style="padding: 20px; display: flex">
+      <Checkbox
+        label="Read-only"
+        :value="note.collab.readOnly"
+        @update="
+          changeProp($event, (note, value) => {
+            note.collab.readOnly = value;
+          })
+        "
+      />
+
+      <Gap style="width: 16px" />
+
+      <div style="flex: 1"></div>
+    </div>
   </div>
 </template>
 
@@ -390,6 +408,7 @@ import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref, toRef } from 'vue';
 import Gap from '../misc/Gap.vue';
 import MiniSidebarBtn from '../misc/MiniSidebarBtn.vue';
+import Checkbox from '../misc/Checkbox.vue';
 
 const uiStore = useUIStore();
 
