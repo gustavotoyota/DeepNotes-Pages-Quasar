@@ -11,7 +11,6 @@ export const apiBaseURL = process.env.DEV
 export const authEndpoints = {
   login: '/auth/login',
   refresh: '/auth/refresh',
-  user: '/auth/user',
 };
 
 const redirectBaseURL = process.env.DEV
@@ -56,35 +55,42 @@ function isTokenExpiring(cookies: Cookies, cookie: string) {
   return timeExpired / timeToLive >= 0.75;
 }
 
-async function refreshTokens(cookies: Cookies, api: AxiosInstance) {
-  if (
-    !isTokenExpiring(cookies, 'auth._token.local') &&
-    !isTokenExpiring(cookies, 'auth._refresh_token.local')
-  ) {
-    return;
-  }
+function areTokensExpiring(cookies: Cookies) {
+  return (
+    isTokenExpiring(cookies, 'auth._token.local') ||
+    isTokenExpiring(cookies, 'auth._refresh_token.local')
+  );
+}
 
+async function refreshTokens(
+  cookies: Cookies,
+  api: AxiosInstance
+): Promise<boolean> {
   const response = await api.post(authEndpoints.refresh, {
     refreshToken: cookies.get('auth._refresh_token.local'),
   });
 
-  if (response.status === 200) {
-    cookies.set('auth._token.local', response.data.accessToken);
-    cookies.set(
-      'auth._token_expiration.local',
-      jwtDecode<JwtToken>(response.data.accessToken).exp.toString()
-    );
-
-    cookies.set('auth._refresh_token.local', response.data.refreshToken);
-    cookies.set(
-      'auth._refresh_token_expiration.local',
-      jwtDecode<JwtToken>(response.data.refreshToken).exp.toString()
-    );
+  if (response.status !== 200) {
+    return false;
   }
+
+  cookies.set('auth._token.local', `Bearer ${response.data.accessToken}`);
+  cookies.set(
+    'auth._token_expiration.local',
+    jwtDecode<JwtToken>(response.data.accessToken).exp.toString()
+  );
+
+  cookies.set('auth._refresh_token.local', response.data.refreshToken);
+  cookies.set(
+    'auth._refresh_token_expiration.local',
+    jwtDecode<JwtToken>(response.data.refreshToken).exp.toString()
+  );
+
+  return true;
 }
 
 export default boot(async ({ app, ssrContext, redirect }) => {
-  const cookies = Cookies.parseSSR(ssrContext);
+  const cookies = process.env.SERVER ? Cookies.parseSSR(ssrContext) : Cookies;
 
   if (!cookies.has('auth._token.local')) {
     redirect(authRedirects.login);
@@ -93,17 +99,18 @@ export default boot(async ({ app, ssrContext, redirect }) => {
 
   const api: AxiosInstance = app.config.globalProperties.$api;
 
-  const response = await api.post(authEndpoints.user);
-
-  if (response.status !== 200) {
-    redirect(authRedirects.login);
-    return;
+  if (process.env.SERVER) {
+    if (!(await refreshTokens(cookies, api))) {
+      redirect(authRedirects.login);
+      return;
+    }
   }
 
-  // Refresh tokens automatically
-
   if (process.env.CLIENT) {
-    refreshTokens(cookies, api);
-    setInterval(refreshTokens, 60 * 1000);
+    setInterval(() => {
+      if (areTokensExpiring(cookies)) {
+        refreshTokens(cookies, api);
+      }
+    }, 60 * 1000);
   }
 });

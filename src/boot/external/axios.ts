@@ -31,9 +31,9 @@ export default boot(async ({ app, store, ssrContext }) => {
 
   // API
 
-  const api = axios.create({ baseURL: apiBaseURL });
+  const api = axios.create({ baseURL: apiBaseURL, withCredentials: true });
 
-  const cookies = Cookies.parseSSR(ssrContext);
+  const cookies = process.env.SERVER ? Cookies.parseSSR(ssrContext) : Cookies;
 
   api.defaults.headers.common.Authorization = cookies.get('auth._token.local');
 
