@@ -28,7 +28,7 @@ export const useMainStore = defineStore('main-store', () => {
   // Actions
 
   async function fetchData() {
-    console.log('Fetch data here');
+    //
   }
 
   return {

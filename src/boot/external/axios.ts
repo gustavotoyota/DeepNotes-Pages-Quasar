@@ -1,5 +1,7 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
+import { Cookies } from 'quasar';
+import { apiBaseURL } from '../app/auth';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -10,8 +12,8 @@ declare module '@vue/runtime-core' {
 
 declare module 'pinia' {
   interface PiniaCustomProperties {
-    axios: AxiosInstance;
-    api: AxiosInstance;
+    $axios: AxiosInstance;
+    $api: AxiosInstance;
   }
 }
 
@@ -21,20 +23,21 @@ declare module 'pinia' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-export const api = axios.create({
-  baseURL: 'http://app-server.deepnotes.app/',
-});
 
-export default boot(({ app, store }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+export default boot(async ({ app, store, ssrContext }) => {
+  // Axios
 
   app.config.globalProperties.$axios = axios;
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
+
+  // API
+
+  const api = axios.create({ baseURL: apiBaseURL });
+
+  const cookies = Cookies.parseSSR(ssrContext);
+
+  api.defaults.headers.common.Authorization = cookies.get('auth._token.local');
 
   app.config.globalProperties.$api = api;
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
 
-  store.use(() => ({ axios, api }));
+  store.use(() => ({ $axios: axios, $api: api }));
 });

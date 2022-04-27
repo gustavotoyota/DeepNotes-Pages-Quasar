@@ -28,10 +28,12 @@ import { PageDropping } from '../app/page/notes/dropping';
 import { PageClipboard } from '../app/page/elems/clipboard';
 import { PageResizing } from '../app/page/notes/resizing';
 import { z } from 'zod';
+import { AppAuth } from '../app/auth';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
 
+  auth: () => (app: DeepNotesApp) => new AppAuth(app),
   serialization: () => (app: DeepNotesApp) => new AppSerialization(app),
 
   page: (factory: any) => (app: DeepNotesApp, id: string) =>

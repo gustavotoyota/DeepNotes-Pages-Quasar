@@ -11,9 +11,8 @@ export default defineComponent({
   name: 'App',
 
   async preFetch() {
-    const mainStore = useMainStore();
-
-    await mainStore.fetchData();
+    // const mainStore = useMainStore();
+    // await mainStore.fetchData();
   },
 });
 </script>

@@ -7,3 +7,13 @@
 //  this declaration also apply `quasar` own
 //  augmentations (eg. adds `$q` into Vue component context)
 /// <reference types="@quasar/app-vite" />
+
+import 'quasar/dist/types/feature-flag';
+
+declare module 'quasar/dist/types/feature-flag' {
+  // This will be merged with other definitions
+  // thanks to interface declaration merging
+  interface QuasarFeatureFlags {
+    ssr: true; // The object key is the feature flag name
+  }
+}

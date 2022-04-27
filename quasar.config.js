@@ -34,6 +34,7 @@ module.exports = configure(function (/* ctx */) {
       'external/syncedstore',
       { path: 'external/highlight', server: false },
       { path: 'external/quill', server: false },
+      'app/auth',
       'app/app',
     ],
 
@@ -99,7 +100,7 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       // https: true
       open: true, // opens browser window automatically
-      port: 16507,
+      port: 24579,
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
@@ -120,7 +121,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify'],
+      plugins: ['Notify', 'Cookies'],
     },
 
     // animations: 'all', // --- includes all animations

@@ -2,11 +2,13 @@ import { boot } from 'quasar/wrappers';
 import { Factory, factory } from '../static/composition-root';
 import 'src/boot/static/types';
 import { AppSerialization } from './serialization';
+import { AppAuth } from './auth';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $app: App;
+    $dn: DeepNotesApp;
     console: Console;
+    process: NodeJS.Process;
   }
 }
 
@@ -23,9 +25,11 @@ declare global {
 }
 
 export class DeepNotesApp {
+  readonly auth: AppAuth;
   readonly serialization: AppSerialization;
 
   constructor(factory: Factory) {
+    this.auth = factory.makeAuth(this);
     this.serialization = factory.makeSerialization(this);
 
     globalThis.__DEEP_NOTES__ = {
@@ -39,6 +43,7 @@ export default boot((params) => {
 
   params.app.config.globalProperties.$dn = app;
   params.app.config.globalProperties.console = console;
+  params.app.config.globalProperties.process = process;
 
   params.app.provide('app', app);
 });

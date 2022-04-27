@@ -167,6 +167,11 @@
           icon="mdi-home"
           size="28px"
           round
+          :href="
+            process.env.DEV
+              ? 'http://localhost:60379/'
+              : 'https://deepnotes.app/'
+          "
         />
 
         <Gap style="width: 2px" />
@@ -180,6 +185,7 @@
           icon="mdi-account-circle"
           size="28px"
           round
+          @click="$dn.auth.logout()"
         />
 
         <Gap style="width: 10px" />
