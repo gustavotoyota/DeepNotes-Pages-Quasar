@@ -1,5 +1,6 @@
 import { getClipboardText, setClipboardText } from 'src/code/static/clipboard';
 import { Vec2 } from 'src/code/static/vec2';
+
 import { ISerialRegion } from '../../serialization';
 import { AppPage } from '../page';
 import { PageElem } from './elem';

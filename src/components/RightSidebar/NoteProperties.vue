@@ -406,9 +406,10 @@ import { AppPage } from 'src/code/app/page/page';
 import { swapSyncedTexts } from 'src/code/static/synced-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref, toRef } from 'vue';
+
+import Checkbox from '../misc/Checkbox.vue';
 import Gap from '../misc/Gap.vue';
 import MiniSidebarBtn from '../misc/MiniSidebarBtn.vue';
-import Checkbox from '../misc/Checkbox.vue';
 
 const uiStore = useUIStore();
 

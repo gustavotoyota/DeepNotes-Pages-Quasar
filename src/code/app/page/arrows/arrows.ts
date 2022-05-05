@@ -4,10 +4,11 @@ import { refProp } from 'src/code/static/vue';
 import {
   computed,
   ComputedRef,
-  shallowReactive,
   ShallowReactive,
+  shallowReactive,
   UnwrapRef,
 } from 'vue';
+
 import { AppPage } from '../page';
 import { IArrowCollab, PageArrow } from './arrow';
 

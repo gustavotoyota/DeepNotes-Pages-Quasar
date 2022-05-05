@@ -87,12 +87,13 @@
   setup
   lang="ts"
 >
-import { nextTick, onMounted, ref, watch } from 'vue';
-import ToolbarBtn from 'src/components/misc/ToolbarBtn.vue';
-import SettingsTemplatesTab from './SettingsTemplatesTab.vue';
-import SettingsGeneralTab from './SettingsGeneralTab.vue';
 import { cloneDeep } from 'lodash';
+import ToolbarBtn from 'src/components/misc/ToolbarBtn.vue';
 import { useTemplates } from 'src/stores/templates';
+import { nextTick, onMounted, ref, watch } from 'vue';
+
+import SettingsGeneralTab from './SettingsGeneralTab.vue';
+import SettingsTemplatesTab from './SettingsTemplatesTab.vue';
 
 const templates = useTemplates();
 

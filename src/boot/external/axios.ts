@@ -1,7 +1,6 @@
-import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
-import { Cookies } from 'quasar';
-import { ACCESS_TOKEN_COOKIE, apiBaseURL } from '../internal/auth';
+import { boot } from 'quasar/wrappers';
+import { apiBaseURL } from 'src/code/static/auth';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -24,7 +23,7 @@ declare module 'pinia' {
 // "export default () => {}" function below (which runs individually
 // for each client)
 
-export default boot(async ({ app, store, ssrContext }) => {
+export default boot(async ({ app, store }) => {
   // Axios
 
   app.config.globalProperties.$axios = axios;
@@ -32,10 +31,6 @@ export default boot(async ({ app, store, ssrContext }) => {
   // API
 
   const api = axios.create({ baseURL: apiBaseURL, withCredentials: true });
-
-  const cookies = process.env.SERVER ? Cookies.parseSSR(ssrContext) : Cookies;
-
-  api.defaults.headers.common.Authorization = cookies.get(ACCESS_TOKEN_COOKIE);
 
   app.config.globalProperties.$api = api;
 

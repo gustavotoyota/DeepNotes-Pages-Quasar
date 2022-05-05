@@ -1,6 +1,7 @@
 import { Rect } from 'src/code/static/rect';
 import { Vec2 } from 'src/code/static/vec2';
 import { z } from 'zod';
+
 import { AppPage } from '../page';
 import { IRegionCollab } from './region';
 

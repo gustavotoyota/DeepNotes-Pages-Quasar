@@ -3,11 +3,12 @@ import { AppPage } from 'src/code/app/page/page';
 import {
   computed,
   reactive,
-  shallowReactive,
   ShallowReactive,
+  shallowReactive,
   toRefs,
   watch,
 } from 'vue';
+
 import { useMainStore } from './main-store';
 
 export const usePageCache = defineStore('page-cache', () => {

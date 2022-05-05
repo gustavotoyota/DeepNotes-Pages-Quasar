@@ -1,12 +1,13 @@
+import { cloneDeep, pull } from 'lodash';
+import { useMainStore } from 'src/stores/main-store';
 import { z } from 'zod';
+
+import { Op } from '../static/quill';
+import { createSyncedText } from '../static/synced-store';
 import { IVec2 } from '../static/vec2';
 import { DeepNotesApp } from './app';
-import { INoteCollab } from './page/notes/note';
-import { cloneDeep, pull } from 'lodash';
-import { createSyncedText } from '../static/synced-store';
 import { IArrowCollab } from './page/arrows/arrow';
-import { useMainStore } from 'src/stores/main-store';
-import { Op } from '../static/quill';
+import { INoteCollab } from './page/notes/note';
 import { IRegionCollab } from './page/regions/region';
 
 // Arrow

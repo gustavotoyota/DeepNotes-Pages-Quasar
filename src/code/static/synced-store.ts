@@ -1,4 +1,5 @@
 import { SyncedText } from '@syncedstore/core';
+
 import { Op } from './quill';
 
 export function clearSyncedText(text: SyncedText) {

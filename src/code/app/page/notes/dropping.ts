@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+
 import { AppPage } from '../page';
 import { PageNote } from './note';
 

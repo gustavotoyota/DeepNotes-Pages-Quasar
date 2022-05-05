@@ -93,9 +93,10 @@
 >
 import { PageNote } from 'src/code/app/page/notes/note';
 import { inject } from 'vue';
+
+import DisplayNote from './DisplayNote.vue';
 import NoteCollapseBtn from './NoteCollapseBtn.vue';
 import NoteDropZone from './NoteDropZones/NoteDropZone.vue';
-import DisplayNote from './DisplayNote.vue';
 
 const note = inject<PageNote>('note')!;
 </script>

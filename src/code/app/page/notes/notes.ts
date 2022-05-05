@@ -6,11 +6,12 @@ import { ITemplate } from 'src/stores/templates';
 import {
   computed,
   ComputedRef,
-  shallowReactive,
   ShallowReactive,
+  shallowReactive,
   UnwrapRef,
 } from 'vue';
 import { z } from 'zod';
+
 import { AppPage } from '../page';
 import { INoteCollab, PageNote } from './note';
 

@@ -65,6 +65,7 @@
   lang="ts"
 >
 import { useUIStore } from 'src/stores/ui-store';
+
 import MiniSidebarPage from './misc/MiniSidebarPage.vue';
 
 const uiStore = useUIStore();

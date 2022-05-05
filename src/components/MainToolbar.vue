@@ -185,7 +185,6 @@
           icon="mdi-account-circle"
           size="28px"
           round
-          @click="$dn.auth.logout()"
         />
 
         <Gap style="width: 10px" />
@@ -224,6 +223,7 @@ import ToolbarBtn from 'src/components/misc/ToolbarBtn.vue';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { toRef } from 'vue';
+
 import SettingsDialog from './MainToolbar/SettingsDialog.vue';
 
 const uiStore = useUIStore();

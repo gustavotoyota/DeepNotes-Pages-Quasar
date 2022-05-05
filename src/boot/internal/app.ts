@@ -1,7 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import { DeepNotesApp } from 'src/code/app/app';
 import { factory } from 'src/code/static/composition-root';
-import '@vue/runtime-core';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

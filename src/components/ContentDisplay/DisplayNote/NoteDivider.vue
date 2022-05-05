@@ -23,6 +23,7 @@
 >
 import { NoteSection, PageNote } from 'src/code/app/page/notes/note';
 import { inject } from 'vue';
+
 import NoteResizeHandle from './NoteResizeHandles/NoteResizeHandle.vue';
 
 defineProps<{

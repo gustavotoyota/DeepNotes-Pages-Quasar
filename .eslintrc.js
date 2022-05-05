@@ -52,6 +52,7 @@ module.exports = {
     // Prettier has not been included as plugin to avoid performance impact
     // add it as an extension for your IDE
     'unused-imports',
+    'simple-import-sort',
   ],
 
   globals: {
@@ -102,5 +103,8 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off',
 
     'vue/multi-word-component-names': 'off',
+
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
   },
 };

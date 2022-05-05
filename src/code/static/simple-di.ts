@@ -1,4 +1,5 @@
 import { upperFirst } from 'lodash';
+
 import { createDeferrer } from './defer';
 
 export type Factory<Dependency> = (...args: any) => Dependency;

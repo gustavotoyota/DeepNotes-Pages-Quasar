@@ -1,5 +1,6 @@
 import { Rect } from 'src/code/static/rect';
 import { Vec2 } from 'src/code/static/vec2';
+
 import { AppPage } from '../page';
 
 export class PageRects {

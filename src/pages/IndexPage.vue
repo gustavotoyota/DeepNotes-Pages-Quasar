@@ -12,11 +12,11 @@
   lang="ts"
 >
 import { DeepNotesApp } from 'src/code/app/app';
-import { factory } from 'src/code/static/composition-root';
 import { AppPage } from 'src/code/app/page/page';
+import { factory } from 'src/code/static/composition-root';
 import ContentDisplay from 'src/components/ContentDisplay/ContentDisplay.vue';
-import { inject, onMounted, provide, shallowRef } from 'vue';
 import { usePageCache } from 'src/stores/page-cache';
+import { inject, onMounted, provide, shallowRef } from 'vue';
 
 const app = inject<DeepNotesApp>('app')!;
 

@@ -18,10 +18,11 @@
   setup
   lang="ts"
 >
-import Gap from '../misc/Gap.vue';
-import DisplayBtn from '../misc/DisplayBtn.vue';
-import { inject } from 'vue';
 import { AppPage } from 'src/code/app/page/page';
+import { inject } from 'vue';
+
+import DisplayBtn from '../misc/DisplayBtn.vue';
+import Gap from '../misc/Gap.vue';
 
 const page = inject<AppPage>('page')!;
 </script>

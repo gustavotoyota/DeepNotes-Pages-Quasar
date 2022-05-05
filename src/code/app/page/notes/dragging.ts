@@ -2,6 +2,7 @@ import { listenPointerEvents } from 'src/code/static/dom';
 import { Vec2 } from 'src/code/static/vec2';
 import { refProp } from 'src/code/static/vue';
 import { nextTick, UnwrapRef } from 'vue';
+
 import { AppPage } from '../page';
 import { PageNote } from './note';
 

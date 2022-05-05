@@ -22,12 +22,12 @@
   setup
   lang="ts"
 >
-import MainToolbar from '../components/MainToolbar.vue';
-import LeftSidebar from '../components/LeftSidebar.vue';
-import RightSidebar from 'src/components/RightSidebar/RightSidebar.vue';
 import LoadingOverlay from 'src/components/misc/LoadingOverlay.vue';
-
+import RightSidebar from 'src/components/RightSidebar/RightSidebar.vue';
 import { useMainStore } from 'src/stores/main-store';
+
+import LeftSidebar from '../components/LeftSidebar.vue';
+import MainToolbar from '../components/MainToolbar.vue';
 
 const mainStore = useMainStore();
 </script>

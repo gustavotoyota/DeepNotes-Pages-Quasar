@@ -7,13 +7,14 @@ import { refProp } from 'src/code/static/vue';
 import {
   nextTick,
   reactive,
-  shallowReactive,
   ShallowReactive,
+  shallowReactive,
   UnwrapRef,
 } from 'vue';
 import { z } from 'zod';
+
 import { AppPage } from '../page';
-import { NoteSide, NoteSection, PageNote, INoteCollab } from './note';
+import { INoteCollab, NoteSection, NoteSide, PageNote } from './note';
 
 export interface IResizingReact {
   active: boolean;

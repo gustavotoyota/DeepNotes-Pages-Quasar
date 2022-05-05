@@ -41,6 +41,7 @@
 >
 import { PageNote } from 'src/code/app/page/notes/note';
 import { inject } from 'vue';
+
 import NoteResizeHandle from './NoteResizeHandle.vue';
 
 const note = inject<PageNote>('note')!;

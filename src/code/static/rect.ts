@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { Vec2, IVec2 } from './vec2';
+
+import { IVec2, Vec2 } from './vec2';
 
 export const IRect = z.object({
   topLeft: IVec2,

@@ -31,6 +31,7 @@
 import { PageNote } from 'src/code/app/page/notes/note';
 import { AppPage } from 'src/code/app/page/page';
 import { inject } from 'vue';
+
 import NoteDropZone from './NoteDropZone.vue';
 
 const note = inject<PageNote>('note')!;

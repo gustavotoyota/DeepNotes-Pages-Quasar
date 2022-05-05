@@ -34,8 +34,9 @@
 import { NoteTextSection, PageNote } from 'src/code/app/page/notes/note';
 import { AppPage } from 'src/code/app/page/page';
 import { inject } from 'vue';
-import NoteEditor from './NoteEditor.vue';
+
 import NoteCollapseBtn from './NoteCollapseBtn.vue';
+import NoteEditor from './NoteEditor.vue';
 
 defineProps<{
   section: NoteTextSection;

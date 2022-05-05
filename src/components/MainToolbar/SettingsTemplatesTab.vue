@@ -121,12 +121,13 @@
   setup
   lang="ts"
 >
-import Gap from '../misc/Gap.vue';
+import { remove } from 'lodash';
+import { Notify } from 'quasar';
 import { ITemplate, useTemplates } from 'src/stores/templates';
 import { computed, reactive, ref } from 'vue';
-import { Notify } from 'quasar';
-import { remove } from 'lodash';
 import draggable from 'vuedraggable';
+
+import Gap from '../misc/Gap.vue';
 
 const templates = ref([] as ITemplate[]);
 const defaultTemplateId = ref('');

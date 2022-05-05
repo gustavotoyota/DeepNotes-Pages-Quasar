@@ -1,14 +1,15 @@
 import { SyncedText } from '@syncedstore/core';
 import Quill from 'quill';
+import { hasVertScrollbar } from 'src/code/static/dom';
 import { Rect } from 'src/code/static/rect';
+import { createSyncedText } from 'src/code/static/synced-store';
 import { IVec2, Vec2 } from 'src/code/static/vec2';
 import { computed, ComputedRef, UnwrapRef, WritableComputedRef } from 'vue';
 import { z } from 'zod';
+
 import { ElemType, IElemReact } from '../elems/elem';
 import { AppPage } from '../page';
 import { IRegionCollab, IRegionReact, PageRegion } from '../regions/region';
-import { hasVertScrollbar } from 'src/code/static/dom';
-import { createSyncedText } from 'src/code/static/synced-store';
 
 export type NoteSide = 'nw' | 'n' | 'ne' | 'w' | 'e' | 'sw' | 's' | 'se';
 

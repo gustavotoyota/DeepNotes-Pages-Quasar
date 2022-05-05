@@ -34,7 +34,6 @@ module.exports = configure(function (/* ctx */) {
       'external/syncedstore',
       { path: 'external/highlight', server: false },
       { path: 'external/quill', server: false },
-      'internal/auth',
       'internal/app',
     ],
 

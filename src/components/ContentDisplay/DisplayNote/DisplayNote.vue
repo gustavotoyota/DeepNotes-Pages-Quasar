@@ -26,14 +26,15 @@
 >
 import { PageNote } from 'src/code/app/page/notes/note';
 import { provide, watchEffect } from 'vue';
+
 import NoteAnchor from './NoteAnchor.vue';
-import NoteFrame from './NoteFrame.vue';
-import NoteContent from './NoteContent.vue';
-import NoteTextSection from './NoteTextSection.vue';
 import NoteContainerSection from './NoteContainerSection.vue';
-import NoteDropZones from './NoteDropZones/NoteDropZones.vue';
-import NoteResizeHandles from './NoteResizeHandles/NoteResizeHandles.vue';
+import NoteContent from './NoteContent.vue';
 import NoteDivider from './NoteDivider.vue';
+import NoteDropZones from './NoteDropZones/NoteDropZones.vue';
+import NoteFrame from './NoteFrame.vue';
+import NoteResizeHandles from './NoteResizeHandles/NoteResizeHandles.vue';
+import NoteTextSection from './NoteTextSection.vue';
 
 const props = defineProps<{
   note: PageNote;

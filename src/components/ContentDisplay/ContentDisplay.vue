@@ -21,6 +21,7 @@
 >
 import { AppPage } from 'src/code/app/page/page';
 import { provide } from 'vue';
+
 import LoadingOverlay from '../misc/LoadingOverlay.vue';
 import DisplayBackground from './DisplayBackground.vue';
 import DisplayBoxSelection from './DisplayBoxSelection.vue';

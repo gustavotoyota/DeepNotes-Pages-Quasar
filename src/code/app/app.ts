@@ -1,7 +1,7 @@
-import { Factory } from '../static/composition-root';
 import 'src/code/static/types';
+
+import { Factory } from '../static/composition-root';
 import { AppSerialization } from './serialization';
-import { AppAuth } from '../../boot/internal/auth';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -16,11 +16,9 @@ declare global {
 }
 
 export class DeepNotesApp {
-  readonly auth: AppAuth;
   readonly serialization: AppSerialization;
 
   constructor(factory: Factory) {
-    this.auth = factory.makeAuth(this);
     this.serialization = factory.makeSerialization(this);
 
     globalThis.__DEEP_NOTES__ = {

@@ -1,5 +1,6 @@
 import { listenPointerEvents } from 'src/code/static/dom';
 import { Vec2 } from 'src/code/static/vec2';
+
 import { AppPage } from '../page';
 
 export class PagePanning {

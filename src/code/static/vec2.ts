@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { lerp } from './math';
 
 export const IVec2 = z.object({

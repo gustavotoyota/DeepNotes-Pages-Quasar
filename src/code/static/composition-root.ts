@@ -1,39 +1,38 @@
-import { Container } from './simple-di';
+import { z } from 'zod';
+
 import { DeepNotesApp } from '../app/app';
+import { IArrowCollab, PageArrow } from '../app/page/arrows/arrow';
 import { PageArrows } from '../app/page/arrows/arrows';
 import { PageCamera } from '../app/page/camera/camera';
 import { PagePanning } from '../app/page/camera/panning';
 import { PageZooming } from '../app/page/camera/zooming';
+import { PageCollab } from '../app/page/collab';
+import { PageClipboard } from '../app/page/elems/clipboard';
+import { PageDeleting } from '../app/page/elems/deleting';
 import { PageElems } from '../app/page/elems/elems';
+import { PageCloning } from '../app/page/notes/cloning';
+import { PageDragging } from '../app/page/notes/dragging';
+import { PageDropping } from '../app/page/notes/dropping';
+import { PageEditing } from '../app/page/notes/editing';
 import { INoteCollab, PageNote } from '../app/page/notes/note';
 import { PageNotes } from '../app/page/notes/notes';
+import { PageResizing } from '../app/page/notes/resizing';
 import { AppPage } from '../app/page/page';
+import { PageRegions } from '../app/page/regions/regions';
 import { PageActiveElem } from '../app/page/selection/active-elem';
 import { PageActiveRegion } from '../app/page/selection/active-region';
 import { PageBoxSelection } from '../app/page/selection/box-selection';
+import { PageClickSelection } from '../app/page/selection/click-selection';
 import { PageSelection } from '../app/page/selection/selection';
 import { PagePos } from '../app/page/space/pos';
 import { PageRects } from '../app/page/space/rects';
 import { PageSizes } from '../app/page/space/sizes';
 import { AppSerialization } from '../app/serialization';
-import { PageCollab } from '../app/page/collab';
-import { IArrowCollab, PageArrow } from '../app/page/arrows/arrow';
-import { PageEditing } from '../app/page/notes/editing';
-import { PageClickSelection } from '../app/page/selection/click-selection';
-import { PageDragging } from '../app/page/notes/dragging';
-import { PageRegions } from '../app/page/regions/regions';
-import { PageCloning } from '../app/page/notes/cloning';
-import { PageDeleting } from '../app/page/elems/deleting';
-import { PageDropping } from '../app/page/notes/dropping';
-import { PageClipboard } from '../app/page/elems/clipboard';
-import { PageResizing } from '../app/page/notes/resizing';
-import { z } from 'zod';
-import { AppAuth } from '../../boot/internal/auth';
+import { Container } from './simple-di';
 
 export const container = new Container({
   app: (factory: any) => () => new DeepNotesApp(factory),
 
-  auth: () => (app: DeepNotesApp) => new AppAuth(app),
   serialization: () => (app: DeepNotesApp) => new AppSerialization(app),
 
   page: (factory: any) => (app: DeepNotesApp, id: string) =>

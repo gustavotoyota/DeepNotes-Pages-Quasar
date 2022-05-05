@@ -1,6 +1,6 @@
-import { Vec2 } from './vec2';
-import { Rect } from './rect';
 import { Line } from './line';
+import { Rect } from './rect';
+import { Vec2 } from './vec2';
 
 export function lineRectIntersection(line: Line, rect: Rect): Vec2 | null {
   const result = liangBarsky(

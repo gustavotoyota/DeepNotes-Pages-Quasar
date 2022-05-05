@@ -1,5 +1,6 @@
 import { refProp } from 'src/code/static/vue';
 import { computed, ComputedRef, UnwrapRef } from 'vue';
+
 import { AppPage } from '../page';
 import { NoteTextSection, PageNote } from './note';
 

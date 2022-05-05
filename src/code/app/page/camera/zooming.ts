@@ -1,4 +1,5 @@
 import { hasVertScrollbar } from 'src/code/static/dom';
+
 import { AppPage } from '../page';
 
 export class PageZooming {

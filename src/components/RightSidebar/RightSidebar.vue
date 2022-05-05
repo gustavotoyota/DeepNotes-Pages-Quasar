@@ -45,10 +45,11 @@
 import { ElemType } from 'src/code/app/page/elems/elem';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
-import NoteProperties from './NoteProperties.vue';
-import ArrowProperties from './ArrowProperties.vue';
-import PageProperties from './PageProperties.vue';
 import { provide, toRef } from 'vue';
+
+import ArrowProperties from './ArrowProperties.vue';
+import NoteProperties from './NoteProperties.vue';
+import PageProperties from './PageProperties.vue';
 
 const uiStore = useUIStore();
 

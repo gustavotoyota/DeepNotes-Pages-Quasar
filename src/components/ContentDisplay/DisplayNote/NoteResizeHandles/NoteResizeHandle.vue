@@ -17,9 +17,9 @@
   setup
   lang="ts"
 >
-import { computed } from 'vue';
-import { NoteSide, NoteSection, PageNote } from 'src/code/app/page/notes/note';
+import { NoteSection, NoteSide, PageNote } from 'src/code/app/page/notes/note';
 import { AppPage } from 'src/code/app/page/page';
+import { computed } from 'vue';
 import { inject } from 'vue';
 
 const props = defineProps<{

@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { defineComponent, onBeforeUnmount, onMounted, toRef } from 'vue';
+
 import { PageNote } from './code/app/page/notes/note';
 import { useMainStore } from './stores/main-store';
 
