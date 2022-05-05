@@ -9,7 +9,6 @@ export const apiBaseURL = process.env.DEV
   : 'https://app-server.deepnotes.app/';
 
 export const authEndpoints = {
-  login: '/auth/login',
   refresh: '/auth/refresh',
 };
 
@@ -22,10 +21,8 @@ export const authRedirects = {
   logout: `${redirectBaseURL}/`,
 };
 
-type JwtToken = {
-  exp: number;
-  iat: number;
-};
+export const ACCESS_TOKEN_COOKIE = 'access-token';
+export const REFRESH_TOKEN_COOKIE = 'refresh-token';
 
 export class AppAuth {
   readonly app: DeepNotesApp;
@@ -35,18 +32,22 @@ export class AppAuth {
   }
 
   logout() {
-    Cookies.set('auth._token.local', 'false');
-    Cookies.set('auth._token_expiration.local', 'false');
-
-    Cookies.set('auth._refresh_token.local', 'false');
-    Cookies.set('auth._refresh_token_expiration.local', 'false');
+    Cookies.remove(ACCESS_TOKEN_COOKIE);
+    Cookies.remove(REFRESH_TOKEN_COOKIE);
 
     location.assign(authRedirects.logout);
   }
 }
 
 function isTokenExpiring(cookies: Cookies, cookie: string) {
-  const decodedToken = jwtDecode<JwtToken>(cookies.get(cookie));
+  if (!cookies.has(cookie)) {
+    return false;
+  }
+
+  const decodedToken = jwtDecode<{
+    exp: number;
+    iat: number;
+  }>(cookies.get(cookie));
 
   const timeToLive = decodedToken.exp * 1000 - decodedToken.iat * 1000;
   const timeDifference = decodedToken.exp * 1000 - new Date().getTime();
@@ -57,8 +58,8 @@ function isTokenExpiring(cookies: Cookies, cookie: string) {
 
 function areTokensExpiring(cookies: Cookies) {
   return (
-    isTokenExpiring(cookies, 'auth._token.local') ||
-    isTokenExpiring(cookies, 'auth._refresh_token.local')
+    isTokenExpiring(cookies, ACCESS_TOKEN_COOKIE) ||
+    isTokenExpiring(cookies, REFRESH_TOKEN_COOKIE)
   );
 }
 
@@ -67,24 +68,15 @@ async function refreshTokens(
   api: AxiosInstance
 ): Promise<boolean> {
   const response = await api.post(authEndpoints.refresh, {
-    refreshToken: cookies.get('auth._refresh_token.local'),
+    refreshToken: cookies.get(REFRESH_TOKEN_COOKIE),
   });
 
   if (response.status !== 200) {
     return false;
   }
 
-  cookies.set('auth._token.local', `Bearer ${response.data.accessToken}`);
-  cookies.set(
-    'auth._token_expiration.local',
-    jwtDecode<JwtToken>(response.data.accessToken).exp.toString()
-  );
-
-  cookies.set('auth._refresh_token.local', response.data.refreshToken);
-  cookies.set(
-    'auth._refresh_token_expiration.local',
-    jwtDecode<JwtToken>(response.data.refreshToken).exp.toString()
-  );
+  cookies.set(ACCESS_TOKEN_COOKIE, response.data.accessToken);
+  cookies.set(REFRESH_TOKEN_COOKIE, response.data.refreshToken);
 
   return true;
 }
@@ -92,7 +84,7 @@ async function refreshTokens(
 export default boot(async ({ app, ssrContext, redirect }) => {
   const cookies = process.env.SERVER ? Cookies.parseSSR(ssrContext) : Cookies;
 
-  if (!cookies.has('auth._token.local')) {
+  if (!cookies.has(ACCESS_TOKEN_COOKIE)) {
     redirect(authRedirects.login);
     return;
   }

@@ -4,7 +4,6 @@ import { DeepNotesApp } from './app';
 import { INoteCollab } from './page/notes/note';
 import { cloneDeep, pull } from 'lodash';
 import { createSyncedText } from '../static/synced-store';
-import { v4 } from 'uuid';
 import { IArrowCollab } from './page/arrows/arrow';
 import { useMainStore } from 'src/stores/main-store';
 import { Op } from '../static/quill';
@@ -220,7 +219,7 @@ export class AppSerialization {
 
         // Add note data to the store
 
-        const noteId = v4();
+        const noteId = crypto.randomUUID();
 
         page.notes.react.collab[noteId] = noteCollab as z.output<
           typeof INoteCollab
@@ -249,7 +248,7 @@ export class AppSerialization {
           },
         };
 
-        const arrowId = v4();
+        const arrowId = crypto.randomUUID();
 
         page.arrows.react.collab[arrowId] = arrowCollab as IArrowCollab;
 
