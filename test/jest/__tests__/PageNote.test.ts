@@ -1,6 +1,6 @@
 import { reactive } from 'vue';
-import { factory } from '../../../src/boot/static/composition-root';
-import { INoteCollab, PageNote } from '../../../src/boot/app/page/notes/note';
+import { factory } from '../../../src/code/static/composition-root';
+import { INoteCollab, PageNote } from '../../../src/code/app/page/notes/note';
 import { z } from 'zod';
 
 let note: PageNote;

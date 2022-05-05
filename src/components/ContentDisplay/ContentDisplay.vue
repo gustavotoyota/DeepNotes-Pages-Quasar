@@ -19,7 +19,7 @@
   setup
   lang="ts"
 >
-import { AppPage } from 'src/boot/app/page/page';
+import { AppPage } from 'src/code/app/page/page';
 import { provide } from 'vue';
 import LoadingOverlay from '../misc/LoadingOverlay.vue';
 import DisplayBackground from './DisplayBackground.vue';

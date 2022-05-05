@@ -28,8 +28,8 @@
   setup
   lang="ts"
 >
-import { PageNote } from 'src/boot/app/page/notes/note';
-import { AppPage } from 'src/boot/app/page/page';
+import { PageNote } from 'src/code/app/page/notes/note';
+import { AppPage } from 'src/code/app/page/page';
 import { inject } from 'vue';
 import NoteDropZone from './NoteDropZone.vue';
 

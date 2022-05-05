@@ -10,7 +10,7 @@
   setup
   lang="ts"
 >
-import { AppPage } from 'src/boot/app/page/page';
+import { AppPage } from 'src/code/app/page/page';
 import { useTemplates } from 'src/stores/templates';
 import { inject } from 'vue';
 

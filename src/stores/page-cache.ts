@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { AppPage } from 'src/boot/app/page/page';
+import { AppPage } from 'src/code/app/page/page';
 import {
   computed,
   reactive,

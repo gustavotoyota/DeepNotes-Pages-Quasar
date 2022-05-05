@@ -42,7 +42,7 @@
   setup
   lang="ts"
 >
-import { ElemType } from 'src/boot/app/page/elems/elem';
+import { ElemType } from 'src/code/app/page/elems/elem';
 import { useMainStore } from 'src/stores/main-store';
 import { useUIStore } from 'src/stores/ui-store';
 import NoteProperties from './NoteProperties.vue';

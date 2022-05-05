@@ -24,7 +24,7 @@
   setup
   lang="ts"
 >
-import { PageNote } from 'src/boot/app/page/notes/note';
+import { PageNote } from 'src/code/app/page/notes/note';
 import { provide, watchEffect } from 'vue';
 import NoteAnchor from './NoteAnchor.vue';
 import NoteFrame from './NoteFrame.vue';

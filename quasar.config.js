@@ -34,8 +34,8 @@ module.exports = configure(function (/* ctx */) {
       'external/syncedstore',
       { path: 'external/highlight', server: false },
       { path: 'external/quill', server: false },
-      'app/auth',
-      'app/app',
+      'internal/auth',
+      'internal/app',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css

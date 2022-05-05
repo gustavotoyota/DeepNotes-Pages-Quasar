@@ -25,8 +25,8 @@
   setup
   lang="ts"
 >
-import { PageNote } from 'src/boot/app/page/notes/note';
-import { Vec2 } from 'src/boot/static/vec2';
+import { PageNote } from 'src/code/app/page/notes/note';
+import { Vec2 } from 'src/code/static/vec2';
 import { inject, onBeforeUnmount, onMounted, ref } from 'vue';
 
 const note = inject<PageNote>('note')!;

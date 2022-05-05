@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { ISerialNoteInput } from 'src/boot/app/serialization';
-import { Vec2 } from 'src/boot/static/vec2';
+import { ISerialNoteInput } from 'src/code/app/serialization';
+import { Vec2 } from 'src/code/static/vec2';
 
 export interface ITemplate {
   id: string;

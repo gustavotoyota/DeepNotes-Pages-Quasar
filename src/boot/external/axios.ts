@@ -1,7 +1,7 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { Cookies } from 'quasar';
-import { ACCESS_TOKEN_COOKIE, apiBaseURL } from '../app/auth';
+import { ACCESS_TOKEN_COOKIE, apiBaseURL } from '../internal/auth';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {

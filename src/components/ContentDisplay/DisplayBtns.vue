@@ -21,7 +21,7 @@
 import Gap from '../misc/Gap.vue';
 import DisplayBtn from '../misc/DisplayBtn.vue';
 import { inject } from 'vue';
-import { AppPage } from 'src/boot/app/page/page';
+import { AppPage } from 'src/code/app/page/page';
 
 const page = inject<AppPage>('page')!;
 </script>

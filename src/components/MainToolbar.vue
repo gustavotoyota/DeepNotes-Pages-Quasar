@@ -218,7 +218,7 @@
   setup
   lang="ts"
 >
-import { NoteTextSection } from 'src/boot/app/page/notes/note';
+import { NoteTextSection } from 'src/code/app/page/notes/note';
 import Gap from 'src/components/misc/Gap.vue';
 import ToolbarBtn from 'src/components/misc/ToolbarBtn.vue';
 import { useMainStore } from 'src/stores/main-store';

@@ -401,9 +401,9 @@
   setup
   lang="ts"
 >
-import { PageNote } from 'src/boot/app/page/notes/note';
-import { AppPage } from 'src/boot/app/page/page';
-import { swapSyncedTexts } from 'src/boot/static/synced-store';
+import { PageNote } from 'src/code/app/page/notes/note';
+import { AppPage } from 'src/code/app/page/page';
+import { swapSyncedTexts } from 'src/code/static/synced-store';
 import { useUIStore } from 'src/stores/ui-store';
 import { inject, Ref, toRef } from 'vue';
 import Gap from '../misc/Gap.vue';

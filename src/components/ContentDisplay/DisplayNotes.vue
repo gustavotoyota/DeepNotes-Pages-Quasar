@@ -38,7 +38,7 @@
   setup
   lang="ts"
 >
-import { AppPage } from 'src/boot/app/page/page';
+import { AppPage } from 'src/code/app/page/page';
 import { inject } from 'vue';
 import DisplayNote from './DisplayNote/DisplayNote.vue';
 

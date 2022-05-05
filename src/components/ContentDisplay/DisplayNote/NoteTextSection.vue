@@ -31,8 +31,8 @@
   setup
   lang="ts"
 >
-import { NoteTextSection, PageNote } from 'src/boot/app/page/notes/note';
-import { AppPage } from 'src/boot/app/page/page';
+import { NoteTextSection, PageNote } from 'src/code/app/page/notes/note';
+import { AppPage } from 'src/code/app/page/page';
 import { inject } from 'vue';
 import NoteEditor from './NoteEditor.vue';
 import NoteCollapseBtn from './NoteCollapseBtn.vue';

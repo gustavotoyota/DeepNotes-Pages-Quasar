@@ -16,9 +16,9 @@
   setup
   lang="ts"
 >
-import { PageNote } from 'src/boot/app/page/notes/note';
-import { AppPage } from 'src/boot/app/page/page';
-import { isMouseOverScrollbar } from 'src/boot/static/dom';
+import { PageNote } from 'src/code/app/page/notes/note';
+import { AppPage } from 'src/code/app/page/page';
+import { isMouseOverScrollbar } from 'src/code/static/dom';
 import { computed, inject } from 'vue';
 
 const page = inject<AppPage>('page')!;

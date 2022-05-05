@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { AppPage, IPageReference } from 'src/boot/app/page/page';
+import { AppPage, IPageReference } from 'src/code/app/page/page';
 import { computed, reactive, toRefs } from 'vue';
 import { usePageCache } from './page-cache';
 

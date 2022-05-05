@@ -22,9 +22,9 @@ if (process.env.CLIENT) {
   setup
   lang="ts"
 >
-import { NoteTextSection, PageNote } from 'src/boot/app/page/notes/note';
-import { AppPage } from 'src/boot/app/page/page';
-import { getQuillOptions } from 'src/boot/static/quill';
+import { NoteTextSection, PageNote } from 'src/code/app/page/notes/note';
+import { AppPage } from 'src/code/app/page/page';
+import { getQuillOptions } from 'src/code/static/quill';
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { QuillBinding } from 'y-quill';
 import { SyncedText } from '@syncedstore/core';
