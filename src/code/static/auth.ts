@@ -4,11 +4,7 @@ import { from_base64 } from 'libsodium-wrappers';
 import { Cookies } from 'quasar';
 import { useAuth } from 'src/stores/auth';
 
-import {
-  decryptSymmetric,
-  reencryptSecretKeys,
-  storeCryptoValues,
-} from './crypto/crypto';
+import { decryptSymmetric, processCryptoKeys } from './crypto/crypto';
 import { masterKey } from './crypto/master-key';
 import { privateKey } from './crypto/private-key';
 
@@ -17,8 +13,6 @@ export const apiBaseURL = process.env.DEV
   : 'https://app-server.deepnotes.app/';
 
 export const authEndpoints = {
-  login: '/auth/login',
-  verify: '/auth/verify',
   refresh: '/auth/refresh',
   logout: '/auth/logout',
 };
@@ -28,9 +22,8 @@ export const redirectBaseURL = process.env.DEV
   : 'https://deepnotes.app';
 
 export const authRedirects = {
-  home: `${redirectBaseURL}/`,
-  login: `${redirectBaseURL}/login`,
-  logout: `${redirectBaseURL}/`,
+  home: `${redirectBaseURL}`,
+  logout: `${redirectBaseURL}`,
 };
 
 export function isTokenValid(tokenName: string): boolean {
@@ -101,34 +94,19 @@ export async function tryRefreshTokens(api: AxiosInstance): Promise<void> {
 
     storeAuthValues(response.data.accessToken, response.data.refreshToken);
 
-    // Decrypt keys
+    // Process keys
 
     const decryptedMasterKey = decryptSymmetric(
       encryptedMasterKey,
       from_base64(response.data.oldSessionKey)
     );
-    const decryptedPrivateKey = decryptSymmetric(
+
+    processCryptoKeys(
       encryptedPrivateKey,
-      from_base64(response.data.oldSessionKey)
+      from_base64(response.data.oldSessionKey),
+      decryptedMasterKey,
+      response.data.newSessionKey
     );
-
-    // Reencrypt keys
-
-    const { sessionEncryptedMasterKey, sessionEncryptedPrivateKey } =
-      reencryptSecretKeys(
-        decryptedMasterKey,
-        decryptedPrivateKey,
-        from_base64(response.data.newSessionKey)
-      );
-
-    // Store encrypted keys
-
-    storeCryptoValues(sessionEncryptedMasterKey, sessionEncryptedPrivateKey);
-
-    // Store keys on memory
-
-    masterKey.set(decryptedMasterKey);
-    privateKey.set(decryptedPrivateKey);
 
     auth.loggedIn = true;
   } catch (err) {

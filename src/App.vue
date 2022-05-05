@@ -3,19 +3,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, toRef } from 'vue';
+import { onBeforeUnmount, onMounted, toRef } from 'vue';
 
+import { useAPI } from './boot/external/axios';
 import { PageNote } from './code/app/page/notes/note';
+import { authRedirects, tryRefreshTokens } from './code/static/auth';
+import { useAuth } from './stores/auth';
 import { useMainStore } from './stores/main-store';
-
-export default defineComponent({
-  name: 'App',
-
-  async preFetch() {
-    // const mainStore = useMainStore();
-    // await mainStore.fetchData();
-  },
-});
 </script>
 
 <script
@@ -23,6 +17,8 @@ export default defineComponent({
   lang="ts"
 >
 const mainStore = useMainStore();
+const api = useAPI();
+const auth = useAuth();
 
 const page = toRef(mainStore, 'page');
 
@@ -157,8 +153,17 @@ onBeforeUnmount(() => {
 
 // Mark app as mounted
 
-onMounted(() => {
-  const mainStore = useMainStore();
+onMounted(async () => {
+  await (async function tokenRefreshLoop() {
+    await tryRefreshTokens(api);
+
+    setTimeout(tokenRefreshLoop, 10000);
+  })();
+
+  if (!auth.loggedIn) {
+    location.assign(authRedirects.home);
+    return;
+  }
 
   mainStore.mounted = true;
 });
