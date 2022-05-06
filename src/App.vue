@@ -7,7 +7,7 @@ import { onBeforeUnmount, onMounted, toRef } from 'vue';
 
 import { useAPI } from './boot/external/axios';
 import { PageNote } from './code/app/page/notes/note';
-import { authRedirects, tryRefreshTokens } from './code/static/auth';
+import { homeURL, tryRefreshTokens } from './code/static/auth';
 import { useAuth } from './stores/auth';
 import { useMainStore } from './stores/main-store';
 </script>
@@ -161,7 +161,7 @@ onMounted(async () => {
   })();
 
   if (!auth.loggedIn) {
-    location.assign(authRedirects.home);
+    location.assign(homeURL);
     return;
   }
 
