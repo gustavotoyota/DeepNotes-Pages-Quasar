@@ -1,4 +1,4 @@
-import * as bc from 'lib0/broadcastchannel';
+import * as broadcastChannel from 'lib0/broadcastchannel';
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import * as math from 'lib0/math';
@@ -19,26 +19,37 @@ const MESSAGE_QUERY_AWARENESS = 3;
 
 const MESSAGE_RECONNECT_TIMEOUT = 30000;
 
+interface IAwarenessChanges {
+  added: number[];
+  updated: number[];
+  removed: number[];
+}
+
 export class WebsocketProvider extends Observable<string> {
-  maxBackoffTime: number;
+  readonly maxBackoffTime: number;
 
-  roomname: string;
-  broadcastChannel: string;
-  url: string;
+  readonly roomname: string;
+  readonly broadcastChannel: string;
+  readonly url: string;
 
-  doc: Y.Doc;
-  _WS: typeof WebSocket;
-  awareness: awarenessProtocol.Awareness;
+  readonly doc: Y.Doc;
+  private readonly _WS: typeof WebSocket;
+  readonly awareness: awarenessProtocol.Awareness;
+
   wsconnected: boolean;
   wsconnecting: boolean;
   bcconnected: boolean;
   wsUnsuccessfulReconnects: number;
-  _synced: boolean;
+
+  private _synced: boolean;
+
   ws: WebSocket;
   wsLastMessageReceived: number;
+
   shouldConnect: boolean;
-  _resyncInterval: NodeJS.Timer;
-  _checkInterval: NodeJS.Timer;
+
+  private readonly _resyncInterval: NodeJS.Timer;
+  private readonly _checkInterval: NodeJS.Timer;
 
   constructor(
     serverUrl: string,
@@ -91,9 +102,12 @@ export class WebsocketProvider extends Observable<string> {
       this._resyncInterval = setInterval(() => {
         if (this.ws) {
           // Resend sync step 1
+
           const encoder = encoding.createEncoder();
+
           encoding.writeVarUint(encoder, MESSAGE_SYNC);
           syncProtocol.writeSyncStep1(encoder, doc);
+
           this.ws.send(encoding.toUint8Array(encoder));
         }
       }, resyncInterval);
@@ -106,6 +120,7 @@ export class WebsocketProvider extends Observable<string> {
     } else if (typeof process !== 'undefined') {
       process.on('exit', this.handleUnload);
     }
+
     awareness.on('update', this.handleAwarenessUpdate);
 
     this._checkInterval = setInterval(() => {
@@ -114,8 +129,9 @@ export class WebsocketProvider extends Observable<string> {
         MESSAGE_RECONNECT_TIMEOUT <
           time.getUnixTime() - this.wsLastMessageReceived
       ) {
-        // no message received in a long time - not even your own awareness
+        // No message received in a long time - not even your own awareness
         // updates (which are updated every 15 seconds)
+
         this.ws.close();
       }
     }, MESSAGE_RECONNECT_TIMEOUT / 10);
@@ -161,29 +177,42 @@ export class WebsocketProvider extends Observable<string> {
 
   connectBroadcastChannel() {
     if (!this.bcconnected) {
-      bc.subscribe(this.broadcastChannel, this.handleBroadcastChannelMessage);
+      broadcastChannel.subscribe(
+        this.broadcastChannel,
+        this.handleBroadcastChannelMessage
+      );
       this.bcconnected = true;
     }
-    // send sync step1 to bc
-    // write sync step 1
+
+    // Send sync step 1 to broadcast channel
+    // Write sync step 1
+
     const encoderSync = encoding.createEncoder();
+
     encoding.writeVarUint(encoderSync, MESSAGE_SYNC);
     syncProtocol.writeSyncStep1(encoderSync, this.doc);
-    bc.publish(this.broadcastChannel, encoding.toUint8Array(encoderSync));
-    // broadcast local state
+
+    broadcastChannel.publish(
+      this.broadcastChannel,
+      encoding.toUint8Array(encoderSync)
+    );
+
+    // Broadcast local state
+
     const encoderState = encoding.createEncoder();
+
     encoding.writeVarUint(encoderState, MESSAGE_SYNC);
     syncProtocol.writeSyncStep2(encoderState, this.doc);
-    bc.publish(this.broadcastChannel, encoding.toUint8Array(encoderState));
-    // write queryAwareness
-    const encoderAwarenessQuery = encoding.createEncoder();
-    encoding.writeVarUint(encoderAwarenessQuery, MESSAGE_QUERY_AWARENESS);
-    bc.publish(
+
+    broadcastChannel.publish(
       this.broadcastChannel,
-      encoding.toUint8Array(encoderAwarenessQuery)
+      encoding.toUint8Array(encoderState)
     );
-    // broadcast local awareness state
+
+    // Broadcast local awareness state
+
     const encoderAwarenessState = encoding.createEncoder();
+
     encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS);
     encoding.writeVarUint8Array(
       encoderAwarenessState,
@@ -191,15 +220,29 @@ export class WebsocketProvider extends Observable<string> {
         this.doc.clientID,
       ])
     );
-    bc.publish(
+
+    broadcastChannel.publish(
       this.broadcastChannel,
       encoding.toUint8Array(encoderAwarenessState)
     );
+
+    // Write queryAwareness
+
+    const encoderAwarenessQuery = encoding.createEncoder();
+
+    encoding.writeVarUint(encoderAwarenessQuery, MESSAGE_QUERY_AWARENESS);
+
+    broadcastChannel.publish(
+      this.broadcastChannel,
+      encoding.toUint8Array(encoderAwarenessQuery)
+    );
   }
 
-  disconnectBc() {
-    // broadcast message with local awareness state set to null (indicating disconnect)
+  disconnectBroadcastChannel() {
+    // Broadcast message with local awareness state set to null (indicating disconnect)
+
     const encoder = encoding.createEncoder();
+
     encoding.writeVarUint(encoder, MESSAGE_AWARENESS);
     encoding.writeVarUint8Array(
       encoder,
@@ -209,16 +252,23 @@ export class WebsocketProvider extends Observable<string> {
         new Map()
       )
     );
+
     this.broadcastMessage(encoding.toUint8Array(encoder));
+
     if (this.bcconnected) {
-      bc.unsubscribe(this.broadcastChannel, this.handleBroadcastChannelMessage);
+      broadcastChannel.unsubscribe(
+        this.broadcastChannel,
+        this.handleBroadcastChannelMessage
+      );
       this.bcconnected = false;
     }
   }
 
   disconnect() {
     this.shouldConnect = false;
-    this.disconnectBc();
+
+    this.disconnectBroadcastChannel();
+
     if (this.ws !== null) {
       this.ws.close();
     }
@@ -226,8 +276,9 @@ export class WebsocketProvider extends Observable<string> {
 
   connect() {
     this.shouldConnect = true;
+
     if (!this.wsconnected && this.ws === null) {
-      this.setupWS();
+      this.setupWebSocket();
       this.connectBroadcastChannel();
     }
   }
@@ -308,7 +359,7 @@ export class WebsocketProvider extends Observable<string> {
     );
   }
 
-  setupWS() {
+  setupWebSocket() {
     if (this.shouldConnect && this.ws === null) {
       const websocket = new this._WS(this.url);
       websocket.binaryType = 'arraybuffer';
@@ -319,10 +370,12 @@ export class WebsocketProvider extends Observable<string> {
 
       websocket.onmessage = (event) => {
         this.wsLastMessageReceived = time.getUnixTime();
+
         const encoder = this.handleMessage(
           new Uint8Array(event.data as any),
           true
         );
+
         if (encoding.length(encoder) > 1) {
           websocket.send(encoding.toUint8Array(encoder));
         }
@@ -334,12 +387,16 @@ export class WebsocketProvider extends Observable<string> {
 
       websocket.onclose = (event) => {
         this.emit('connection-close', [event, this]);
+
         this.ws = null as any;
         this.wsconnecting = false;
+
         if (this.wsconnected) {
           this.wsconnected = false;
           this.synced = false;
-          // update awareness (all users except local left)
+
+          // Update awareness (all users except local left)
+
           awarenessProtocol.removeAwarenessStates(
             this.awareness,
             Array.from(this.awareness.getStates().keys()).filter(
@@ -347,6 +404,7 @@ export class WebsocketProvider extends Observable<string> {
             ),
             this
           );
+
           this.emit('status', [
             {
               status: 'disconnected',
@@ -355,10 +413,12 @@ export class WebsocketProvider extends Observable<string> {
         } else {
           this.wsUnsuccessfulReconnects++;
         }
+
         // Start with no reconnect timeout and increase timeout by
         // using exponential backoff starting with 100ms
+
         setTimeout(
-          this.setupWS,
+          this.setupWebSocket,
           math.min(
             math.pow(2, this.wsUnsuccessfulReconnects) * 100,
             this.maxBackoffTime
@@ -372,19 +432,27 @@ export class WebsocketProvider extends Observable<string> {
         this.wsconnecting = false;
         this.wsconnected = true;
         this.wsUnsuccessfulReconnects = 0;
+
         this.emit('status', [
           {
             status: 'connected',
           },
         ]);
-        // always send sync step 1 when connected
+
+        // Always send sync step 1 when connected
+
         const encoder = encoding.createEncoder();
+
         encoding.writeVarUint(encoder, MESSAGE_SYNC);
         syncProtocol.writeSyncStep1(encoder, this.doc);
+
         websocket.send(encoding.toUint8Array(encoder));
-        // broadcast local awareness state
+
+        // Broadcast local awareness state
+
         if (this.awareness.getLocalState() !== null) {
           const encoderAwarenessState = encoding.createEncoder();
+
           encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS);
           encoding.writeVarUint8Array(
             encoderAwarenessState,
@@ -392,6 +460,7 @@ export class WebsocketProvider extends Observable<string> {
               this.doc.clientID,
             ])
           );
+
           websocket.send(encoding.toUint8Array(encoderAwarenessState));
         }
       };
@@ -410,7 +479,7 @@ export class WebsocketProvider extends Observable<string> {
     }
 
     if (this.bcconnected) {
-      bc.publish(this.broadcastChannel, buf);
+      broadcastChannel.publish(this.broadcastChannel, buf);
     }
   }
 
@@ -430,7 +499,10 @@ function handleBroadcastChannelMessage(
   const encoder = this.handleMessage(new Uint8Array(data), false);
 
   if (encoding.length(encoder) > 1) {
-    bc.publish(this.broadcastChannel, encoding.toUint8Array(encoder));
+    broadcastChannel.publish(
+      this.broadcastChannel,
+      encoding.toUint8Array(encoder)
+    );
   }
 }
 
@@ -438,30 +510,27 @@ function handleBroadcastChannelMessage(
 
 function handleDocumentUpdate(this: WebsocketProvider, update: Uint8Array) {
   const encoder = encoding.createEncoder();
+
   encoding.writeVarUint(encoder, MESSAGE_SYNC);
   syncProtocol.writeUpdate(encoder, update);
+
   this.broadcastMessage(encoding.toUint8Array(encoder));
 }
 
 function handleAwarenessUpdate(
   this: WebsocketProvider,
-  {
-    added,
-    updated,
-    removed,
-  }: {
-    added: number[];
-    updated: number[];
-    removed: number[];
-  }
+  { added, updated, removed }: IAwarenessChanges
 ) {
   const changedClients = added.concat(updated).concat(removed);
+
   const encoder = encoding.createEncoder();
+
   encoding.writeVarUint(encoder, MESSAGE_AWARENESS);
   encoding.writeVarUint8Array(
     encoder,
     awarenessProtocol.encodeAwarenessUpdate(this.awareness, changedClients)
   );
+
   this.broadcastMessage(encoding.toUint8Array(encoder));
 }
 
