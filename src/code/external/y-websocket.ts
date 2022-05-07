@@ -23,7 +23,7 @@ export class WebsocketProvider extends Observable<string> {
   maxBackoffTime: number;
 
   roomname: string;
-  bcChannel: string;
+  broadcastChannel: string;
   url: string;
 
   doc: Y.Doc;
@@ -63,7 +63,7 @@ export class WebsocketProvider extends Observable<string> {
 
     const encodedParams = url.encodeQueryParams(params);
     this.maxBackoffTime = maxBackoffTime;
-    this.bcChannel = serverUrl + '/' + roomname;
+    this.broadcastChannel = serverUrl + '/' + roomname;
     this.url =
       serverUrl +
       '/' +
@@ -159,9 +159,9 @@ export class WebsocketProvider extends Observable<string> {
     super.destroy();
   }
 
-  connectBc() {
+  connectBroadcastChannel() {
     if (!this.bcconnected) {
-      bc.subscribe(this.bcChannel, this.handleBcMessage);
+      bc.subscribe(this.broadcastChannel, this.handleBroadcastChannelMessage);
       this.bcconnected = true;
     }
     // send sync step1 to bc
@@ -169,16 +169,19 @@ export class WebsocketProvider extends Observable<string> {
     const encoderSync = encoding.createEncoder();
     encoding.writeVarUint(encoderSync, MESSAGE_SYNC);
     syncProtocol.writeSyncStep1(encoderSync, this.doc);
-    bc.publish(this.bcChannel, encoding.toUint8Array(encoderSync));
+    bc.publish(this.broadcastChannel, encoding.toUint8Array(encoderSync));
     // broadcast local state
     const encoderState = encoding.createEncoder();
     encoding.writeVarUint(encoderState, MESSAGE_SYNC);
     syncProtocol.writeSyncStep2(encoderState, this.doc);
-    bc.publish(this.bcChannel, encoding.toUint8Array(encoderState));
+    bc.publish(this.broadcastChannel, encoding.toUint8Array(encoderState));
     // write queryAwareness
     const encoderAwarenessQuery = encoding.createEncoder();
     encoding.writeVarUint(encoderAwarenessQuery, MESSAGE_QUERY_AWARENESS);
-    bc.publish(this.bcChannel, encoding.toUint8Array(encoderAwarenessQuery));
+    bc.publish(
+      this.broadcastChannel,
+      encoding.toUint8Array(encoderAwarenessQuery)
+    );
     // broadcast local awareness state
     const encoderAwarenessState = encoding.createEncoder();
     encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS);
@@ -188,7 +191,10 @@ export class WebsocketProvider extends Observable<string> {
         this.doc.clientID,
       ])
     );
-    bc.publish(this.bcChannel, encoding.toUint8Array(encoderAwarenessState));
+    bc.publish(
+      this.broadcastChannel,
+      encoding.toUint8Array(encoderAwarenessState)
+    );
   }
 
   disconnectBc() {
@@ -205,7 +211,7 @@ export class WebsocketProvider extends Observable<string> {
     );
     this.broadcastMessage(encoding.toUint8Array(encoder));
     if (this.bcconnected) {
-      bc.unsubscribe(this.bcChannel, this.handleBcMessage);
+      bc.unsubscribe(this.broadcastChannel, this.handleBroadcastChannelMessage);
       this.bcconnected = false;
     }
   }
@@ -222,7 +228,7 @@ export class WebsocketProvider extends Observable<string> {
     this.shouldConnect = true;
     if (!this.wsconnected && this.ws === null) {
       this.setupWS();
-      this.connectBc();
+      this.connectBroadcastChannel();
     }
   }
 
@@ -404,21 +410,27 @@ export class WebsocketProvider extends Observable<string> {
     }
 
     if (this.bcconnected) {
-      bc.publish(this.bcChannel, buf);
+      bc.publish(this.broadcastChannel, buf);
     }
   }
 
-  handleBcMessage = handleBcMessage.bind(this);
-  handleDocumentUpdate = handleDocumentUpdate.bind(this);
-  handleAwarenessUpdate = handleAwarenessUpdate.bind(this);
-  handleUnload = handleUnload.bind(this);
+  handleBroadcastChannelMessage = (...args: any) =>
+    handleBroadcastChannelMessage.apply(this, args);
+  handleDocumentUpdate = (...args: any) =>
+    handleDocumentUpdate.apply(this, args);
+  handleAwarenessUpdate = (...args: any) =>
+    handleAwarenessUpdate.apply(this, args);
+  handleUnload = (...args: any) => handleUnload.apply(this, args);
 }
 
-function handleBcMessage(this: WebsocketProvider, data: ArrayBuffer) {
+function handleBroadcastChannelMessage(
+  this: WebsocketProvider,
+  data: ArrayBuffer
+) {
   const encoder = this.handleMessage(new Uint8Array(data), false);
 
   if (encoding.length(encoder) > 1) {
-    bc.publish(this.bcChannel, encoding.toUint8Array(encoder));
+    bc.publish(this.broadcastChannel, encoding.toUint8Array(encoder));
   }
 }
 
