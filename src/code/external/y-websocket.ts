@@ -36,17 +36,17 @@ export class WebsocketProvider extends Observable<string> {
   private readonly _WS: typeof WebSocket;
   readonly awareness: awarenessProtocol.Awareness;
 
-  wsconnected: boolean;
-  wsconnecting: boolean;
-  bcconnected: boolean;
+  wsconnected: boolean; //  True if this instance is currently connected to the server.
+  wsconnecting: boolean; // True if this instance is currently connecting to the server.
+  bcconnected: boolean; //  True if this instance is currently communicating to other browser-windows via BroadcastChannel.
   wsUnsuccessfulReconnects: number;
 
-  private _synced: boolean;
+  private _synced: boolean; // True if this instance is currently connected and synced with the server.
 
   ws: WebSocket;
   wsLastMessageReceived: number;
 
-  shouldConnect: boolean;
+  shouldConnect: boolean; // If false, the client will not try to reconnect.
 
   private readonly _resyncInterval: NodeJS.Timer;
   private readonly _checkInterval: NodeJS.Timer;
@@ -96,6 +96,8 @@ export class WebsocketProvider extends Observable<string> {
 
     this.shouldConnect = connect;
 
+    // Setup WebSocket resyncing
+
     this._resyncInterval = 0 as any;
 
     if (resyncInterval > 0) {
@@ -113,16 +115,6 @@ export class WebsocketProvider extends Observable<string> {
       }, resyncInterval);
     }
 
-    this.doc.on('update', this.handleDocumentUpdate);
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('beforeunload', this.handleUnload);
-    } else if (typeof process !== 'undefined') {
-      process.on('exit', this.handleUnload);
-    }
-
-    awareness.on('update', this.handleAwarenessUpdate);
-
     this._checkInterval = setInterval(() => {
       if (
         this.wsconnected &&
@@ -135,6 +127,19 @@ export class WebsocketProvider extends Observable<string> {
         this.ws.close();
       }
     }, MESSAGE_RECONNECT_TIMEOUT / 10);
+
+    // Setup update-handling methods
+
+    this.doc.on('update', this.handleDocumentUpdate);
+    awareness.on('update', this.handleAwarenessUpdate);
+
+    // Setup unload handling
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', this.handleUnload);
+    } else if (typeof process !== 'undefined') {
+      process.on('exit', this.handleUnload);
+    }
 
     if (connect) {
       this.connect();
