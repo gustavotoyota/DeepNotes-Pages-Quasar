@@ -20,10 +20,10 @@ import { Observable } from 'lib0/observable';
 import * as math from 'lib0/math';
 import * as url from 'lib0/url';
 
-const messageSync = 0;
-const messageQueryAwareness = 3;
-const messageAwareness = 1;
-const messageAuth = 2;
+const MESSAGE_SYNC = 0;
+const MESSAGE_AWARENESS = 1;
+const MESSAGE_AUTH = 2;
+const MESSAGE_QUERY_AWARENESS = 3;
 
 declare global {
   // @ts-ignore
@@ -44,8 +44,8 @@ type IMessageHandler = (
  */
 const messageHandlers: IMessageHandler[] = [];
 
-messageHandlers[messageSync] = (encoder, decoder, provider, emitSynced) => {
-  encoding.writeVarUint(encoder, messageSync);
+messageHandlers[MESSAGE_SYNC] = (encoder, decoder, provider, emitSynced) => {
+  encoding.writeVarUint(encoder, MESSAGE_SYNC);
   const syncMessageType = syncProtocol.readSyncMessage(
     decoder,
     encoder,
@@ -61,8 +61,8 @@ messageHandlers[messageSync] = (encoder, decoder, provider, emitSynced) => {
   }
 };
 
-messageHandlers[messageQueryAwareness] = (encoder, decoder, provider) => {
-  encoding.writeVarUint(encoder, messageAwareness);
+messageHandlers[MESSAGE_QUERY_AWARENESS] = (encoder, decoder, provider) => {
+  encoding.writeVarUint(encoder, MESSAGE_AWARENESS);
   encoding.writeVarUint8Array(
     encoder,
     awarenessProtocol.encodeAwarenessUpdate(
@@ -72,7 +72,7 @@ messageHandlers[messageQueryAwareness] = (encoder, decoder, provider) => {
   );
 };
 
-messageHandlers[messageAwareness] = (encoder, decoder, provider) => {
+messageHandlers[MESSAGE_AWARENESS] = (encoder, decoder, provider) => {
   awarenessProtocol.applyAwarenessUpdate(
     provider.awareness,
     decoding.readVarUint8Array(decoder),
@@ -80,12 +80,12 @@ messageHandlers[messageAwareness] = (encoder, decoder, provider) => {
   );
 };
 
-messageHandlers[messageAuth] = (encoder, decoder, provider) => {
+messageHandlers[MESSAGE_AUTH] = (encoder, decoder, provider) => {
   authProtocol.readAuthMessage(decoder, provider.doc, permissionDeniedHandler);
 };
 
 // @todo - this should depend on awareness.outdatedTime
-const messageReconnectTimeout = 30000;
+const MESSAGE_RECONNECT_TIMEOUT = 30000;
 
 /**
  * @param {WebsocketProvider} provider
@@ -189,13 +189,13 @@ const setupWS = (provider: WebsocketProvider) => {
       ]);
       // always send sync step 1 when connected
       const encoder = encoding.createEncoder();
-      encoding.writeVarUint(encoder, messageSync);
+      encoding.writeVarUint(encoder, MESSAGE_SYNC);
       syncProtocol.writeSyncStep1(encoder, provider.doc);
       websocket.send(encoding.toUint8Array(encoder));
       // broadcast local awareness state
       if (provider.awareness.getLocalState() !== null) {
         const encoderAwarenessState = encoding.createEncoder();
-        encoding.writeVarUint(encoderAwarenessState, messageAwareness);
+        encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS);
         encoding.writeVarUint8Array(
           encoderAwarenessState,
           awarenessProtocol.encodeAwarenessUpdate(provider.awareness, [
@@ -275,7 +275,7 @@ export class WebsocketProvider extends Observable<string> {
    * @param {boolean} [opts.connect]
    * @param {awarenessProtocol.Awareness} [opts.awareness]
    * @param {Object<string,string>} [opts.params]
-   * @param {typeof WebSocket} [opts.WebSocketPolyfill] Optionall provide a WebSocket polyfill
+   * @param {typeof WebSocket} [opts.WebSocketPolyfill] Optionally provide a WebSocket polyfill
    * @param {number} [opts.resyncInterval] Request server state every `resyncInterval` milliseconds
    * @param {number} [opts.maxBackoffTime] Maximum amount of time to wait before trying to reconnect (we try to reconnect using exponential backoff)
    */
@@ -338,7 +338,7 @@ export class WebsocketProvider extends Observable<string> {
         if (this.ws) {
           // resend sync step 1
           const encoder = encoding.createEncoder();
-          encoding.writeVarUint(encoder, messageSync);
+          encoding.writeVarUint(encoder, MESSAGE_SYNC);
           syncProtocol.writeSyncStep1(encoder, doc);
           this.ws.send(encoding.toUint8Array(encoder));
         }
@@ -363,7 +363,7 @@ export class WebsocketProvider extends Observable<string> {
     this._updateHandler = (update: Uint8Array, origin: any) => {
       if (origin !== this) {
         const encoder = encoding.createEncoder();
-        encoding.writeVarUint(encoder, messageSync);
+        encoding.writeVarUint(encoder, MESSAGE_SYNC);
         syncProtocol.writeUpdate(encoder, update);
         broadcastMessage(this, encoding.toUint8Array(encoder));
       }
@@ -376,7 +376,7 @@ export class WebsocketProvider extends Observable<string> {
     this._awarenessUpdateHandler = ({ added, updated, removed }) => {
       const changedClients = added.concat(updated).concat(removed);
       const encoder = encoding.createEncoder();
-      encoding.writeVarUint(encoder, messageAwareness);
+      encoding.writeVarUint(encoder, MESSAGE_AWARENESS);
       encoding.writeVarUint8Array(
         encoder,
         awarenessProtocol.encodeAwarenessUpdate(awareness, changedClients)
@@ -399,14 +399,14 @@ export class WebsocketProvider extends Observable<string> {
     this._checkInterval = /** @type {any} */ setInterval(() => {
       if (
         this.wsconnected &&
-        messageReconnectTimeout <
+        MESSAGE_RECONNECT_TIMEOUT <
           time.getUnixTime() - this.wsLastMessageReceived
       ) {
         // no message received in a long time - not even your own awareness
         // updates (which are updated every 15 seconds)
         /** @type {WebSocket} */ this.ws.close();
       }
-    }, messageReconnectTimeout / 10);
+    }, MESSAGE_RECONNECT_TIMEOUT / 10);
     if (connect) {
       this.connect();
     }
@@ -451,21 +451,21 @@ export class WebsocketProvider extends Observable<string> {
     // send sync step1 to bc
     // write sync step 1
     const encoderSync = encoding.createEncoder();
-    encoding.writeVarUint(encoderSync, messageSync);
+    encoding.writeVarUint(encoderSync, MESSAGE_SYNC);
     syncProtocol.writeSyncStep1(encoderSync, this.doc);
     bc.publish(this.bcChannel, encoding.toUint8Array(encoderSync));
     // broadcast local state
     const encoderState = encoding.createEncoder();
-    encoding.writeVarUint(encoderState, messageSync);
+    encoding.writeVarUint(encoderState, MESSAGE_SYNC);
     syncProtocol.writeSyncStep2(encoderState, this.doc);
     bc.publish(this.bcChannel, encoding.toUint8Array(encoderState));
     // write queryAwareness
     const encoderAwarenessQuery = encoding.createEncoder();
-    encoding.writeVarUint(encoderAwarenessQuery, messageQueryAwareness);
+    encoding.writeVarUint(encoderAwarenessQuery, MESSAGE_QUERY_AWARENESS);
     bc.publish(this.bcChannel, encoding.toUint8Array(encoderAwarenessQuery));
     // broadcast local awareness state
     const encoderAwarenessState = encoding.createEncoder();
-    encoding.writeVarUint(encoderAwarenessState, messageAwareness);
+    encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS);
     encoding.writeVarUint8Array(
       encoderAwarenessState,
       awarenessProtocol.encodeAwarenessUpdate(this.awareness, [
@@ -478,7 +478,7 @@ export class WebsocketProvider extends Observable<string> {
   disconnectBc() {
     // broadcast message with local awareness state set to null (indicating disconnect)
     const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, messageAwareness);
+    encoding.writeVarUint(encoder, MESSAGE_AWARENESS);
     encoding.writeVarUint8Array(
       encoder,
       awarenessProtocol.encodeAwarenessUpdate(
