@@ -1,7 +1,7 @@
 import syncedStore, { getYjsValue, Y } from '@syncedstore/core';
+import { WebsocketProvider } from 'src/code/external/y-websocket';
 import { reactive } from 'vue';
 import { IndexeddbPersistence } from 'y-indexeddb';
-import { WebsocketProvider } from 'y-websocket';
 import { z } from 'zod';
 
 import { IArrowCollab } from './arrows/arrow';

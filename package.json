@@ -46,7 +46,6 @@
     "vuedraggable": "^4.1.0",
     "y-indexeddb": "^9.0.7",
     "y-quill": "^0.1.4",
-    "y-websocket": "^1.4.0",
     "yjs": "^13.5.34",
     "zod": "^3.14.4"
   },
@@ -62,6 +61,7 @@
     "@types/node": "^12.20.21",
     "@types/quill": "^2.0.9",
     "@types/uuid": "^8.3.4",
+    "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "autoprefixer": "^10.4.2",
