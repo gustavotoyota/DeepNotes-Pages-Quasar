@@ -361,28 +361,31 @@ export class WebsocketProvider extends Observable<string> {
     decoder: decoding.Decoder,
     encoder: encoding.Encoder
   ) {
+    const updateEndIndex = decoding.readVarUint(decoder);
+
     const numUpdates = decoding.readVarUint(decoder);
 
     for (let i = 0; i < numUpdates; i++) {
       this.handleSyncSingleUpdateMessage(decoder);
     }
 
-    //this.writeSyncAllUpdatesMergedMessage(encoder);
+    this.writeSyncAllUpdatesMergedMessage(encoder, updateEndIndex);
   }
 
-  writeSyncAllUpdatesMergedMessage(encoder: encoding.Encoder) {
+  writeSyncAllUpdatesMergedMessage(
+    encoder: encoding.Encoder,
+    updateEndIndex = 0
+  ) {
     console.log('Sync all updates merged message sent');
 
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_ALL_UPDATES_MERGED);
 
-    // Compute decrypted update
-    const decryptedUpdate = Y.encodeStateAsUpdateV2(this.doc);
-
-    // Encrypt update with symmetric key
-    const encryptedUpdate = this.symmetricKey.encrypt(decryptedUpdate);
+    encoding.writeVarUint(encoder, updateEndIndex);
 
     // Send encrypted update
+    const decryptedUpdate = Y.encodeStateAsUpdateV2(this.doc);
+    const encryptedUpdate = this.symmetricKey.encrypt(decryptedUpdate);
     encoding.writeVarUint8Array(encoder, encryptedUpdate);
   }
   handleSyncAllUpdatesMergedMessage(decoder: decoding.Decoder) {
@@ -395,20 +398,14 @@ export class WebsocketProvider extends Observable<string> {
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_SINGLE_UPDATE);
 
-    // Encrypt update with symmetric key
-    const encryptedUpdate = this.symmetricKey.encrypt(update);
-
     // Send encrypted update
+    const encryptedUpdate = this.symmetricKey.encrypt(update);
     encoding.writeVarUint8Array(encoder, encryptedUpdate);
   }
   handleSyncSingleUpdateMessage(decoder: decoding.Decoder) {
-    // Read encrypted update
-    const encryptedUpdate = decoding.readVarUint8Array(decoder);
-
-    // Decrypt update with symmetric key
-    const decryptedUpdate = this.symmetricKey.decrypt(encryptedUpdate);
-
     // Apply decrypted update
+    const encryptedUpdate = decoding.readVarUint8Array(decoder);
+    const decryptedUpdate = this.symmetricKey.decrypt(encryptedUpdate);
     Y.applyUpdateV2(this.doc, decryptedUpdate, this);
   }
 
