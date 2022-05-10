@@ -116,7 +116,7 @@ export class WebsocketProvider extends Observable<string> {
 
     // Setup update-handling methods
 
-    this.doc.on('update', this.handleDocumentUpdate);
+    this.doc.on('updateV2', this.handleDocumentUpdate);
     awareness.on('update', this.handleAwarenessUpdate);
 
     // Setup unload handling
@@ -220,14 +220,6 @@ export class WebsocketProvider extends Observable<string> {
         },
       ]);
 
-      // Send sync request when connected
-
-      const encoderDocument = encoding.createEncoder();
-
-      this.writeSyncRequestMessage(encoderDocument);
-
-      websocket.send(encoding.toUint8Array(encoderDocument));
-
       // Broadcast local awareness state
 
       if (this.awareness.getLocalState() !== null) {
@@ -315,19 +307,15 @@ export class WebsocketProvider extends Observable<string> {
 
     switch (syncMessageType) {
       case MESSAGE_SYNC_REQUEST:
-        console.log('Sync request message received');
         this.handleSyncRequestMessage(encoder);
         break;
       case MESSAGE_SYNC_ALL_UPDATES_UNMERGED:
-        console.log('Sync all updates unmerged message received');
         this.handleSyncAllUpdatesUnmergedMessage(decoder, encoder);
         break;
       case MESSAGE_SYNC_ALL_UPDATES_MERGED:
-        console.log('Sync all updates merged message received');
         this.handleSyncAllUpdatesMergedMessage(decoder);
         break;
       case MESSAGE_SYNC_SINGLE_UPDATE:
-        console.log('Sync single update message received');
         this.handleSyncSingleUpdateMessage(decoder);
         break;
     }
@@ -352,10 +340,14 @@ export class WebsocketProvider extends Observable<string> {
   }
 
   writeSyncRequestMessage(encoder: encoding.Encoder) {
+    console.log('Sync request message sent');
+
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_REQUEST);
   }
   handleSyncRequestMessage(encoder: encoding.Encoder) {
+    console.log('Sync request message received');
+
     this.writeSyncAllUpdatesMergedMessage(encoder);
   }
 
@@ -363,21 +355,25 @@ export class WebsocketProvider extends Observable<string> {
     decoder: decoding.Decoder,
     encoder: encoding.Encoder
   ) {
+    console.log('Sync all updates unmerged message received');
+
     const numUpdates = decoding.readVarUint(decoder);
 
     for (let i = 0; i < numUpdates; i++) {
       this.handleSyncSingleUpdateMessage(decoder);
     }
 
-    this.writeSyncAllUpdatesMergedMessage(encoder);
+    //this.writeSyncAllUpdatesMergedMessage(encoder);
   }
 
   writeSyncAllUpdatesMergedMessage(encoder: encoding.Encoder) {
+    console.log('Sync all updates merged message sent');
+
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_ALL_UPDATES_MERGED);
 
     // Compute decrypted update
-    const decryptedUpdate = Y.encodeStateAsUpdate(this.doc);
+    const decryptedUpdate = Y.encodeStateAsUpdateV2(this.doc);
 
     // Encrypt update with symmetric key
     const encryptedUpdate = this.symmetricKey.encrypt(decryptedUpdate);
@@ -386,12 +382,14 @@ export class WebsocketProvider extends Observable<string> {
     encoding.writeVarUint8Array(encoder, encryptedUpdate);
   }
   handleSyncAllUpdatesMergedMessage(decoder: decoding.Decoder) {
-    decoding.readVarUint(decoder); // Read update index
+    console.log('Sync all updates merged message received');
 
     this.handleSyncSingleUpdateMessage(decoder);
   }
 
   writeSyncSingleUpdateMessage(encoder: encoding.Encoder, update: Uint8Array) {
+    console.log('Sync single update message sent');
+
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_SINGLE_UPDATE);
 
@@ -402,6 +400,8 @@ export class WebsocketProvider extends Observable<string> {
     encoding.writeVarUint8Array(encoder, encryptedUpdate);
   }
   handleSyncSingleUpdateMessage(decoder: decoding.Decoder) {
+    console.log('Sync single update message received');
+
     // Read encrypted update
     const encryptedUpdate = decoding.readVarUint8Array(decoder);
 
@@ -409,7 +409,7 @@ export class WebsocketProvider extends Observable<string> {
     const decryptedUpdate = this.symmetricKey.decrypt(encryptedUpdate);
 
     // Apply decrypted update
-    Y.applyUpdate(this.doc, decryptedUpdate);
+    Y.applyUpdateV2(this.doc, decryptedUpdate);
   }
 
   clearAwareness = () => {
@@ -440,7 +440,7 @@ export class WebsocketProvider extends Observable<string> {
     }
 
     this.awareness.off('update', this.handleAwarenessUpdate);
-    this.doc.off('update', this.handleDocumentUpdate);
+    this.doc.off('updateV2', this.handleDocumentUpdate);
 
     super.destroy();
   }
