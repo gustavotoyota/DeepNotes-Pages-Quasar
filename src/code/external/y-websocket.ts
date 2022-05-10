@@ -153,14 +153,7 @@ export class WebsocketProvider extends Observable<string> {
     websocket.onmessage = (event) => {
       this.wsLastMessageReceived = time.getUnixTime();
 
-      const encoder = this.handleMessage(
-        new Uint8Array(event.data as any),
-        true
-      );
-
-      if (encoding.length(encoder) > 0) {
-        websocket.send(encoding.toUint8Array(encoder));
-      }
+      this.handleMessage(new Uint8Array(event.data as any));
     };
 
     websocket.onerror = (event) => {
@@ -263,11 +256,7 @@ export class WebsocketProvider extends Observable<string> {
       return;
     }
 
-    const encoder = encoding.createEncoder();
-
-    this.writeSyncSingleUpdateMessage(encoder, update);
-
-    this.ws.send(encoding.toUint8Array(encoder));
+    this.sendSyncSingleUpdateMessage(update);
   };
   handleAwarenessUpdate = ({ added, updated, removed }: IAwarenessChanges) => {
     const changedClients = added.concat(updated).concat(removed);
@@ -283,63 +272,38 @@ export class WebsocketProvider extends Observable<string> {
     this.ws.send(encoding.toUint8Array(encoder));
   };
 
-  handleMessage(buf: Uint8Array, emitSynced: boolean) {
-    const decoder = decoding.createDecoder(buf);
-    const encoder = encoding.createEncoder();
+  handleMessage(message: Uint8Array) {
+    const decoder = decoding.createDecoder(message);
     const messageType = decoding.readVarUint(decoder);
 
     switch (messageType) {
       case MESSAGE_SYNC:
-        this.handleDocumentSyncMessage(decoder, encoder, emitSynced);
+        this.handleDocumentSyncMessage(decoder);
         break;
       case MESSAGE_AWARENESS:
-        console.log('Awareness message received');
         this.handleAwarenessSyncMessage(decoder);
         break;
       default:
         console.error('Unable to compute message');
     }
-
-    return encoder;
   }
-  handleDocumentSyncMessage(
-    decoder: decoding.Decoder,
-    encoder: encoding.Encoder,
-    emitSynced: boolean
-  ) {
+  handleDocumentSyncMessage(decoder: decoding.Decoder) {
     const syncMessageType = decoding.readVarUint(decoder);
 
     switch (syncMessageType) {
-      case MESSAGE_SYNC_REQUEST:
-        console.log('Sync request message received');
-        this.handleSyncRequestMessage(encoder);
-        break;
       case MESSAGE_SYNC_ALL_UPDATES_UNMERGED:
         console.log('Sync all updates unmerged message received');
-        this.handleSyncAllUpdatesUnmergedMessage(decoder, encoder);
-        break;
-      case MESSAGE_SYNC_ALL_UPDATES_MERGED:
-        console.log('Sync all updates merged message received');
-        this.handleSyncAllUpdatesMergedMessage(decoder);
+        this.handleSyncAllUpdatesUnmergedMessage(decoder);
         break;
       case MESSAGE_SYNC_SINGLE_UPDATE:
         console.log('Sync single update message received');
         this.handleSyncSingleUpdateMessage(decoder);
         break;
     }
-
-    if (
-      emitSynced &&
-      [
-        MESSAGE_SYNC_ALL_UPDATES_UNMERGED,
-        MESSAGE_SYNC_ALL_UPDATES_MERGED,
-      ].includes(syncMessageType) &&
-      !this.synced
-    ) {
-      this.synced = true;
-    }
   }
   handleAwarenessSyncMessage(decoder: decoding.Decoder) {
+    console.log('Awareness message received');
+
     awarenessProtocol.applyAwarenessUpdate(
       this.awareness,
       decoding.readVarUint8Array(decoder),
@@ -347,20 +311,18 @@ export class WebsocketProvider extends Observable<string> {
     );
   }
 
-  writeSyncRequestMessage(encoder: encoding.Encoder) {
+  sendSyncRequestMessage() {
     console.log('Sync request message sent');
+
+    const encoder = encoding.createEncoder();
 
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_REQUEST);
-  }
-  handleSyncRequestMessage(encoder: encoding.Encoder) {
-    this.writeSyncAllUpdatesMergedMessage(encoder);
+
+    this.ws.send(encoding.toUint8Array(encoder));
   }
 
-  handleSyncAllUpdatesUnmergedMessage(
-    decoder: decoding.Decoder,
-    encoder: encoding.Encoder
-  ) {
+  handleSyncAllUpdatesUnmergedMessage(decoder: decoding.Decoder) {
     const updateEndIndex = decoding.readVarUint(decoder);
 
     const numUpdates = decoding.readVarUint(decoder);
@@ -369,14 +331,15 @@ export class WebsocketProvider extends Observable<string> {
       this.handleSyncSingleUpdateMessage(decoder);
     }
 
-    this.writeSyncAllUpdatesMergedMessage(encoder, updateEndIndex);
+    this.synced = true;
+
+    this.sendSyncAllUpdatesMergedMessage(updateEndIndex);
   }
 
-  writeSyncAllUpdatesMergedMessage(
-    encoder: encoding.Encoder,
-    updateEndIndex = 0
-  ) {
+  sendSyncAllUpdatesMergedMessage(updateEndIndex: number) {
     console.log('Sync all updates merged message sent');
+
+    const encoder = encoding.createEncoder();
 
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_ALL_UPDATES_MERGED);
@@ -387,13 +350,14 @@ export class WebsocketProvider extends Observable<string> {
     const decryptedUpdate = Y.encodeStateAsUpdateV2(this.doc);
     const encryptedUpdate = this.symmetricKey.encrypt(decryptedUpdate);
     encoding.writeVarUint8Array(encoder, encryptedUpdate);
-  }
-  handleSyncAllUpdatesMergedMessage(decoder: decoding.Decoder) {
-    this.handleSyncSingleUpdateMessage(decoder);
+
+    this.ws.send(encoding.toUint8Array(encoder));
   }
 
-  writeSyncSingleUpdateMessage(encoder: encoding.Encoder, update: Uint8Array) {
+  sendSyncSingleUpdateMessage(update: Uint8Array) {
     console.log('Sync single update message sent');
+
+    const encoder = encoding.createEncoder();
 
     encoding.writeVarUint(encoder, MESSAGE_SYNC);
     encoding.writeVarUint(encoder, MESSAGE_SYNC_SINGLE_UPDATE);
@@ -401,6 +365,8 @@ export class WebsocketProvider extends Observable<string> {
     // Send encrypted update
     const encryptedUpdate = this.symmetricKey.encrypt(update);
     encoding.writeVarUint8Array(encoder, encryptedUpdate);
+
+    this.ws.send(encoding.toUint8Array(encoder));
   }
   handleSyncSingleUpdateMessage(decoder: decoding.Decoder) {
     // Apply decrypted update
