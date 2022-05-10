@@ -4,8 +4,7 @@ import { from_base64 } from 'libsodium-wrappers';
 import { Cookies } from 'quasar';
 import { useAuth } from 'src/stores/auth';
 
-import { decryptSymmetric, processCryptoKeys } from './crypto/crypto';
-import { masterKey } from './crypto/master-key';
+import { processSessionPrivateKey } from './crypto/crypto';
 import { privateKey } from './crypto/private-key';
 
 export const apiBaseURL = process.env.DEV
@@ -57,18 +56,19 @@ export async function tryRefreshTokens(api: AxiosInstance): Promise<void> {
     return;
   }
 
-  if (!areTokensExpiring() && privateKey.exists() && masterKey.exists()) {
+  if (!areTokensExpiring() && privateKey.exists()) {
     auth.loggedIn = true;
     return;
   }
 
-  const encryptedMasterKey = localStorage.getItem('encrypted-master-key');
-  const encryptedPrivateKey = localStorage.getItem('encrypted-private-key');
-
-  if (!encryptedMasterKey || !encryptedPrivateKey) {
+  if (localStorage.getItem('encrypted-private-key') == null) {
     logout(api);
     return;
   }
+
+  const encryptedPrivateKey = from_base64(
+    localStorage.getItem('encrypted-private-key')!
+  );
 
   try {
     const response = await api.post<{
@@ -89,23 +89,17 @@ export async function tryRefreshTokens(api: AxiosInstance): Promise<void> {
 
     storeAuthValues(response.data.accessToken, response.data.refreshToken);
 
-    // Process keys
+    // Reencrypt private key
 
-    const decryptedMasterKey = decryptSymmetric(
-      encryptedMasterKey,
-      from_base64(response.data.oldSessionKey)
-    );
-
-    processCryptoKeys(
+    processSessionPrivateKey(
       encryptedPrivateKey,
       from_base64(response.data.oldSessionKey),
-      decryptedMasterKey,
-      response.data.newSessionKey
+      from_base64(response.data.newSessionKey)
     );
 
     auth.loggedIn = true;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     logout(api);
   }
 }
@@ -156,7 +150,7 @@ export function logout(api: AxiosInstance) {
   try {
     api.post(authEndpoints.logout);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 
   // Delete auth values
@@ -167,9 +161,8 @@ export function logout(api: AxiosInstance) {
 
   localStorage.removeItem('email');
 
-  // Clear keys from memory
+  // Clear private key from memory
 
-  masterKey.clear();
   privateKey.clear();
 
   // Delete API authorization header

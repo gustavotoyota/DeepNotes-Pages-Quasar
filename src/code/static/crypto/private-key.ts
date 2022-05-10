@@ -1,4 +1,4 @@
-import sodium from 'libsodium-wrappers';
+import { decryptAssymetric } from './crypto';
 
 export function createPrivateKey(value: Uint8Array | null = null) {
   let _value = value;
@@ -15,17 +15,15 @@ export function createPrivateKey(value: Uint8Array | null = null) {
       return _value != null;
     }
 
-    decrypt(nonceAndCyphertext: string, publicKey: Uint8Array): Uint8Array {
-      const [nonce, cyphertext] = nonceAndCyphertext.split('.');
-
-      return sodium.crypto_box_open_easy(
-        sodium.from_base64(cyphertext),
-        sodium.from_base64(nonce),
-        publicKey,
-        _value!
-      );
+    decrypt(
+      nonceAndCiphertext: Uint8Array,
+      sendersPublicKey: Uint8Array
+    ): Uint8Array {
+      return decryptAssymetric(nonceAndCiphertext, sendersPublicKey, _value!);
     }
   })();
 }
+
+export type PrivateKey = ReturnType<typeof createPrivateKey>;
 
 export const privateKey = createPrivateKey();

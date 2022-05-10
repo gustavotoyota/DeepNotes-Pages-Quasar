@@ -1,5 +1,7 @@
 import syncedStore, { getYjsValue, Y } from '@syncedstore/core';
+import { from_base64 } from 'libsodium-wrappers';
 import { WebsocketProvider } from 'src/code/external/y-websocket';
+import { createSymmetricKey } from 'src/code/static/crypto/symmetric-key';
 import { reactive } from 'vue';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { z } from 'zod';
@@ -72,7 +74,10 @@ export class PageCollab {
         ? 'ws://localhost:1234'
         : 'wss://yjs-server.deepnotes.app/',
       roomName,
-      this.doc
+      this.doc,
+      createSymmetricKey(
+        from_base64('QxC3A22O6JZTE3YQyYmWa6mp4qW6nTRpgqHsXCFC9sA')
+      )
     );
 
     promises.push(

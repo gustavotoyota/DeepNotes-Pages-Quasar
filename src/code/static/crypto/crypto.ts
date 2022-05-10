@@ -1,15 +1,15 @@
 import './argon2';
 
-import sodium, { from_base64 } from 'libsodium-wrappers';
+import sodium, { to_base64 } from 'libsodium-wrappers';
 
-import { createMasterKey, masterKey } from './master-key';
+import { concatUint8Array } from '../utils';
 import { privateKey } from './private-key';
 
 export function encryptAssymetric(
   plaintext: Uint8Array,
   recipientsPublicKey: Uint8Array,
   sendersPrivateKey: Uint8Array
-): string {
+): Uint8Array {
   const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
 
   const ciphertext = sodium.crypto_box_easy(
@@ -19,19 +19,19 @@ export function encryptAssymetric(
     sendersPrivateKey
   );
 
-  return sodium.to_base64(nonce) + '.' + sodium.to_base64(ciphertext);
+  return concatUint8Array(nonce, ciphertext);
 }
-
 export function decryptAssymetric(
-  nonceAndCiphertext: string,
+  nonceAndCiphertext: Uint8Array,
   sendersPublicKey: Uint8Array,
   recipientsPrivateKey: Uint8Array
 ): Uint8Array {
-  const [nonce, ciphertext] = nonceAndCiphertext.split('.');
+  const nonce = nonceAndCiphertext.slice(0, sodium.crypto_box_NONCEBYTES);
+  const ciphertext = nonceAndCiphertext.slice(sodium.crypto_box_NONCEBYTES);
 
   return sodium.crypto_box_open_easy(
-    sodium.from_base64(ciphertext),
-    sodium.from_base64(nonce),
+    ciphertext,
+    nonce,
     sendersPublicKey,
     recipientsPrivateKey
   );
@@ -41,10 +41,10 @@ export function encryptSymmetric(
   plaintext: Uint8Array,
   key: Uint8Array,
   additionalData: string | null = null
-): string {
+): Uint8Array {
   const nonce = sodium.randombytes_buf(sodium.crypto_secretbox_NONCEBYTES);
 
-  const cyphertext = sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
+  const ciphertext = sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(
     plaintext,
     additionalData,
     null,
@@ -52,21 +52,23 @@ export function encryptSymmetric(
     key
   );
 
-  return sodium.to_base64(nonce) + '.' + sodium.to_base64(cyphertext);
+  return concatUint8Array(nonce, ciphertext);
 }
-
 export function decryptSymmetric(
-  noncedCyphertext: string,
+  nonceAndCiphertext: Uint8Array,
   key: Uint8Array,
   additionalData: string | null = null
 ): Uint8Array {
-  const [nonce, cyphertext] = noncedCyphertext.split('.');
+  const nonce = nonceAndCiphertext.slice(0, sodium.crypto_secretbox_NONCEBYTES);
+  const ciphertext = nonceAndCiphertext.slice(
+    sodium.crypto_secretbox_NONCEBYTES
+  );
 
   return sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(
     null,
-    sodium.from_base64(cyphertext),
+    ciphertext,
     additionalData,
-    sodium.from_base64(nonce),
+    nonce,
     key
   );
 }
@@ -74,7 +76,7 @@ export function decryptSymmetric(
 export async function computeDerivedKeys(email: string, password: string) {
   // Master key
 
-  const masterKeyHash = (
+  const masterKey = (
     await argon2.hash({
       pass: password,
       salt: email,
@@ -83,14 +85,12 @@ export async function computeDerivedKeys(email: string, password: string) {
     })
   ).hash;
 
-  const masterKey = createMasterKey(masterKeyHash);
-
   // Password hash
 
   const passwordHash = sodium.to_base64(
     (
       await argon2.hash({
-        pass: masterKeyHash,
+        pass: masterKey,
         salt: password,
         type: argon2.ArgonType.Argon2id,
       })
@@ -98,21 +98,17 @@ export async function computeDerivedKeys(email: string, password: string) {
   );
 
   return {
-    masterKeyHash,
     masterKey,
 
     passwordHash,
   };
 }
-
-export async function generateRandomKeys(
-  masterKey: ReturnType<typeof createMasterKey>
-) {
+export async function generateRandomKeys(masterKey: Uint8Array) {
   // Key pair
 
   const keyPair = sodium.crypto_box_keypair();
 
-  const encryptedPrivateKey = masterKey.encrypt(keyPair.privateKey);
+  const encryptedPrivateKey = encryptSymmetric(keyPair.privateKey, masterKey);
 
   // Group symmetric key
 
@@ -132,63 +128,35 @@ export async function generateRandomKeys(
   };
 }
 
-export function reencryptSecretKeys(
-  decryptedMasterKey: Uint8Array,
-  decryptedPrivateKey: Uint8Array,
+export function processSessionPrivateKey(
+  oldEncryptedPrivateKey: Uint8Array,
+  oldEncryptionKey: Uint8Array,
   sessionKey: Uint8Array
-) {
-  return {
-    sessionEncryptedMasterKey: encryptSymmetric(decryptedMasterKey, sessionKey),
-    sessionEncryptedPrivateKey: encryptSymmetric(
-      decryptedPrivateKey,
-      sessionKey
-    ),
-  };
-}
-
-export function storeCryptoValues(
-  encryptedMasterKey: string,
-  encryptedPrivateKey: string
-) {
-  localStorage.setItem('encrypted-master-key', encryptedMasterKey);
-  localStorage.setItem('encrypted-private-key', encryptedPrivateKey);
-}
-
-export function deleteCryptoValues() {
-  localStorage.removeItem('encrypted-master-key');
-  localStorage.removeItem('encrypted-private-key');
-}
-
-export function processCryptoKeys(
-  encryptedPrivateKey: string,
-  oldMasterKeyHash: Uint8Array,
-  newMasterKeyHash: Uint8Array,
-  sessionKey: string
 ) {
   // Decrypt private key
 
   const decryptedPrivateKey = decryptSymmetric(
-    encryptedPrivateKey,
-    oldMasterKeyHash
+    oldEncryptedPrivateKey,
+    oldEncryptionKey
   );
 
-  // Encrypt keys with session key
+  // Encrypt private key with session key
 
-  const { sessionEncryptedMasterKey, sessionEncryptedPrivateKey } =
-    reencryptSecretKeys(
-      newMasterKeyHash,
-      decryptedPrivateKey,
-      from_base64(sessionKey)
-    );
+  const newEncryptedPrivateKey = encryptSymmetric(
+    decryptedPrivateKey,
+    sessionKey
+  );
 
-  // Store encrypted keys
+  // Store encrypted private key on local storage
 
-  storeCryptoValues(sessionEncryptedMasterKey, sessionEncryptedPrivateKey);
+  localStorage.setItem(
+    'encrypted-private-key',
+    to_base64(newEncryptedPrivateKey)
+  );
 
-  // Store keys on memory
+  // Store private key on memory
 
-  masterKey.set(newMasterKeyHash);
   privateKey.set(decryptedPrivateKey);
 
-  return { decryptedPrivateKey };
+  return decryptedPrivateKey;
 }

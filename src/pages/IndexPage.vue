@@ -27,7 +27,7 @@ const page = shallowRef<AppPage>();
 provide('page', page);
 
 onMounted(async () => {
-  page.value = factory.makePage(app, '');
+  page.value = factory.makePage(app, '52bd9bc3-c28c-4185-82f7-6c5be30c9ce3a');
 
   pageCache.addPage(page.value);
 
