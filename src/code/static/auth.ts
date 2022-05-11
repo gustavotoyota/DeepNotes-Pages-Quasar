@@ -8,7 +8,7 @@ import { processSessionPrivateKey } from './crypto/crypto';
 import { privateKey } from './crypto/private-key';
 
 export const apiBaseURL = process.env.DEV
-  ? 'http://localhost:21733'
+  ? 'http://192.168.1.2:21733'
   : 'https://app-server.deepnotes.app/';
 
 export const authEndpoints = {
@@ -18,11 +18,11 @@ export const authEndpoints = {
 };
 
 export const homeURL = process.env.DEV
-  ? 'http://localhost:60379'
+  ? 'http://192.168.1.2:60379'
   : 'https://deepnotes.app';
 
 export const pagesURL = process.env.DEV
-  ? 'http://localhost:24579'
+  ? 'http://192.168.1.2:24579'
   : 'https://pages.deepnotes.app';
 
 export function isTokenValid(tokenName: string): boolean {

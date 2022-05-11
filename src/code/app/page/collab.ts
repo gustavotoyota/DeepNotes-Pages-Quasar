@@ -71,7 +71,7 @@ export class PageCollab {
 
     this.websocketProvider = new WebsocketProvider(
       process.env.DEV
-        ? 'ws://localhost:1234'
+        ? 'ws://192.168.1.2:1234'
         : 'wss://yjs-server.deepnotes.app/',
       roomName,
       this.doc,

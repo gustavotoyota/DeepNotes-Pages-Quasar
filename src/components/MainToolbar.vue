@@ -169,7 +169,7 @@
           round
           :href="
             process.env.DEV
-              ? 'http://localhost:60379/'
+              ? 'http://192.168.1.2:60379/'
               : 'https://deepnotes.app/'
           "
         />
