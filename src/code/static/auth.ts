@@ -151,9 +151,9 @@ export function logout(api: AxiosInstance) {
 
   deleteTokens();
 
-  // Remove data from local storage
+  // Clear e-mail
 
-  localStorage.removeItem('email');
+  Cookies.remove('email');
 
   // Clear private key
 
