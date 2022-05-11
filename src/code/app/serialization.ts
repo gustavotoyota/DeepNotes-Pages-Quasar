@@ -1,5 +1,6 @@
 import { cloneDeep, pull } from 'lodash';
 import { useMainStore } from 'src/stores/main-store';
+import { v4 } from 'uuid';
 import { z } from 'zod';
 
 import { Op } from '../static/quill';
@@ -220,7 +221,7 @@ export class AppSerialization {
 
         // Add note data to the store
 
-        const noteId = crypto.randomUUID();
+        const noteId = v4();
 
         page.notes.react.collab[noteId] = noteCollab as z.output<
           typeof INoteCollab
@@ -249,7 +250,7 @@ export class AppSerialization {
           },
         };
 
-        const arrowId = crypto.randomUUID();
+        const arrowId = v4();
 
         page.arrows.react.collab[arrowId] = arrowCollab as IArrowCollab;
 
